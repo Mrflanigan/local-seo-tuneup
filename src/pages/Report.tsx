@@ -1,22 +1,28 @@
 import { useState } from "react";
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import type { ScoringResult } from "@/lib/scoring/types";
+import { saveLead } from "@/lib/api/checkup";
 import ScoreRing from "@/components/ScoreRing";
 import SectionCard from "@/components/SectionCard";
 import EmailGate from "@/components/EmailGate";
 import CTABanner from "@/components/CTABanner";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink } from "lucide-react";
+import { toast } from "sonner";
 
 export default function Report() {
   const location = useLocation();
   const navigate = useNavigate();
   const [unlocked, setUnlocked] = useState(false);
 
-  const state = location.state as { result: ScoringResult; url: string } | null;
+  const state = location.state as {
+    result: ScoringResult;
+    url: string;
+    city?: string;
+  } | null;
   if (!state) return <Navigate to="/" replace />;
 
-  const { result, url } = state;
+  const { result, url, city } = state;
 
   // Find worst-scoring section and pull 1-2 issues from it
   const worstCategory = [...result.categories].sort(
@@ -27,8 +33,13 @@ export default function Report() {
     .sort((a, b) => b.maxPoints - a.maxPoints)
     .slice(0, 2);
 
-  const handleUnlock = (email: string, _wantsGameplan: boolean) => {
-    // TODO: Send email to backend for storage / follow-up
+  const handleUnlock = async (email: string, wantsGameplan: boolean) => {
+    try {
+      await saveLead({ email, url, city, report: result, wantsGameplan });
+    } catch (err) {
+      console.error("Failed to save lead:", err);
+      toast.error("Couldn't save your info, but here's your report anyway.");
+    }
     setUnlocked(true);
   };
 
@@ -79,7 +90,9 @@ export default function Report() {
                       key={f.id}
                       className="flex items-start gap-2 text-sm text-foreground"
                     >
-                      <span className="text-destructive font-bold mt-0.5">✕</span>
+                      <span className="text-destructive font-bold mt-0.5">
+                        ✕
+                      </span>
                       <span className="leading-relaxed">
                         {f.personalized || f.generic}
                       </span>

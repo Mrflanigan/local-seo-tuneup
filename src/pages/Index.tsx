@@ -2,8 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UrlInputForm from "@/components/UrlInputForm";
 import ScanningView from "@/components/ScanningView";
-import { scrapeUrl } from "@/lib/api/firecrawl";
-import { scoreWebsite } from "@/lib/scoring/scoringService";
+import { runCheckup } from "@/lib/api/checkup";
 import type { ScoringResult } from "@/lib/scoring/types";
 import { toast } from "sonner";
 
@@ -16,10 +15,8 @@ export default function Index() {
     setLoading(true);
     setScanUrl(url);
     try {
-      const input = { url, city };
-      const scraped = await scrapeUrl(input);
-      const result: ScoringResult = scoreWebsite(scraped, input);
-      navigate("/report", { state: { result, url } });
+      const result: ScoringResult = await runCheckup({ url, city });
+      navigate("/report", { state: { result, url, city } });
     } catch (err) {
       toast.error("Something went wrong scanning that site. Please try again.");
       console.error(err);
