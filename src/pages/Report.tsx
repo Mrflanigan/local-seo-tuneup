@@ -17,14 +17,24 @@ export default function Report() {
   if (!state) return <Navigate to="/" replace />;
 
   const { result, url } = state;
-  const topIssues = result.categories
-    .flatMap((c) => c.findings.filter((f) => !f.passed))
+
+  // Find worst-scoring section and pull 1-2 issues from it
+  const worstCategory = [...result.categories].sort(
+    (a, b) => a.score / a.maxScore - b.score / b.maxScore
+  )[0];
+  const topIssues = worstCategory.findings
+    .filter((f) => !f.passed)
     .sort((a, b) => b.maxPoints - a.maxPoints)
     .slice(0, 2);
 
+  const handleUnlock = (email: string, _wantsGameplan: boolean) => {
+    // TODO: Send email to backend for storage / follow-up
+    setUnlocked(true);
+  };
+
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-3xl px-4 py-10">
+      <div className="mx-auto max-w-3xl px-4 py-8 sm:py-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
@@ -42,50 +52,65 @@ export default function Report() {
         </div>
 
         {/* Score Ring + Summary */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <ScoreRing score={result.overallScore} grade={result.letterGrade} />
-          <h2 className="text-2xl font-bold text-foreground mt-4 mb-2">
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground mt-4 mb-2">
             {result.siteContext.businessName
               ? `${result.siteContext.businessName}'s Google Checkup`
               : "Your Google Compatibility Score"}
           </h2>
-          <p className="text-muted-foreground max-w-lg mx-auto leading-relaxed">
+          <p className="text-muted-foreground max-w-lg mx-auto leading-relaxed text-sm sm:text-base">
             {result.personalizedSummary}
           </p>
         </div>
 
-        {/* Teaser: top issues */}
-        {!unlocked && topIssues.length > 0 && (
-          <div className="rounded-xl border border-border bg-card p-6 mb-4">
-            <h3 className="font-semibold text-foreground mb-3">Top Opportunities</h3>
-            <ul className="space-y-2">
-              {topIssues.map((f) => (
-                <li key={f.id} className="flex items-start gap-2 text-sm text-foreground">
-                  <span className="text-destructive font-bold">✕</span>
-                  {f.personalized || f.generic}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Blurred preview or full report */}
         {!unlocked ? (
           <>
-            <div className="space-y-4">
+            {/* Teaser: friendly summary + top issues */}
+            <div className="rounded-xl border border-border bg-card p-5 sm:p-6 mb-2">
+              <p className="text-sm text-foreground mb-4 leading-relaxed">
+                You've done some things right — here's where you're leaving easy
+                wins on the table:
+              </p>
+              {topIssues.length > 0 && (
+                <ul className="space-y-3">
+                  {topIssues.map((f) => (
+                    <li
+                      key={f.id}
+                      className="flex items-start gap-2 text-sm text-foreground"
+                    >
+                      <span className="text-destructive font-bold mt-0.5">✕</span>
+                      <span className="leading-relaxed">
+                        {f.personalized || f.generic}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {/* Blurred preview */}
+            <div className="space-y-4 mb-2">
               {result.categories.slice(0, 2).map((cat) => (
                 <SectionCard key={cat.id} category={cat} blurred />
               ))}
             </div>
-            <EmailGate onUnlock={() => setUnlocked(true)} />
+
+            {/* Email gate */}
+            <EmailGate onUnlock={handleUnlock} />
           </>
         ) : (
-          <div className="space-y-4">
-            {result.categories.map((cat) => (
-              <SectionCard key={cat.id} category={cat} />
-            ))}
+          <>
+            {/* Full report */}
+            <div className="space-y-4">
+              {result.categories.map((cat) => (
+                <SectionCard key={cat.id} category={cat} />
+              ))}
+            </div>
+
+            {/* CTA */}
             <CTABanner />
-          </div>
+          </>
         )}
       </div>
     </div>

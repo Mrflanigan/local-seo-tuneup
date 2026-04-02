@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Globe, MapPin, Loader2 } from "lucide-react";
+import { Globe, MapPin } from "lucide-react";
 
 interface UrlInputFormProps {
   onSubmit: (url: string, city?: string) => void;
@@ -22,7 +22,7 @@ export default function UrlInputForm({ onSubmit, loading }: UrlInputFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-xl mx-auto space-y-4">
+    <form onSubmit={handleSubmit} className="w-full max-w-xl mx-auto space-y-3">
       <div className="relative">
         <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
         <Input
@@ -52,14 +52,7 @@ export default function UrlInputForm({ onSubmit, loading }: UrlInputFormProps) {
         disabled={loading || !url.trim()}
         size="lg"
       >
-        {loading ? (
-          <>
-            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-            Scanning Your Site…
-          </>
-        ) : (
-          "Run My Checkup"
-        )}
+        Run My Free Google Compatibility Check
       </Button>
     </form>
   );
