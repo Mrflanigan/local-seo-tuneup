@@ -378,7 +378,7 @@ function scoreContentUX(
 
 function scoreExtras(
   data: FirecrawlScrapeResult,
-  ctx: SiteContext
+  _ctx: SiteContext
 ): CategoryResult {
   const { html, markdown } = data;
   const findings: Finding[] = [];
