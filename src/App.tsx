@@ -7,6 +7,7 @@ import Index from "./pages/Index.tsx";
 import Report from "./pages/Report.tsx";
 import CaseStudy from "./pages/CaseStudy.tsx";
 import Osmosis from "./pages/Osmosis.tsx";
+import PaymentSuccess from "./pages/PaymentSuccess.tsx";
 import NotFound from "./pages/NotFound.tsx";
 const queryClient = new QueryClient();
 
