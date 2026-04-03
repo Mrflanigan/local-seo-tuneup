@@ -79,26 +79,26 @@ export default function Index() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <img src={heroDenali} alt="Summit of Denali, highest peak in North America" width={1920} height={1080} className="absolute inset-0 w-full h-full object-cover" />
 
-        {/* ── The G — carved into the mountain ── */}
-        <div className="absolute inset-0 pointer-events-none select-none overflow-hidden" aria-hidden="true" style={{ zIndex: 1 }}>
+        {/* ── The G — etched into rock, between photo and overlay ── */}
+        <div className="absolute inset-0 pointer-events-none select-none overflow-hidden" style={{ zIndex: 1 }} aria-hidden="true">
           <span
             className="absolute font-bold leading-none"
             style={{
-              fontSize: "clamp(32rem, 70vw, 65rem)",
-              color: "hsl(35 20% 45% / 0.14)",
-              bottom: "-8%",
-              left: "-14%",
+              fontSize: "clamp(34rem, 75vw, 70rem)",
+              color: "hsl(38 30% 70% / 0.22)",
+              bottom: "-6%",
+              left: "-12%",
               fontFamily: "'Georgia', 'Times New Roman', serif",
               letterSpacing: "-0.05em",
               fontWeight: 800,
-              mixBlendMode: "overlay",
             }}
           >
             G
           </span>
         </div>
 
-        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background" />
+        {/* Gradient overlay on top of both photo and G */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background" style={{ zIndex: 2 }} />
 
         <div className="relative z-10 mx-auto max-w-3xl px-6 text-center pt-16">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-sm px-5 py-2 mb-8">
