@@ -5,6 +5,7 @@ import { saveLead } from "@/lib/api/checkup";
 import ScoreRing from "@/components/ScoreRing";
 import WhatGoogleSees from "@/components/WhatGoogleSees";
 import YearAgoProjection from "@/components/YearAgoProjection";
+import CompetitorComparison from "@/components/CompetitorComparison";
 import CTABanner from "@/components/CTABanner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
