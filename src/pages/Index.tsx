@@ -83,11 +83,12 @@ export default function Index() {
         {/* ── The G ── */}
         <div className="absolute inset-0 flex items-end justify-center pointer-events-none select-none" aria-hidden="true">
           <span
-            className="font-bold leading-none text-transparent bg-clip-text"
+            className="font-bold leading-none"
             style={{
-              fontSize: "clamp(28rem, 55vw, 50rem)",
-              backgroundImage: "linear-gradient(to top, hsl(38 92% 55% / 0.12), hsl(38 92% 55% / 0.04), transparent)",
-              transform: "translateY(18%)",
+              fontSize: "clamp(28rem, 60vw, 55rem)",
+              color: "hsl(38 92% 55% / 0.18)",
+              textShadow: "0 0 80px hsl(38 92% 55% / 0.15), 0 0 160px hsl(38 92% 55% / 0.08)",
+              transform: "translateY(15%)",
               fontFamily: "'Georgia', 'Times New Roman', serif",
               letterSpacing: "-0.04em",
             }}
