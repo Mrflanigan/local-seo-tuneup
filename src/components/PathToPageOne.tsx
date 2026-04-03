@@ -223,6 +223,35 @@ export default function PathToPageOne({ result }: Props) {
           </div>
         </div>
 
+        {/* Tier 5: The $1,000 Burger — Premium Domination */}
+        <div className="rounded-xl border border-accent/40 bg-gradient-to-br from-accent/10 via-card to-primary/5 p-5 sm:p-6 hover:border-accent/60 transition-colors relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="flex items-start gap-4 relative">
+            <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-accent/20 shrink-0">
+              <Crown className="h-5 w-5 text-accent" />
+            </div>
+            <div className="flex-1">
+              <h4 className="text-base font-semibold text-foreground mb-1">
+                Total Market Domination
+              </h4>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                For businesses where second place isn't an option. Paid ads running
+                day one, full SEO overhaul, content strategy, competitor displacement
+                campaigns, reputation management, and a dedicated strategist.
+                This is the everything option — maximum spend, maximum results, fastest timeline.
+              </p>
+              <p className="text-xs text-muted-foreground leading-relaxed mb-3 italic">
+                Not everyone needs this. But if your competitors are spending big and you want
+                to outrun them — not just keep up — this is how.
+              </p>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
+                <span>All channels · Fastest results · Premium investment</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Anti-fluff callout */}
         <div className="rounded-lg border border-border/50 bg-secondary/30 p-4 text-center">
           <p className="text-sm text-muted-foreground leading-relaxed">
