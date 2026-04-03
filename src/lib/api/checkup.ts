@@ -64,9 +64,6 @@ export interface CompetitorResult {
 }
 
 /**
- * Scans top competitors for the same service + city.
- */
-/**
  * Saves a scan snapshot (before/after) for progression tracking.
  */
 export async function saveSnapshot(params: {
@@ -138,27 +135,5 @@ export async function scanCompetitors(params: {
 
   if (error) throw new Error(`Competitor scan failed: ${error.message}`);
   if (!data?.success) throw new Error(data?.error || "Competitor scan returned an unsuccessful response");
-  return data.data;
-}
-  service: string;
-  city?: string;
-  userUrl: string;
-}): Promise<{ competitors: CompetitorResult[]; query: string }> {
-  const { data, error } = await supabase.functions.invoke("competitor-scan", {
-    body: {
-      service: params.service,
-      city: params.city,
-      userUrl: params.userUrl,
-    },
-  });
-
-  if (error) {
-    throw new Error(`Competitor scan failed: ${error.message}`);
-  }
-
-  if (!data?.success) {
-    throw new Error(data?.error || "Competitor scan returned an unsuccessful response");
-  }
-
   return data.data;
 }
