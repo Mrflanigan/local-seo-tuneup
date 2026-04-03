@@ -67,7 +67,7 @@ export default function Index() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/60 backdrop-blur-xl border-b border-border/30">
         <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
           <span className="text-xl font-bold tracking-tight">
-            SEO<span className="text-primary">RiseUp</span>
+            Local<span className="text-primary">Score</span>
           </span>
           <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
             How it works
