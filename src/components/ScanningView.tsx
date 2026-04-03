@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 
 const messages = [
-  "Scanning your site like Google would…",
+  "SEO Osmosis™ is absorbing your site data…",
   "Checking your local presence and NAP data…",
   "Analyzing on-page SEO signals…",
   "Reviewing technical health…",
