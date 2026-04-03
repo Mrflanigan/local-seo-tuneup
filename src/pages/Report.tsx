@@ -3,17 +3,20 @@ import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import type { ScoringResult } from "@/lib/scoring/types";
 import { saveLead } from "@/lib/api/checkup";
 import ScoreRing from "@/components/ScoreRing";
-import SectionCard from "@/components/SectionCard";
-import EmailGate from "@/components/EmailGate";
+import WhatGoogleSees from "@/components/WhatGoogleSees";
 import CTABanner from "@/components/CTABanner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ArrowLeft, ExternalLink, Send } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Report() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [unlocked, setUnlocked] = useState(false);
+  const [email, setEmail] = useState("");
+  const [wantsGameplan, setWantsGameplan] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const state = location.state as {
     result: ScoringResult;
@@ -23,24 +26,18 @@ export default function Report() {
   if (!state) return <Navigate to="/" replace />;
 
   const { result, url, city } = state;
+  const name = result.siteContext.businessName;
 
-  // Find worst-scoring section and pull 1-2 issues from it
-  const worstCategory = [...result.categories].sort(
-    (a, b) => a.score / a.maxScore - b.score / b.maxScore
-  )[0];
-  const topIssues = worstCategory.findings
-    .filter((f) => !f.passed)
-    .sort((a, b) => b.maxPoints - a.maxPoints)
-    .slice(0, 2);
-
-  const handleUnlock = async (email: string, wantsGameplan: boolean) => {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.includes("@")) return;
     try {
       await saveLead({ email, url, city, report: result, wantsGameplan });
+      toast.success("You're all set! Check your inbox.");
     } catch (err) {
       console.error("Failed to save lead:", err);
-      toast.error("Couldn't save your info, but here's your report anyway.");
     }
-    setUnlocked(true);
+    setSubmitted(true);
   };
 
   return (
@@ -62,68 +59,72 @@ export default function Report() {
           </a>
         </div>
 
-        {/* Score Ring + Summary */}
+        {/* Score + Opener */}
         <div className="text-center mb-8">
           <ScoreRing score={result.overallScore} grade={result.letterGrade} />
           <h2 className="text-xl sm:text-2xl font-bold text-foreground mt-4 mb-2">
-            {result.siteContext.businessName
-              ? `${result.siteContext.businessName}'s Google Checkup`
-              : "Your Google Compatibility Score"}
+            {name
+              ? `${name}, your site looks good — but here's what Google thinks`
+              : "Your site looks good — but here's what Google thinks"}
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto leading-relaxed text-sm sm:text-base">
-            {result.personalizedSummary}
+            We scanned your site the same way Google's crawler would. Here's the
+            honest breakdown — what's working, what's not, and why it matters for
+            getting found by local customers.
           </p>
         </div>
 
-        {!unlocked ? (
-          <>
-            {/* Teaser: friendly summary + top issues */}
-            <div className="rounded-xl border border-border bg-card p-5 sm:p-6 mb-2">
-              <p className="text-sm text-foreground mb-4 leading-relaxed">
-                You've done some things right — here's where you're leaving easy
-                wins on the table:
-              </p>
-              {topIssues.length > 0 && (
-                <ul className="space-y-3">
-                  {topIssues.map((f) => (
-                    <li
-                      key={f.id}
-                      className="flex items-start gap-2 text-sm text-foreground"
-                    >
-                      <span className="text-destructive font-bold mt-0.5">
-                        ✕
-                      </span>
-                      <span className="leading-relaxed">
-                        {f.personalized || f.generic}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+        {/* Full narrative report — no gate */}
+        <WhatGoogleSees result={result} />
 
-            {/* Blurred preview */}
-            <div className="space-y-4 mb-2">
-              {result.categories.slice(0, 2).map((cat) => (
-                <SectionCard key={cat.id} category={cat} blurred />
-              ))}
-            </div>
-
-            {/* Email gate */}
-            <EmailGate onUnlock={handleUnlock} />
-          </>
+        {/* Soft email CTA */}
+        {!submitted ? (
+          <div className="rounded-xl border border-border bg-card p-5 sm:p-6 mt-8 text-center">
+            <h3 className="text-lg font-semibold text-foreground mb-1">
+              Want a step-by-step fix-it plan?
+            </h3>
+            <p className="text-sm text-muted-foreground mb-5 max-w-md mx-auto leading-relaxed">
+              Drop your email and we'll send you a prioritized gameplan — which
+              fixes to tackle first, what they'll cost, and the expected impact on
+              your local rankings.
+            </p>
+            <form
+              onSubmit={handleEmailSubmit}
+              className="max-w-sm mx-auto space-y-3"
+            >
+              <Input
+                type="email"
+                placeholder="you@yourbusiness.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="h-11"
+              />
+              <div className="flex items-start gap-2 text-left">
+                <Checkbox
+                  id="gameplan"
+                  checked={wantsGameplan}
+                  onCheckedChange={(checked) => setWantsGameplan(!!checked)}
+                  className="mt-0.5"
+                />
+                <label
+                  htmlFor="gameplan"
+                  className="text-sm text-muted-foreground cursor-pointer leading-snug"
+                >
+                  I'd also like a 15-minute Local SEO Gameplan call
+                </label>
+              </div>
+              <Button type="submit" className="w-full h-11 font-semibold">
+                <Send className="mr-2 h-4 w-4" />
+                Send Me the Gameplan
+              </Button>
+            </form>
+            <p className="text-xs text-muted-foreground mt-3">
+              No spam. Just your personalized report and one follow-up.
+            </p>
+          </div>
         ) : (
-          <>
-            {/* Full report */}
-            <div className="space-y-4">
-              {result.categories.map((cat) => (
-                <SectionCard key={cat.id} category={cat} />
-              ))}
-            </div>
-
-            {/* CTA */}
-            <CTABanner />
-          </>
+          <CTABanner />
         )}
       </div>
     </div>
