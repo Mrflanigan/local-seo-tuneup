@@ -113,10 +113,6 @@ export default function Index() {
         <div className="absolute inset-0" style={{ zIndex: 2, background: "linear-gradient(to bottom, hsl(220 20% 7% / 0.58), hsl(220 20% 7% / 0.38), hsl(220 20% 7% / 0.88))" }} />
 
         <div className="relative z-10 mx-auto max-w-3xl px-6 text-center pt-16">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-sm px-5 py-2 mb-8">
-            <div className="h-2 w-2 rounded-full bg-accent animate-pulse" />
-            <span className="text-xs font-medium text-primary">30+ signals analyzed in 30 seconds</span>
-          </div>
 
           <h1 className="text-4xl sm:text-6xl font-bold tracking-tight mb-6 leading-[1.1]">
             Rise to the Top.
