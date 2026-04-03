@@ -84,6 +84,11 @@ export default function Report() {
           <YearAgoProjection result={result} city={city} />
         </div>
 
+        {/* Competitor Comparison */}
+        <div className="mt-8">
+          <CompetitorComparison result={result} url={url} city={city} />
+        </div>
+
         {/* Soft email CTA */}
         {!submitted ? (
           <div className="rounded-xl border border-border bg-card p-5 sm:p-6 mt-8 text-center">
