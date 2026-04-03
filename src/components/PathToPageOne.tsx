@@ -163,9 +163,12 @@ export default function PathToPageOne({ result }: Props) {
               <Flame className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
-              <h4 className="text-base font-semibold text-foreground mb-1">
-                Show Up Tomorrow
-              </h4>
+              <div className="flex items-baseline justify-between mb-1">
+                <h4 className="text-base font-semibold text-foreground">
+                  Show Up Tomorrow
+                </h4>
+                <span className="text-lg font-bold text-foreground">$500<span className="text-xs font-normal text-muted-foreground">/mo</span></span>
+              </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                 Organic SEO takes time. While we're building your long-term rankings,
                 paid ads put you at the top of page one <em>right now</em>. Think of it
@@ -174,7 +177,7 @@ export default function PathToPageOne({ result }: Props) {
               </p>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-                <span>Immediate visibility · Bridge strategy while organic grows</span>
+                <span>Immediate visibility · Bridge strategy while organic grows · Ad spend separate</span>
               </div>
             </div>
           </div>
