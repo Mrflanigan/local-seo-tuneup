@@ -79,18 +79,19 @@ export default function Index() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <img src={heroDenali} alt="Summit of Denali, highest peak in North America" width={1920} height={1080} className="absolute inset-0 w-full h-full object-cover" />
 
-        {/* ── The G — behind the gradient overlay ── */}
-        <div className="absolute inset-0 pointer-events-none select-none overflow-hidden mix-blend-soft-light" aria-hidden="true">
+        {/* ── The G — carved into the mountain ── */}
+        <div className="absolute inset-0 pointer-events-none select-none overflow-hidden" aria-hidden="true" style={{ zIndex: 1 }}>
           <span
             className="absolute font-bold leading-none"
             style={{
               fontSize: "clamp(32rem, 70vw, 65rem)",
-              color: "hsl(35 25% 55% / 0.25)",
+              color: "hsl(35 20% 45% / 0.14)",
               bottom: "-8%",
               left: "-14%",
               fontFamily: "'Georgia', 'Times New Roman', serif",
               letterSpacing: "-0.05em",
               fontWeight: 800,
+              mixBlendMode: "overlay",
             }}
           >
             G
