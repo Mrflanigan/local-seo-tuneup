@@ -19,6 +19,8 @@ export default function Report() {
   const [email, setEmail] = useState("");
   const [wantsGameplan, setWantsGameplan] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [snapshotSaved, setSnapshotSaved] = useState<"before" | "after" | null>(null);
+  const [savingSnapshot, setSavingSnapshot] = useState(false);
 
   const state = location.state as {
     result: ScoringResult;
