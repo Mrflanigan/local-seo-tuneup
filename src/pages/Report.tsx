@@ -4,6 +4,7 @@ import type { ScoringResult } from "@/lib/scoring/types";
 import { saveLead } from "@/lib/api/checkup";
 import ScoreRing from "@/components/ScoreRing";
 import WhatGoogleSees from "@/components/WhatGoogleSees";
+import YearAgoProjection from "@/components/YearAgoProjection";
 import CTABanner from "@/components/CTABanner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
