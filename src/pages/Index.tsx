@@ -85,7 +85,7 @@ export default function Index() {
             className="absolute font-bold leading-none"
             style={{
               fontSize: "clamp(34rem, 75vw, 70rem)",
-              color: "hsl(220 15% 12% / 0.6)",
+              color: "hsl(220 20% 5% / 0.7)",
               bottom: "-6%",
               left: "-12%",
               fontFamily: "'Georgia', 'Times New Roman', serif",
