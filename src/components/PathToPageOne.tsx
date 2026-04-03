@@ -1,4 +1,4 @@
-import { Rocket, Wrench, Shield, TrendingUp, Zap, CheckCircle2 } from "lucide-react";
+import { Rocket, Wrench, Shield, TrendingUp, Zap, CheckCircle2, Flame, Crown } from "lucide-react";
 import type { ScoringResult } from "@/lib/scoring/types";
 
 interface Props {
