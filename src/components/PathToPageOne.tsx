@@ -217,9 +217,12 @@ export default function PathToPageOne({ result }: Props) {
               <Rocket className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
-              <h4 className="text-base font-semibold text-foreground mb-1">
-                We Handle Everything
-              </h4>
+              <div className="flex items-baseline justify-between mb-1">
+                <h4 className="text-base font-semibold text-foreground">
+                  We Handle Everything
+                </h4>
+                <span className="text-lg font-bold text-foreground">$500<span className="text-xs font-normal text-muted-foreground">/mo</span></span>
+              </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                 You run your business. We run your online presence — full implementation,
                 content, competitor strategy, and reporting. You just see results.
