@@ -33,26 +33,38 @@ function buildTranslations(result: ScoringResult): TranslationItem[] {
 
 function getBuzzword(id: string): string | null {
   const map: Record<string, string> = {
-    "title-tag": "<title> Tag Optimization",
-    "meta-description": "Meta Description Tag",
-    "h1-tag": "<h1> Heading Hierarchy",
-    "nap-phone": "NAP Consistency (Phone)",
-    "nap-address": "NAP Consistency (Address)",
-    "city-in-content": "Geo-Targeted Content Signals",
-    "city-in-title": "Geo-Modified Title Tag",
-    "city-in-meta": "Geo-Modified Meta Description",
-    "https": "SSL/TLS Certificate (HTTPS)",
-    "viewport-meta": "Responsive Viewport Meta Tag",
-    "canonical-tag": "Canonical URL Declaration",
-    "robots-txt": "robots.txt Crawler Directives",
-    "structured-data": "JSON-LD Structured Data / Schema Markup",
-    "og-tags": "Open Graph Protocol Tags",
-    "image-alt": "Image Alt Attribute Accessibility",
+    // Local Presence
+    "phone": "NAP Consistency (Phone Number)",
+    "biz-name": "Business Name Visibility",
+    "nap": "NAP Data (Name, Address, Phone)",
+    "local-schema": "JSON-LD LocalBusiness Schema Markup",
+    "maps": "Google Maps Embed / Geolocation Signal",
+    "review-signals": "Review Schema & Social Proof Signals",
+    "local-keywords": "Geo-Targeted Keyword Placement",
+    // On-Page SEO
+    "title": "<title> Tag Optimization",
+    "meta-desc": "Meta Description Tag",
+    "headings": "<h1> Heading Hierarchy",
+    "keyword-usage": "Primary Keyword Density & Placement",
+    "url-slug": "SEO-Friendly URL Slug Structure",
+    "img-alts": "Image Alt Attribute Accessibility",
     "internal-links": "Internal Link Architecture",
-    "content-length": "Content Depth & Word Count",
-    "cta-presence": "Conversion-Focused CTA Elements",
-    "heading-structure": "Semantic Heading Hierarchy (H2/H3)",
-    "mobile-friendly": "Mobile-First Responsive Design",
+    // Technical SEO
+    "https": "SSL/TLS Certificate (HTTPS)",
+    "meta-robots": "robots Meta Directives",
+    "canonical": "Canonical URL Declaration",
+    "viewport": "Responsive Viewport Meta Tag",
+    "render-blocking": "Render-Blocking Resource Optimization",
+    "speed-proxies": "Page Weight & Third-Party Script Load",
+    // Content & UX
+    "word-count": "Content Depth & Word Count",
+    "content-structure": "Semantic Heading Hierarchy (H2/H3)",
+    "cta": "Conversion-Focused CTA Elements",
+    "contact-visible": "Contact Info Visibility",
+    // Extras
+    "extra-schema": "Advanced Structured Data (FAQ, Breadcrumb, Service)",
+    "no-spam": "Spam & Malicious Link Detection",
+    "trust-indicators": "Trust Signals (Testimonials & Social)",
   };
   return map[id] || null;
 }
