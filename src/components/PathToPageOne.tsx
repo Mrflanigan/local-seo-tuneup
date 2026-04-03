@@ -1,4 +1,4 @@
-import { Rocket, Wrench, Shield, TrendingUp, Zap, CheckCircle2 } from "lucide-react";
+import { Rocket, Wrench, Shield, TrendingUp, Zap, CheckCircle2, Flame, Crown } from "lucide-react";
 import type { ScoringResult } from "@/lib/scoring/types";
 
 interface Props {
@@ -150,7 +150,32 @@ export default function PathToPageOne({ result }: Props) {
           </div>
         </div>
 
-        {/* Tier 2: Stay Ahead */}
+        {/* Express Lane: Paid Ads Bridge */}
+        <div className="rounded-xl border border-primary/30 bg-primary/5 p-5 sm:p-6 hover:border-primary/50 transition-colors relative">
+          <div className="absolute -top-2.5 left-4 px-2.5 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-semibold flex items-center gap-1">
+            <Zap className="h-3 w-3" /> Express Lane
+          </div>
+          <div className="flex items-start gap-4 mt-1">
+            <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-primary/10 shrink-0">
+              <Flame className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h4 className="text-base font-semibold text-foreground mb-1">
+                Show Up Tomorrow
+              </h4>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                Organic SEO takes time. While we're building your long-term rankings,
+                paid ads put you at the top of page one <em>right now</em>. Think of it
+                as renting the penthouse while your house is being built.
+                Not a permanent cost — a bridge to get customers while the real work kicks in.
+              </p>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
+                <span>Immediate visibility · Bridge strategy while organic grows</span>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="rounded-xl border border-accent/20 bg-card p-5 sm:p-6 hover:border-accent/40 transition-colors relative">
           <div className="absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-accent text-accent-foreground text-xs font-semibold">
             Most Popular
@@ -193,6 +218,35 @@ export default function PathToPageOne({ result }: Props) {
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
                 <span>Full service · You focus on your business</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Tier 5: The $1,000 Burger — Premium Domination */}
+        <div className="rounded-xl border border-accent/40 bg-gradient-to-br from-accent/10 via-card to-primary/5 p-5 sm:p-6 hover:border-accent/60 transition-colors relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="flex items-start gap-4 relative">
+            <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-accent/20 shrink-0">
+              <Crown className="h-5 w-5 text-accent" />
+            </div>
+            <div className="flex-1">
+              <h4 className="text-base font-semibold text-foreground mb-1">
+                Total Market Domination
+              </h4>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                For businesses where second place isn't an option. Paid ads running
+                day one, full SEO overhaul, content strategy, competitor displacement
+                campaigns, reputation management, and a dedicated strategist.
+                This is the everything option — maximum spend, maximum results, fastest timeline.
+              </p>
+              <p className="text-xs text-muted-foreground leading-relaxed mb-3 italic">
+                Not everyone needs this. But if your competitors are spending big and you want
+                to outrun them — not just keep up — this is how.
+              </p>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
+                <span>All channels · Fastest results · Premium investment</span>
               </div>
             </div>
           </div>
