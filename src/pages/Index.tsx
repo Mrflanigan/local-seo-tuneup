@@ -79,23 +79,19 @@ export default function Index() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <img src={heroDenali} alt="Summit of Denali, highest peak in North America" width={1920} height={1080} className="absolute inset-0 w-full h-full object-cover" />
 
-        {/* ── The G — tucked into the left mountain mass ── */}
+        {/* ── The G — tucked into the lower-left mountain area ── */}
         <div
-          className="absolute inset-y-0 left-0 w-[46%] pointer-events-none select-none overflow-hidden"
-          style={{
-            zIndex: 1,
-            WebkitMaskImage: "linear-gradient(to right, hsl(0 0% 0%) 0%, hsl(0 0% 0%) 78%, transparent 100%)",
-            maskImage: "linear-gradient(to right, hsl(0 0% 0%) 0%, hsl(0 0% 0%) 78%, transparent 100%)",
-          }}
+          className="absolute left-0 bottom-0 top-[14%] w-[34%] pointer-events-none select-none overflow-hidden"
+          style={{ zIndex: 1 }}
           aria-hidden="true"
         >
           <span
             className="absolute font-bold leading-none"
             style={{
-              fontSize: "clamp(42rem, 78vw, 78rem)",
-              color: "hsl(220 20% 4% / 0.38)",
-              bottom: "-18%",
-              left: "-30%",
+              fontSize: "clamp(34rem, 62vw, 64rem)",
+              color: "hsl(220 18% 5% / 0.26)",
+              bottom: "-26%",
+              left: "-42%",
               fontFamily: "'Georgia', 'Times New Roman', serif",
               letterSpacing: "-0.06em",
               fontWeight: 800,
@@ -106,7 +102,7 @@ export default function Index() {
         </div>
 
         {/* Gradient overlay — sits above the G */}
-        <div className="absolute inset-0" style={{ zIndex: 2, background: "linear-gradient(to bottom, hsl(220 20% 7% / 0.68), hsl(220 20% 7% / 0.50), hsl(220 20% 7% / 0.93))" }} />
+        <div className="absolute inset-0" style={{ zIndex: 2, background: "linear-gradient(to bottom, hsl(220 20% 7% / 0.58), hsl(220 20% 7% / 0.38), hsl(220 20% 7% / 0.88))" }} />
 
         <div className="relative z-10 mx-auto max-w-3xl px-6 text-center pt-16">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-sm px-5 py-2 mb-8">
