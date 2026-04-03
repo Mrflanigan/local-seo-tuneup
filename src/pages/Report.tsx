@@ -145,6 +145,11 @@ export default function Report() {
           <CompetitorComparison result={result} url={url} city={city} />
         </div>
 
+        {/* Path to Page 1 — the magnetism */}
+        <div className="mt-8">
+          <PathToPageOne result={result} />
+        </div>
+
         {/* Soft email CTA */}
         {!submitted ? (
           <div className="rounded-xl border border-border bg-card p-5 sm:p-6 mt-8 text-center">
