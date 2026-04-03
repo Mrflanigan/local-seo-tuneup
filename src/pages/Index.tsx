@@ -67,7 +67,7 @@ export default function Index() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/60 backdrop-blur-xl border-b border-border/30">
         <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
           <span className="text-xl font-bold tracking-tight">
-            Local<span className="text-primary">Score</span>
+            SEO<span className="text-primary">RiseUp</span>
           </span>
           <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
             How it works
@@ -122,7 +122,7 @@ export default function Index() {
             Rise to the Top.
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground mb-10 max-w-xl mx-auto leading-relaxed">
-            We'll scan your site using our G‑Vision — checking the 30+ technical signals that determine whether you dominate local search or get buried beneath your competitors.
+            We'll scan your site using our G‑Vision™ — checking the 30+ technical signals that determine whether you dominate local search or get buried beneath your competitors.
           </p>
 
           <UrlInputForm onSubmit={handleSubmit} loading={loading} />
@@ -245,7 +245,7 @@ export default function Index() {
       {/* Footer */}
       <footer className="border-t border-border/40 py-10">
         <div className="mx-auto max-w-6xl px-6 text-center">
-          <p className="text-sm text-muted-foreground/60">© {new Date().getFullYear()} LocalScore. Rise to the top.</p>
+          <p className="text-sm text-muted-foreground/60">© {new Date().getFullYear()} SEO Rise Up. Rise to the top.</p>
         </div>
       </footer>
     </div>
