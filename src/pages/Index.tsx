@@ -79,13 +79,16 @@ export default function Index() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <img src={heroDenali} alt="Summit of Denali, highest peak in North America" width={1920} height={1080} className="absolute inset-0 w-full h-full object-cover" />
 
-        {/* ── The G — etched into rock, between photo and overlay ── */}
-        <div className="absolute inset-0 pointer-events-none select-none overflow-hidden" style={{ zIndex: 1 }} aria-hidden="true">
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 z-[1]" style={{ background: "linear-gradient(to bottom, hsl(220 20% 7% / 0.50), hsl(220 20% 7% / 0.30), hsl(220 20% 7% / 0.85))" }} />
+
+        {/* ── The G — etched into rock, behind overlay via mix-blend ── */}
+        <div className="absolute inset-0 pointer-events-none select-none overflow-hidden z-[2]" aria-hidden="true" style={{ mixBlendMode: "multiply" }}>
           <span
             className="absolute font-bold leading-none"
             style={{
               fontSize: "clamp(34rem, 75vw, 70rem)",
-              color: "hsl(38 40% 75% / 0.35)",
+              color: "hsl(220 15% 20% / 0.45)",
               bottom: "-6%",
               left: "-12%",
               fontFamily: "'Georgia', 'Times New Roman', serif",
@@ -96,9 +99,6 @@ export default function Index() {
             G
           </span>
         </div>
-
-        {/* Gradient overlay — lighter to let G show through */}
-        <div className="absolute inset-0" style={{ zIndex: 2, background: "linear-gradient(to bottom, hsl(220 20% 7% / 0.55), hsl(220 20% 7% / 0.35), hsl(220 20% 7% / 0.9))" }} />
 
         <div className="relative z-10 mx-auto max-w-3xl px-6 text-center pt-16">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-sm px-5 py-2 mb-8">
