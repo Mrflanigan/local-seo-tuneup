@@ -13,7 +13,7 @@ interface TranslationItem {
 
 function buildTranslations(result: ScoringResult): TranslationItem[] {
   const items: TranslationItem[] = [];
-  const ctx = result.siteContext;
+  
 
   for (const cat of result.categories) {
     for (const f of cat.findings) {
