@@ -165,7 +165,7 @@ export default function Index() {
           </div>
 
           <div className="grid sm:grid-cols-3 gap-6">
-            <StepCard step={1} icon={<Eye className="h-5 w-5 text-primary" />} title="We Crawl Your Site" description="Our scanner reads your HTML just like Googlebot — parsing meta tags, schema markup, heading hierarchy, alt attributes, and structured data." techTerms={["Googlebot crawl", "<meta> tags", "JSON-LD schema"]} />
+            <StepCard step={1} icon={<Eye className="h-5 w-5 text-primary" />} title="SEO Osmosis™ Absorbs Your Site" description="Our proprietary scanner reads your HTML just like Googlebot — parsing meta tags, schema markup, heading hierarchy, alt attributes, and structured data." techTerms={["Googlebot crawl", "<meta> tags", "JSON-LD schema"]} />
             <StepCard step={2} icon={<BarChart3 className="h-5 w-5 text-primary" />} title="We Score 30+ Signals" description="Every signal gets checked against local SEO best practices — from NAP consistency and LocalBusiness schema to SSL and viewport meta." techTerms={["NAP consistency", "SSL/TLS", "canonical URL"]} />
             <StepCard step={3} icon={<Target className="h-5 w-5 text-primary" />} title="You Get a Plan" description="A personalized report referencing your actual content, plus competitor comparison showing who's outranking you and why." techTerms={["Competitor gap analysis", "Priority fixes"]} />
           </div>
