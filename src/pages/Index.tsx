@@ -79,22 +79,27 @@ export default function Index() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <img src={heroDenali} alt="Summit of Denali, highest peak in North America" width={1920} height={1080} className="absolute inset-0 w-full h-full object-cover" />
 
-        {/* ── The G — tucked into the lower-left mountain area ── */}
+        {/* ── The G — buried into the lower-left mountain edge ── */}
         <div
-          className="absolute left-0 bottom-0 top-[14%] w-[34%] pointer-events-none select-none overflow-hidden"
-          style={{ zIndex: 1 }}
+          className="absolute left-0 bottom-0 top-[38%] w-[26%] pointer-events-none select-none overflow-hidden"
+          style={{
+            zIndex: 1,
+            WebkitMaskImage: "linear-gradient(to right, hsl(0 0% 0%) 0%, hsl(0 0% 0%) 62%, transparent 100%)",
+            maskImage: "linear-gradient(to right, hsl(0 0% 0%) 0%, hsl(0 0% 0%) 62%, transparent 100%)",
+          }}
           aria-hidden="true"
         >
           <span
             className="absolute font-bold leading-none"
             style={{
-              fontSize: "clamp(34rem, 62vw, 64rem)",
-              color: "hsl(220 18% 5% / 0.26)",
-              bottom: "-26%",
-              left: "-42%",
+              fontSize: "clamp(28rem, 46vw, 46rem)",
+              color: "hsl(220 18% 4% / 0.18)",
+              bottom: "-34%",
+              left: "-58%",
               fontFamily: "'Georgia', 'Times New Roman', serif",
               letterSpacing: "-0.06em",
               fontWeight: 800,
+              filter: "blur(0.5px)",
             }}
           >
             G
