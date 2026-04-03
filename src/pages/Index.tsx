@@ -78,24 +78,27 @@ export default function Index() {
       {/* ═══ HERO — Denali ═══ */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <img src={heroDenali} alt="Summit of Denali, highest peak in North America" width={1920} height={1080} className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background" />
 
-        {/* ── The G ── */}
-        <div className="absolute inset-0 flex items-end justify-center pointer-events-none select-none" aria-hidden="true">
+        {/* ── The G — etched into rock, between photo and overlay ── */}
+        <div className="absolute inset-0 pointer-events-none select-none overflow-hidden" style={{ zIndex: 1 }} aria-hidden="true">
           <span
-            className="font-bold leading-none"
+            className="absolute font-bold leading-none"
             style={{
-              fontSize: "clamp(28rem, 60vw, 55rem)",
-              color: "hsl(38 92% 55% / 0.18)",
-              textShadow: "0 0 80px hsl(38 92% 55% / 0.15), 0 0 160px hsl(38 92% 55% / 0.08)",
-              transform: "translateY(15%)",
+              fontSize: "clamp(34rem, 75vw, 70rem)",
+              color: "hsl(38 40% 75% / 0.35)",
+              bottom: "-6%",
+              left: "-12%",
               fontFamily: "'Georgia', 'Times New Roman', serif",
-              letterSpacing: "-0.04em",
+              letterSpacing: "-0.05em",
+              fontWeight: 800,
             }}
           >
             G
           </span>
         </div>
+
+        {/* Gradient overlay — lighter to let G show through */}
+        <div className="absolute inset-0" style={{ zIndex: 2, background: "linear-gradient(to bottom, hsl(220 20% 7% / 0.55), hsl(220 20% 7% / 0.35), hsl(220 20% 7% / 0.9))" }} />
 
         <div className="relative z-10 mx-auto max-w-3xl px-6 text-center pt-16">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-sm px-5 py-2 mb-8">
