@@ -85,7 +85,7 @@ export default function Index() {
             className="absolute font-bold leading-none"
             style={{
               fontSize: "clamp(34rem, 75vw, 70rem)",
-              color: "hsl(38 40% 75% / 0.35)",
+              color: "hsl(220 20% 5% / 0.7)",
               bottom: "-6%",
               left: "-12%",
               fontFamily: "'Georgia', 'Times New Roman', serif",
@@ -97,8 +97,8 @@ export default function Index() {
           </span>
         </div>
 
-        {/* Gradient overlay — lighter to let G show through */}
-        <div className="absolute inset-0" style={{ zIndex: 2, background: "linear-gradient(to bottom, hsl(220 20% 7% / 0.55), hsl(220 20% 7% / 0.35), hsl(220 20% 7% / 0.9))" }} />
+        {/* Gradient overlay — sits above the G */}
+        <div className="absolute inset-0" style={{ zIndex: 2, background: "linear-gradient(to bottom, hsl(220 20% 7% / 0.60), hsl(220 20% 7% / 0.45), hsl(220 20% 7% / 0.92))" }} />
 
         <div className="relative z-10 mx-auto max-w-3xl px-6 text-center pt-16">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-sm px-5 py-2 mb-8">
