@@ -10,17 +10,6 @@ interface Props {
   url?: string;
 }
 
-const TIERS = {
-  fix: { priceId: "price_1TIHQ62KBr5H993I4oAp6473", mode: "payment" as const },
-  express: { priceId: "price_1TIHQV2KBr5H993I3825oQhQ", mode: "subscription" as const },
-  stayAhead: { priceId: "price_1TIHQq2KBr5H993I7a0eigx9", mode: "subscription" as const },
-  handleIt: { priceId: "price_1TIHRV2KBr5H993IiWOsOkUn", mode: "subscription" as const },  // Note: reusing domination price temporarily
-  domination: { priceId: "price_1TIHRV2KBr5H993IiWOsOkUn", mode: "subscription" as const },
-};
-
-// Wait — "We Handle Everything" is $500/mo = same as the product I created. Let me use the correct one.
-// fix: $300 one-time, express: $500/mo, stayAhead: $200/mo, handleIt: $500/mo (price_1TIHRD2KBr5H993IoI0OwHUg), domination: $1000/mo
-
 const TIER_CONFIG = {
   fix: { priceId: "price_1TIHQ62KBr5H993I4oAp6473", mode: "payment" as const },
   express: { priceId: "price_1TIHQV2KBr5H993I3825oQhQ", mode: "subscription" as const },
