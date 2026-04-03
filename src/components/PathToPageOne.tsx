@@ -150,7 +150,32 @@ export default function PathToPageOne({ result }: Props) {
           </div>
         </div>
 
-        {/* Tier 2: Stay Ahead */}
+        {/* Express Lane: Paid Ads Bridge */}
+        <div className="rounded-xl border border-primary/30 bg-primary/5 p-5 sm:p-6 hover:border-primary/50 transition-colors relative">
+          <div className="absolute -top-2.5 left-4 px-2.5 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-semibold flex items-center gap-1">
+            <Zap className="h-3 w-3" /> Express Lane
+          </div>
+          <div className="flex items-start gap-4 mt-1">
+            <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-primary/10 shrink-0">
+              <Flame className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h4 className="text-base font-semibold text-foreground mb-1">
+                Show Up Tomorrow
+              </h4>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                Organic SEO takes time. While we're building your long-term rankings,
+                paid ads put you at the top of page one <em>right now</em>. Think of it
+                as renting the penthouse while your house is being built.
+                Not a permanent cost — a bridge to get customers while the real work kicks in.
+              </p>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
+                <span>Immediate visibility · Bridge strategy while organic grows</span>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="rounded-xl border border-accent/20 bg-card p-5 sm:p-6 hover:border-accent/40 transition-colors relative">
           <div className="absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-accent text-accent-foreground text-xs font-semibold">
             Most Popular
