@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import UrlInputForm from "@/components/UrlInputForm";
 import ScanningView from "@/components/ScanningView";
 import { runCheckup } from "@/lib/api/checkup";
