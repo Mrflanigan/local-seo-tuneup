@@ -78,18 +78,16 @@ export default function Index() {
       {/* ═══ HERO — Denali ═══ */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <img src={heroDenali} alt="Summit of Denali, highest peak in North America" width={1920} height={1080} className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background" />
 
-        {/* ── The G ── */}
-        <div className="absolute inset-0 pointer-events-none select-none overflow-hidden" aria-hidden="true">
+        {/* ── The G — behind the gradient overlay ── */}
+        <div className="absolute inset-0 pointer-events-none select-none overflow-hidden mix-blend-soft-light" aria-hidden="true">
           <span
             className="absolute font-bold leading-none"
             style={{
-              fontSize: "clamp(30rem, 65vw, 60rem)",
-              color: "hsl(30 20% 35% / 0.10)",
-              textShadow: "0 0 120px hsl(30 15% 20% / 0.08)",
-              bottom: "-5%",
-              left: "-12%",
+              fontSize: "clamp(32rem, 70vw, 65rem)",
+              color: "hsl(35 25% 55% / 0.25)",
+              bottom: "-8%",
+              left: "-14%",
               fontFamily: "'Georgia', 'Times New Roman', serif",
               letterSpacing: "-0.05em",
               fontWeight: 800,
@@ -98,6 +96,8 @@ export default function Index() {
             G
           </span>
         </div>
+
+        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background" />
 
         <div className="relative z-10 mx-auto max-w-3xl px-6 text-center pt-16">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-sm px-5 py-2 mb-8">
