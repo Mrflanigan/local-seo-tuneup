@@ -79,27 +79,30 @@ export default function Index() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <img src={heroDenali} alt="Summit of Denali, highest peak in North America" width={1920} height={1080} className="absolute inset-0 w-full h-full object-cover" />
 
-        {/* ── The G — blended into the photo, not floating over it ── */}
+        {/* ── The G — buried into the bottom-left terrain ── */}
         <div
-          className="absolute left-0 bottom-0 top-[34%] w-[28%] pointer-events-none select-none overflow-hidden"
+          className="absolute left-0 bottom-0 top-[56%] w-[22%] pointer-events-none select-none overflow-hidden"
           style={{
             zIndex: 1,
-            WebkitMaskImage: "linear-gradient(to right, hsl(0 0% 0%) 0%, hsl(0 0% 0%) 60%, transparent 100%)",
-            maskImage: "linear-gradient(to right, hsl(0 0% 0%) 0%, hsl(0 0% 0%) 60%, transparent 100%)",
+            WebkitMaskImage:
+              "linear-gradient(to right, hsl(0 0% 0%) 0%, hsl(0 0% 0%) 54%, transparent 100%), linear-gradient(to top, hsl(0 0% 0%) 0%, hsl(0 0% 0%) 62%, transparent 100%)",
+            maskImage:
+              "linear-gradient(to right, hsl(0 0% 0%) 0%, hsl(0 0% 0%) 54%, transparent 100%), linear-gradient(to top, hsl(0 0% 0%) 0%, hsl(0 0% 0%) 62%, transparent 100%)",
           }}
           aria-hidden="true"
         >
           <span
             className="absolute font-bold leading-none"
             style={{
-              fontSize: "clamp(30rem, 48vw, 50rem)",
-              color: "hsl(220 18% 6% / 0.34)",
-              bottom: "-28%",
-              left: "-60%",
+              fontSize: "clamp(24rem, 40vw, 42rem)",
+              color: "hsl(220 18% 5% / 0.2)",
+              bottom: "-36%",
+              left: "-66%",
               fontFamily: "'Georgia', 'Times New Roman', serif",
               letterSpacing: "-0.06em",
               fontWeight: 800,
               mixBlendMode: "multiply",
+              filter: "blur(1px)",
             }}
           >
             G
