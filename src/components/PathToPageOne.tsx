@@ -243,9 +243,12 @@ export default function PathToPageOne({ result }: Props) {
               <Crown className="h-5 w-5 text-accent" />
             </div>
             <div className="flex-1">
-              <h4 className="text-base font-semibold text-foreground mb-1">
-                Total Market Domination
-              </h4>
+              <div className="flex items-baseline justify-between mb-1">
+                <h4 className="text-base font-semibold text-foreground">
+                  Total Market Domination
+                </h4>
+                <span className="text-lg font-bold text-foreground">$1,000<span className="text-xs font-normal text-muted-foreground">/mo</span></span>
+              </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                 For businesses where second place isn't an option. Paid ads running
                 day one, full SEO overhaul, content strategy, competitor displacement
@@ -258,7 +261,7 @@ export default function PathToPageOne({ result }: Props) {
               </p>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
-                <span>All channels · Fastest results · Premium investment</span>
+                <span>All channels · Fastest results · Ad spend separate</span>
               </div>
             </div>
           </div>
