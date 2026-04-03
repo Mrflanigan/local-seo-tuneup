@@ -79,6 +79,23 @@ export default function Index() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <img src={heroDenali} alt="Summit of Denali, highest peak in North America" width={1920} height={1080} className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background" />
+
+        {/* ── The G ── */}
+        <div className="absolute inset-0 flex items-end justify-center pointer-events-none select-none" aria-hidden="true">
+          <span
+            className="font-bold leading-none text-transparent bg-clip-text"
+            style={{
+              fontSize: "clamp(28rem, 55vw, 50rem)",
+              backgroundImage: "linear-gradient(to top, hsl(38 92% 55% / 0.12), hsl(38 92% 55% / 0.04), transparent)",
+              transform: "translateY(18%)",
+              fontFamily: "'Georgia', 'Times New Roman', serif",
+              letterSpacing: "-0.04em",
+            }}
+          >
+            G
+          </span>
+        </div>
+
         <div className="relative z-10 mx-auto max-w-3xl px-6 text-center pt-16">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-sm px-5 py-2 mb-8">
             <div className="h-2 w-2 rounded-full bg-accent animate-pulse" />
