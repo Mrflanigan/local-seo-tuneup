@@ -122,7 +122,7 @@ export default function Index() {
             Rise to the Top.
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground mb-10 max-w-xl mx-auto leading-relaxed">
-            We look at your site like Google sees it — using our <Link to="/osmosis" className="text-primary font-semibold underline decoration-primary/30 underline-offset-2 hover:decoration-primary transition-colors">SEO Osmosis™</Link>.
+            We look at your site like Google sees it — using <Link to="/osmosis" className="text-primary font-semibold underline decoration-primary/30 underline-offset-2 hover:decoration-primary transition-colors whitespace-nowrap">SEO Osmosis™</Link>.
           </p>
 
           <UrlInputForm onSubmit={handleSubmit} loading={loading} />
