@@ -191,9 +191,12 @@ export default function PathToPageOne({ result }: Props) {
               <Shield className="h-5 w-5 text-accent" />
             </div>
             <div className="flex-1">
-              <h4 className="text-base font-semibold text-foreground mb-1">
-                Stay Ahead
-              </h4>
+              <div className="flex items-baseline justify-between mb-1">
+                <h4 className="text-base font-semibold text-foreground">
+                  Stay Ahead
+                </h4>
+                <span className="text-lg font-bold text-foreground">$200<span className="text-xs font-normal text-muted-foreground">/mo</span></span>
+              </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                 Rankings shift. Competitors adjust. Google changes the rules.
                 We fix what's broken <em>and</em> keep watching — monthly scans,
@@ -201,7 +204,7 @@ export default function PathToPageOne({ result }: Props) {
               </p>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
-                <span>Fix + ongoing monitoring · Rankings protection</span>
+                <span>Fix included + ongoing monitoring · Rankings protection</span>
               </div>
             </div>
           </div>
