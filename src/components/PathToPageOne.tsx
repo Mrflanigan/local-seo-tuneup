@@ -135,9 +135,12 @@ export default function PathToPageOne({ result }: Props) {
               <Wrench className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
-              <h4 className="text-base font-semibold text-foreground mb-1">
-                Fix What's Broken
-              </h4>
+              <div className="flex items-baseline justify-between mb-1">
+                <h4 className="text-base font-semibold text-foreground">
+                  Fix What's Broken
+                </h4>
+                <span className="text-lg font-bold text-foreground">$300</span>
+              </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                 A one-time fix scoped to exactly what your scan found — {fixCount} issue{fixCount !== 1 ? "s" : ""}.
                 No mystery line items, no filler. You pay for what's actually wrong and nothing else.
