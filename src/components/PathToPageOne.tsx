@@ -135,9 +135,12 @@ export default function PathToPageOne({ result }: Props) {
               <Wrench className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
-              <h4 className="text-base font-semibold text-foreground mb-1">
-                Fix What's Broken
-              </h4>
+              <div className="flex items-baseline justify-between mb-1">
+                <h4 className="text-base font-semibold text-foreground">
+                  Fix What's Broken
+                </h4>
+                <span className="text-lg font-bold text-foreground">$300</span>
+              </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                 A one-time fix scoped to exactly what your scan found — {fixCount} issue{fixCount !== 1 ? "s" : ""}.
                 No mystery line items, no filler. You pay for what's actually wrong and nothing else.
@@ -160,9 +163,12 @@ export default function PathToPageOne({ result }: Props) {
               <Flame className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
-              <h4 className="text-base font-semibold text-foreground mb-1">
-                Show Up Tomorrow
-              </h4>
+              <div className="flex items-baseline justify-between mb-1">
+                <h4 className="text-base font-semibold text-foreground">
+                  Show Up Tomorrow
+                </h4>
+                <span className="text-lg font-bold text-foreground">$500<span className="text-xs font-normal text-muted-foreground">/mo</span></span>
+              </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                 Organic SEO takes time. While we're building your long-term rankings,
                 paid ads put you at the top of page one <em>right now</em>. Think of it
@@ -171,7 +177,7 @@ export default function PathToPageOne({ result }: Props) {
               </p>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-                <span>Immediate visibility · Bridge strategy while organic grows</span>
+                <span>Immediate visibility · Bridge strategy while organic grows · Ad spend separate</span>
               </div>
             </div>
           </div>
@@ -185,9 +191,12 @@ export default function PathToPageOne({ result }: Props) {
               <Shield className="h-5 w-5 text-accent" />
             </div>
             <div className="flex-1">
-              <h4 className="text-base font-semibold text-foreground mb-1">
-                Stay Ahead
-              </h4>
+              <div className="flex items-baseline justify-between mb-1">
+                <h4 className="text-base font-semibold text-foreground">
+                  Stay Ahead
+                </h4>
+                <span className="text-lg font-bold text-foreground">$200<span className="text-xs font-normal text-muted-foreground">/mo</span></span>
+              </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                 Rankings shift. Competitors adjust. Google changes the rules.
                 We fix what's broken <em>and</em> keep watching — monthly scans,
@@ -195,7 +204,7 @@ export default function PathToPageOne({ result }: Props) {
               </p>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
-                <span>Fix + ongoing monitoring · Rankings protection</span>
+                <span>Fix included + ongoing monitoring · Rankings protection</span>
               </div>
             </div>
           </div>
@@ -208,9 +217,12 @@ export default function PathToPageOne({ result }: Props) {
               <Rocket className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
-              <h4 className="text-base font-semibold text-foreground mb-1">
-                We Handle Everything
-              </h4>
+              <div className="flex items-baseline justify-between mb-1">
+                <h4 className="text-base font-semibold text-foreground">
+                  We Handle Everything
+                </h4>
+                <span className="text-lg font-bold text-foreground">$500<span className="text-xs font-normal text-muted-foreground">/mo</span></span>
+              </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                 You run your business. We run your online presence — full implementation,
                 content, competitor strategy, and reporting. You just see results.
@@ -231,9 +243,12 @@ export default function PathToPageOne({ result }: Props) {
               <Crown className="h-5 w-5 text-accent" />
             </div>
             <div className="flex-1">
-              <h4 className="text-base font-semibold text-foreground mb-1">
-                Total Market Domination
-              </h4>
+              <div className="flex items-baseline justify-between mb-1">
+                <h4 className="text-base font-semibold text-foreground">
+                  Total Market Domination
+                </h4>
+                <span className="text-lg font-bold text-foreground">$1,000<span className="text-xs font-normal text-muted-foreground">/mo</span></span>
+              </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                 For businesses where second place isn't an option. Paid ads running
                 day one, full SEO overhaul, content strategy, competitor displacement
@@ -246,7 +261,7 @@ export default function PathToPageOne({ result }: Props) {
               </p>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
-                <span>All channels · Fastest results · Premium investment</span>
+                <span>All channels · Fastest results · Ad spend separate</span>
               </div>
             </div>
           </div>
