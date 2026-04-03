@@ -84,7 +84,39 @@ export default function Report() {
           </a>
         </div>
 
-        {/* Score + Opener */}
+        {/* Snapshot Save Bar */}
+        <div className="flex items-center justify-center gap-3 mb-8 p-3 rounded-lg border border-border bg-card">
+          <Camera className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">Save this scan as:</span>
+          <Button
+            size="sm"
+            variant={snapshotSaved === "before" ? "default" : "outline"}
+            disabled={savingSnapshot || snapshotSaved !== null}
+            onClick={() => handleSnapshotSave("before")}
+            className="text-xs"
+          >
+            📸 Before
+          </Button>
+          <Button
+            size="sm"
+            variant={snapshotSaved === "after" ? "default" : "outline"}
+            disabled={savingSnapshot || snapshotSaved !== null}
+            onClick={() => handleSnapshotSave("after")}
+            className="text-xs"
+          >
+            ✅ After
+          </Button>
+          {snapshotSaved && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => navigate(`/case-study?url=${encodeURIComponent(url)}`)}
+              className="text-xs text-primary"
+            >
+              View Progression →
+            </Button>
+          )}
+        </div>
         <div className="text-center mb-8">
           <ScoreRing score={result.overallScore} grade={result.letterGrade} />
           <h2 className="text-xl sm:text-2xl font-bold text-foreground mt-4 mb-2">
