@@ -245,7 +245,7 @@ export default function Index() {
       {/* Footer */}
       <footer className="border-t border-border/40 py-10">
         <div className="mx-auto max-w-6xl px-6 text-center">
-          <p className="text-sm text-muted-foreground/60">© {new Date().getFullYear()} LocalScore. Rise to the top.</p>
+          <p className="text-sm text-muted-foreground/60">© {new Date().getFullYear()} SEO Rise Up. Rise to the top.</p>
         </div>
       </footer>
     </div>
