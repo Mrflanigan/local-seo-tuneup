@@ -49,3 +49,43 @@ export async function saveLead(params: {
     throw new Error(data?.error || "Failed to save lead");
   }
 }
+
+/**
+ * Competitor scan result shape
+ */
+export interface CompetitorResult {
+  url: string;
+  title: string;
+  businessName: string | null;
+  overallScore: number;
+  letterGrade: string;
+  categories: { id: string; label: string; score: number; maxScore: number }[];
+  strengths: string[];
+}
+
+/**
+ * Scans top competitors for the same service + city.
+ */
+export async function scanCompetitors(params: {
+  service: string;
+  city?: string;
+  userUrl: string;
+}): Promise<{ competitors: CompetitorResult[]; query: string }> {
+  const { data, error } = await supabase.functions.invoke("competitor-scan", {
+    body: {
+      service: params.service,
+      city: params.city,
+      userUrl: params.userUrl,
+    },
+  });
+
+  if (error) {
+    throw new Error(`Competitor scan failed: ${error.message}`);
+  }
+
+  if (!data?.success) {
+    throw new Error(data?.error || "Competitor scan returned an unsuccessful response");
+  }
+
+  return data.data;
+}
