@@ -7,6 +7,7 @@ import WhatGoogleSees from "@/components/WhatGoogleSees";
 import YearAgoProjection from "@/components/YearAgoProjection";
 import CompetitorComparison from "@/components/CompetitorComparison";
 import CTABanner from "@/components/CTABanner";
+import PathToPageOne from "@/components/PathToPageOne";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -142,6 +143,11 @@ export default function Report() {
         {/* Competitor Comparison */}
         <div className="mt-8">
           <CompetitorComparison result={result} url={url} city={city} />
+        </div>
+
+        {/* Path to Page 1 — the magnetism */}
+        <div className="mt-8">
+          <PathToPageOne result={result} />
         </div>
 
         {/* Soft email CTA */}
