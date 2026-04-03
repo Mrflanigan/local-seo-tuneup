@@ -3,8 +3,8 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { getSnapshots, type SnapshotRecord } from "@/lib/api/checkup";
 import ScoreRing from "@/components/ScoreRing";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, TrendingUp, Calendar, ArrowRight } from "lucide-react";
-import type { ScoringResult, CategoryResult } from "@/lib/scoring/types";
+import { ArrowLeft, TrendingUp, Calendar, ArrowRight, Wrench, CheckCircle2, XCircle, AlertTriangle, Code2, Shield, FileCode, Gauge } from "lucide-react";
+import type { ScoringResult, CategoryResult, Finding } from "@/lib/scoring/types";
 
 function CategoryBar({ label, score, maxScore, color }: { label: string; score: number; maxScore: number; color: string }) {
   const pct = maxScore > 0 ? (score / maxScore) * 100 : 0;
