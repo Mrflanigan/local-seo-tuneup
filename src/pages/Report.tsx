@@ -147,7 +147,7 @@ export default function Report() {
 
         {/* Path to Page 1 — the magnetism */}
         <div className="mt-8">
-          <PathToPageOne result={result} />
+          <PathToPageOne result={result} url={url} />
         </div>
 
         {/* Soft email CTA */}

@@ -1,9 +1,22 @@
+import { useState } from "react";
 import { Rocket, Wrench, Shield, TrendingUp, Zap, CheckCircle2, Flame, Crown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import type { ScoringResult } from "@/lib/scoring/types";
 
 interface Props {
   result: ScoringResult;
+  url?: string;
 }
+
+const TIER_CONFIG = {
+  fix: { priceId: "price_1TIHQ62KBr5H993I4oAp6473", mode: "payment" as const },
+  express: { priceId: "price_1TIHQV2KBr5H993I3825oQhQ", mode: "subscription" as const },
+  stayAhead: { priceId: "price_1TIHQq2KBr5H993I7a0eigx9", mode: "subscription" as const },
+  handleIt: { priceId: "price_1TIHRD2KBr5H993IoI0OwHUg", mode: "subscription" as const },
+  domination: { priceId: "price_1TIHRV2KBr5H993IiWOsOkUn", mode: "subscription" as const },
+};
 
 function getFixCount(result: ScoringResult): number {
   return result.categories.reduce(
@@ -34,12 +47,31 @@ function getTopFixes(result: ScoringResult, count = 3): string[] {
     .map((f) => f.label);
 }
 
-export default function PathToPageOne({ result }: Props) {
+export default function PathToPageOne({ result, url }: Props) {
+  const [loadingTier, setLoadingTier] = useState<string | null>(null);
   const fixCount = getFixCount(result);
   const projected = getProjectedScore(result);
   const topFixes = getTopFixes(result);
   const scoreDelta = projected - result.overallScore;
-  const name = result.siteContext.businessName;
+
+  const handleCheckout = async (tierKey: keyof typeof TIER_CONFIG) => {
+    setLoadingTier(tierKey);
+    try {
+      const tier = TIER_CONFIG[tierKey];
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { priceId: tier.priceId, mode: tier.mode, businessUrl: url },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (err) {
+      console.error("Checkout error:", err);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setLoadingTier(null);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -145,9 +177,19 @@ export default function PathToPageOne({ result }: Props) {
                 A one-time fix scoped to exactly what your scan found — {fixCount} issue{fixCount !== 1 ? "s" : ""}.
                 No mystery line items, no filler. You pay for what's actually wrong and nothing else.
               </p>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-                <span>One-time · Scoped to your actual results</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
+                  <span>One-time · Scoped to your actual results</span>
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => handleCheckout("fix")}
+                  disabled={loadingTier !== null}
+                  className="shrink-0"
+                >
+                  {loadingTier === "fix" ? "Loading…" : "Get Started"}
+                </Button>
               </div>
             </div>
           </div>
@@ -175,13 +217,25 @@ export default function PathToPageOne({ result }: Props) {
                 as renting the penthouse while your house is being built.
                 Not a permanent cost — a bridge to get customers while the real work kicks in.
               </p>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-                <span>Immediate visibility · Bridge strategy while organic grows · Ad spend separate</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
+                  <span>Immediate visibility · Ad spend separate</span>
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => handleCheckout("express")}
+                  disabled={loadingTier !== null}
+                  className="shrink-0"
+                >
+                  {loadingTier === "express" ? "Loading…" : "Get Started"}
+                </Button>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Stay Ahead */}
         <div className="rounded-xl border border-accent/20 bg-card p-5 sm:p-6 hover:border-accent/40 transition-colors relative">
           <div className="absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-accent text-accent-foreground text-xs font-semibold">
             Most Popular
@@ -202,15 +256,25 @@ export default function PathToPageOne({ result }: Props) {
                 We fix what's broken <em>and</em> keep watching — monthly scans,
                 competitor tracking, and adjustments so you don't slip.
               </p>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
-                <span>Fix included + ongoing monitoring · Rankings protection</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
+                  <span>Fix included + ongoing monitoring</span>
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => handleCheckout("stayAhead")}
+                  disabled={loadingTier !== null}
+                  className="shrink-0"
+                >
+                  {loadingTier === "stayAhead" ? "Loading…" : "Get Started"}
+                </Button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Tier 3: We Handle It */}
+        {/* We Handle Everything */}
         <div className="rounded-xl border border-border bg-card p-5 sm:p-6 hover:border-primary/30 transition-colors">
           <div className="flex items-start gap-4">
             <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-primary/10 shrink-0">
@@ -227,15 +291,25 @@ export default function PathToPageOne({ result }: Props) {
                 You run your business. We run your online presence — full implementation,
                 content, competitor strategy, and reporting. You just see results.
               </p>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-                <span>Full service · You focus on your business</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
+                  <span>Full service · You focus on your business</span>
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => handleCheckout("handleIt")}
+                  disabled={loadingTier !== null}
+                  className="shrink-0"
+                >
+                  {loadingTier === "handleIt" ? "Loading…" : "Get Started"}
+                </Button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Tier 5: The $1,000 Burger — Premium Domination */}
+        {/* Total Market Domination */}
         <div className="rounded-xl border border-accent/40 bg-gradient-to-br from-accent/10 via-card to-primary/5 p-5 sm:p-6 hover:border-accent/60 transition-colors relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="flex items-start gap-4 relative">
@@ -259,9 +333,19 @@ export default function PathToPageOne({ result }: Props) {
                 Not everyone needs this. But if your competitors are spending big and you want
                 to outrun them — not just keep up — this is how.
               </p>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
-                <span>All channels · Fastest results · Ad spend separate</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
+                  <span>All channels · Fastest results · Ad spend separate</span>
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => handleCheckout("domination")}
+                  disabled={loadingTier !== null}
+                  className="shrink-0"
+                >
+                  {loadingTier === "domination" ? "Loading…" : "Get Started"}
+                </Button>
               </div>
             </div>
           </div>
