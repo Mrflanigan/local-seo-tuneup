@@ -79,18 +79,30 @@ export default function Index() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <img src={heroDenali} alt="Summit of Denali, highest peak in North America" width={1920} height={1080} className="absolute inset-0 w-full h-full object-cover" />
 
-        {/* ── The G — etched into rock, between photo and overlay ── */}
-        <div className="absolute inset-0 pointer-events-none select-none overflow-hidden" style={{ zIndex: 1 }} aria-hidden="true">
+        {/* ── The G — buried into the bottom-left terrain ── */}
+        <div
+          className="absolute left-0 bottom-0 top-[56%] w-[22%] pointer-events-none select-none overflow-hidden"
+          style={{
+            zIndex: 1,
+            WebkitMaskImage:
+              "linear-gradient(to right, hsl(0 0% 0%) 0%, hsl(0 0% 0%) 54%, transparent 100%), linear-gradient(to top, hsl(0 0% 0%) 0%, hsl(0 0% 0%) 62%, transparent 100%)",
+            maskImage:
+              "linear-gradient(to right, hsl(0 0% 0%) 0%, hsl(0 0% 0%) 54%, transparent 100%), linear-gradient(to top, hsl(0 0% 0%) 0%, hsl(0 0% 0%) 62%, transparent 100%)",
+          }}
+          aria-hidden="true"
+        >
           <span
             className="absolute font-bold leading-none"
             style={{
-              fontSize: "clamp(34rem, 75vw, 70rem)",
-              color: "hsl(220 20% 5% / 0.7)",
-              bottom: "-6%",
-              left: "-12%",
+              fontSize: "clamp(24rem, 40vw, 42rem)",
+              color: "hsl(220 18% 5% / 0.2)",
+              bottom: "-36%",
+              left: "-66%",
               fontFamily: "'Georgia', 'Times New Roman', serif",
-              letterSpacing: "-0.05em",
+              letterSpacing: "-0.06em",
               fontWeight: 800,
+              mixBlendMode: "multiply",
+              filter: "blur(1px)",
             }}
           >
             G
@@ -98,7 +110,7 @@ export default function Index() {
         </div>
 
         {/* Gradient overlay — sits above the G */}
-        <div className="absolute inset-0" style={{ zIndex: 2, background: "linear-gradient(to bottom, hsl(220 20% 7% / 0.60), hsl(220 20% 7% / 0.45), hsl(220 20% 7% / 0.92))" }} />
+        <div className="absolute inset-0" style={{ zIndex: 2, background: "linear-gradient(to bottom, hsl(220 20% 7% / 0.58), hsl(220 20% 7% / 0.38), hsl(220 20% 7% / 0.88))" }} />
 
         <div className="relative z-10 mx-auto max-w-3xl px-6 text-center pt-16">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-sm px-5 py-2 mb-8">
