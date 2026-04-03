@@ -32,6 +32,27 @@ export default function Report() {
   const { result, url, city } = state;
   const name = result.siteContext.businessName;
 
+  const handleSnapshotSave = async (label: "before" | "after") => {
+    setSavingSnapshot(true);
+    try {
+      await saveSnapshot({
+        url,
+        city,
+        label,
+        overallScore: result.overallScore,
+        letterGrade: result.letterGrade,
+        report: result,
+      });
+      setSnapshotSaved(label);
+      toast.success(`${label === "before" ? "Before" : "After"} snapshot saved!`);
+    } catch (err) {
+      console.error("Failed to save snapshot:", err);
+      toast.error("Failed to save snapshot");
+    } finally {
+      setSavingSnapshot(false);
+    }
+  };
+
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.includes("@")) return;
