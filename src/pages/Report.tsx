@@ -77,6 +77,11 @@ export default function Report() {
         {/* Full narrative report — no gate */}
         <WhatGoogleSees result={result} />
 
+        {/* Personalized impact projection */}
+        <div className="mt-8">
+          <YearAgoProjection result={result} city={city} />
+        </div>
+
         {/* Soft email CTA */}
         {!submitted ? (
           <div className="rounded-xl border border-border bg-card p-5 sm:p-6 mt-8 text-center">
