@@ -1,60 +1,58 @@
 
+# LocalScore Launch Plan
 
-# Updated Plan: Personalized Report Summaries
+## Brand Positioning
+**Tagline**: "Your website looks great. But can Google read it?"
+**Value prop**: The only local SEO audit tool that shows you exactly what Google sees in your code — personalized to your business, not generic advice.
 
-## What's Changing
+## Pre-Launch Checklist
 
-The scoring service and report components will generate **customized, site-specific summaries** that reference actual content found on the scraped page -- business name, services mentioned, location references, specific page elements -- so the report feels like a human reviewed their site, not a generic checklist.
+### 1. Our Own Site Scores 100
+- [x] index.html fully optimized (meta tags, OG, canonical, JSON-LD)
+- [x] LocalBusiness + FAQPage + BreadcrumbList + SoftwareApplication schema
+- [x] Premium landing page with How It Works, FAQ, social proof
+- [ ] Generate OG image (1200×630) for social sharing
+- [ ] Add favicon / apple-touch-icon
+- [ ] Verify our own scanner gives us 100
 
-## How It Works
+### 2. Free Audits for Credibility (Week 1-2)
+- Audit 10-20 real local businesses (mix of industries)
+- Reach out: "We're launching a local SEO tool and want to feature your business in our case studies."
+- Capture before scores
+- Document findings in a shareable format
+- If any allow fixes: document the before/after score jump
 
-### 1. Extract site-specific details during scoring
+### 3. Case Studies (Week 2-3)
+- Build a `/case-studies` page
+- Format: Business name, industry, city, before score → after score
+- Include specific findings: "Missing LocalBusiness schema, no canonical tag, 3 images without alt text"
+- Show what was fixed and the projected impact
 
-Add an extraction step in `scoringService.ts` that pulls out:
-- **Business name** (from title tag, og:site_name, or H1)
-- **Services/keywords mentioned** (e.g., "kitchen remodeling," "emergency plumbing")
-- **Location references** (city names, addresses found in content)
-- **Specific page elements** (e.g., "your 'Request a Quote' button," "your Google Reviews badge")
+### 4. Content for Our Own SEO (Week 1-4)
+Blog posts to build authority:
+- "What Are Meta Tags and Why Your Local Business Needs Them"
+- "JSON-LD Schema Markup Explained for Small Business Owners"
+- "The 5 Technical SEO Fixes Every Local Business Is Missing"
+- "How Google Decides Who Ranks #1 in Local Search"
+- "NAP Consistency: The Foundation of Local SEO"
 
-Store these in a new `siteContext` object returned alongside scores.
+### 5. Pricing Strategy
+**Free tier**: Full audit + score + competitor comparison (the lead magnet)
+**Gameplan call** ($0 intro / $97 later): 15-min walkthrough + prioritized fix list
+**Implementation retainer**:
+  - Starter: $497/mo (basic fixes, monthly audit)
+  - Growth: $997/mo (full optimization, content, local citations)
+  - Premium: $1,997/mo (everything + GBP management, review strategy)
 
-### 2. Generate personalized strength descriptions
+### 6. Launch Sequence
+1. Soft launch to 20 businesses → collect feedback + testimonials
+2. Post case studies + before/after scores
+3. Social launch: share anonymized competitor comparisons
+4. Paid ads targeting: "[industry] SEO audit" keywords
+5. Partner with web designers / agencies as white-label tool
 
-Instead of generic: "Has a meta description"
-Write dynamic: "Your meta description -- 'Smith Plumbing serves the greater Austin area with 24/7 emergency service' -- is well-written and includes your location."
-
-Instead of: "Phone number detected"
-Write: "Your phone number (512-555-1234) is visible on the page, making it easy for local customers to call."
-
-### 3. Implementation in scoring module
-
-Each category scorer will return `personalizedStrengths` and `personalizedIssues` strings that interpolate extracted site data:
-
-```text
-types.ts additions:
-  siteContext: {
-    businessName: string | null
-    services: string[]
-    locations: string[]
-    phone: string | null
-    email: string | null
-  }
-
-  Each finding gets:
-    generic: string        -- fallback label
-    personalized: string   -- site-specific version using siteContext
-```
-
-### 4. Report components use personalized text
-
-`SectionCard` and `ReportTeaser` will display the `personalized` string when available, falling back to `generic`. The teaser especially benefits -- showing a personalized compliment builds trust before the email gate.
-
-### 5. Files affected
-
-- `src/lib/scoring/types.ts` -- add `SiteContext` type, `personalized` field on findings
-- `src/lib/scoring/scoringService.ts` -- add extraction logic + personalized string generation per check
-- `src/components/SectionCard.tsx` -- render personalized text
-- `src/components/ReportTeaser.tsx` -- show personalized summary paragraph
-
-This keeps all personalization logic inside the scoring module so it's easy to iterate on the templates.
-
+## Technical Architecture Notes
+- Firecrawl scrape → client-side scoring → personalized report
+- 5 categories, 30+ signals, 100-point scale
+- Competitor scan via edge function
+- Email capture + lead storage in database
