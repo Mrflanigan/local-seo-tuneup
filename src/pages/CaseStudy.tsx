@@ -38,7 +38,7 @@ function SnapshotCard({ snapshot, side }: { snapshot: SnapshotRecord; side: "bef
       </div>
 
       <div className="flex justify-center">
-        <ScoreRing score={snapshot.overall_score} grade={snapshot.letter_grade} />
+        <ScoreRing score={snapshot.overall_score} grade={snapshot.letter_grade as "A" | "B" | "C" | "D" | "F"} />
       </div>
 
       <div className="space-y-3">

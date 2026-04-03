@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import type { ScoringResult } from "@/lib/scoring/types";
 import { saveLead, saveSnapshot } from "@/lib/api/checkup";
@@ -10,7 +10,7 @@ import CTABanner from "@/components/CTABanner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowLeft, ExternalLink, Send, Camera, Check } from "lucide-react";
+import { ArrowLeft, ExternalLink, Send, Camera } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Report() {
