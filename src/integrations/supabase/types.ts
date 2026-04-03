@@ -44,6 +44,42 @@ export type Database = {
         }
         Relationships: []
       }
+      scan_snapshots: {
+        Row: {
+          city: string | null
+          created_at: string
+          id: string
+          label: string
+          letter_grade: string
+          notes: string | null
+          overall_score: number
+          report_json: Json
+          url: string
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string
+          id?: string
+          label?: string
+          letter_grade: string
+          notes?: string | null
+          overall_score: number
+          report_json: Json
+          url: string
+        }
+        Update: {
+          city?: string | null
+          created_at?: string
+          id?: string
+          label?: string
+          letter_grade?: string
+          notes?: string | null
+          overall_score?: number
+          report_json?: Json
+          url?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
