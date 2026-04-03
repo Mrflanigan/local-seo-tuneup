@@ -122,7 +122,7 @@ export default function Index() {
             Rise to the Top.
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground mb-10 max-w-xl mx-auto leading-relaxed">
-            We'll scan your site using our G‑Vision — checking the 30+ technical signals that determine whether you dominate local search or get buried beneath your competitors.
+            We'll scan your site using our G‑Vision™ — checking the 30+ technical signals that determine whether you dominate local search or get buried beneath your competitors.
           </p>
 
           <UrlInputForm onSubmit={handleSubmit} loading={loading} />
