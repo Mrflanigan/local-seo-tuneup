@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import type { ScoringResult } from "@/lib/scoring/types";
-import { saveLead } from "@/lib/api/checkup";
+import { saveLead, saveSnapshot } from "@/lib/api/checkup";
 import ScoreRing from "@/components/ScoreRing";
 import WhatGoogleSees from "@/components/WhatGoogleSees";
 import YearAgoProjection from "@/components/YearAgoProjection";
@@ -10,7 +10,7 @@ import CTABanner from "@/components/CTABanner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowLeft, ExternalLink, Send } from "lucide-react";
+import { ArrowLeft, ExternalLink, Send, Camera } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Report() {
@@ -19,6 +19,8 @@ export default function Report() {
   const [email, setEmail] = useState("");
   const [wantsGameplan, setWantsGameplan] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [snapshotSaved, setSnapshotSaved] = useState<"before" | "after" | null>(null);
+  const [savingSnapshot, setSavingSnapshot] = useState(false);
 
   const state = location.state as {
     result: ScoringResult;
@@ -29,6 +31,27 @@ export default function Report() {
 
   const { result, url, city } = state;
   const name = result.siteContext.businessName;
+
+  const handleSnapshotSave = async (label: "before" | "after") => {
+    setSavingSnapshot(true);
+    try {
+      await saveSnapshot({
+        url,
+        city,
+        label,
+        overallScore: result.overallScore,
+        letterGrade: result.letterGrade,
+        report: result,
+      });
+      setSnapshotSaved(label);
+      toast.success(`${label === "before" ? "Before" : "After"} snapshot saved!`);
+    } catch (err) {
+      console.error("Failed to save snapshot:", err);
+      toast.error("Failed to save snapshot");
+    } finally {
+      setSavingSnapshot(false);
+    }
+  };
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +84,39 @@ export default function Report() {
           </a>
         </div>
 
-        {/* Score + Opener */}
+        {/* Snapshot Save Bar */}
+        <div className="flex items-center justify-center gap-3 mb-8 p-3 rounded-lg border border-border bg-card">
+          <Camera className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">Save this scan as:</span>
+          <Button
+            size="sm"
+            variant={snapshotSaved === "before" ? "default" : "outline"}
+            disabled={savingSnapshot || snapshotSaved !== null}
+            onClick={() => handleSnapshotSave("before")}
+            className="text-xs"
+          >
+            📸 Before
+          </Button>
+          <Button
+            size="sm"
+            variant={snapshotSaved === "after" ? "default" : "outline"}
+            disabled={savingSnapshot || snapshotSaved !== null}
+            onClick={() => handleSnapshotSave("after")}
+            className="text-xs"
+          >
+            ✅ After
+          </Button>
+          {snapshotSaved && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => navigate(`/case-study?url=${encodeURIComponent(url)}`)}
+              className="text-xs text-primary"
+            >
+              View Progression →
+            </Button>
+          )}
+        </div>
         <div className="text-center mb-8">
           <ScoreRing score={result.overallScore} grade={result.letterGrade} />
           <h2 className="text-xl sm:text-2xl font-bold text-foreground mt-4 mb-2">

@@ -64,6 +64,60 @@ export interface CompetitorResult {
 }
 
 /**
+ * Saves a scan snapshot (before/after) for progression tracking.
+ */
+export async function saveSnapshot(params: {
+  url: string;
+  city?: string;
+  label: "before" | "after";
+  overallScore: number;
+  letterGrade: string;
+  report: ScoringResult;
+  notes?: string;
+}): Promise<string> {
+  const { data, error } = await supabase.functions.invoke("save-snapshot", {
+    body: {
+      url: params.url,
+      city: params.city,
+      label: params.label,
+      overallScore: params.overallScore,
+      letterGrade: params.letterGrade,
+      report: params.report,
+      notes: params.notes,
+    },
+  });
+
+  if (error) throw new Error(`Failed to save snapshot: ${error.message}`);
+  if (!data?.success) throw new Error(data?.error || "Failed to save snapshot");
+  return data.id;
+}
+
+/**
+ * Fetches all scan snapshots for a given URL.
+ */
+export interface SnapshotRecord {
+  id: string;
+  url: string;
+  label: string;
+  city: string | null;
+  overall_score: number;
+  letter_grade: string;
+  report_json: ScoringResult;
+  notes: string | null;
+  created_at: string;
+}
+
+export async function getSnapshots(url?: string): Promise<SnapshotRecord[]> {
+  const { data, error } = await supabase.functions.invoke("get-snapshots", {
+    body: { url },
+  });
+
+  if (error) throw new Error(`Failed to fetch snapshots: ${error.message}`);
+  if (!data?.success) throw new Error(data?.error || "Failed to fetch snapshots");
+  return data.data as SnapshotRecord[];
+}
+
+/**
  * Scans top competitors for the same service + city.
  */
 export async function scanCompetitors(params: {
@@ -79,13 +133,7 @@ export async function scanCompetitors(params: {
     },
   });
 
-  if (error) {
-    throw new Error(`Competitor scan failed: ${error.message}`);
-  }
-
-  if (!data?.success) {
-    throw new Error(data?.error || "Competitor scan returned an unsuccessful response");
-  }
-
+  if (error) throw new Error(`Competitor scan failed: ${error.message}`);
+  if (!data?.success) throw new Error(data?.error || "Competitor scan returned an unsuccessful response");
   return data.data;
 }
