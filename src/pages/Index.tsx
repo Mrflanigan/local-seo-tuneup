@@ -182,6 +182,10 @@ export default function Index() {
           </Link>
         </div>
 
+        <p className="absolute top-28 right-6 z-10 text-lg sm:text-xl text-foreground/80 leading-relaxed text-right max-w-md">
+            We look at your site like Google sees it — using <Link to="/osmosis" className="text-primary font-bold underline decoration-primary underline-offset-2 hover:decoration-primary transition-colors whitespace-nowrap">SEO Osmosis™</Link>.
+        </p>
+
 
 
         {/* Headline pinned top-left */}
