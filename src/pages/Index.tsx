@@ -113,7 +113,7 @@ export default function Index() {
         {/* Gradient overlay — sits above the G */}
         <div className="absolute inset-0" style={{ zIndex: 2, background: "linear-gradient(to bottom, hsl(220 20% 7% / 0.58), hsl(220 20% 7% / 0.38), hsl(220 20% 7% / 0.88))" }} />
 
-        <div className="relative z-10 mx-auto max-w-3xl px-6 text-center pt-24">
+        <div className="relative z-10 w-full max-w-6xl mx-auto px-6 pt-24">
 
           <h1 className="text-4xl sm:text-6xl font-bold tracking-tight mb-6 leading-[1.1] text-left">
             Rise to the Top.
