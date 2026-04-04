@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Globe, MapPin, Building2, Laptop } from "lucide-react";
+import { Globe, MapPin } from "lucide-react";
 import type { BusinessType } from "@/lib/scoring/types";
 import { cn } from "@/lib/utils";
 
@@ -39,7 +39,6 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
                 businessType === "local" ? "border-primary ring-1 ring-primary/50" : "border-primary/60"
               )}
           >
-            <Building2 className="h-4 w-4" />
             Local Customers
           </button>
           <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2.5 z-50 hidden group-hover:block">
@@ -58,7 +57,6 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
                 businessType === "online" ? "border-primary ring-1 ring-primary/50" : "border-primary/60"
               )}
           >
-            <Laptop className="h-4 w-4" />
             Mostly Online
           </button>
           <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2.5 z-50 hidden group-hover:block">
