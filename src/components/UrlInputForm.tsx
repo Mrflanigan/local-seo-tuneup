@@ -35,7 +35,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-5xl mx-auto space-y-3">
+    <form onSubmit={handleSubmit} className="w-full space-y-3" style={{ maxWidth: "100%" }}>
       {!hideBusinessType && (
         <div className="flex gap-2 items-end">
           <div className="flex-1 space-y-1 text-left">
@@ -75,15 +75,16 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
         </div>
       )}
 
-      <div className="flex gap-3 w-full">
-        <div className="relative flex-1 min-w-0">
+      <div className="flex gap-3" style={{ width: "100%", maxWidth: "100%" }}>
+        <div className="relative" style={{ flex: "1 1 70%", minWidth: 0 }}>
           <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             type="text"
             placeholder="yourbusiness.com"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className="pl-12 h-14 text-lg text-foreground placeholder:text-foreground/60 w-full"
+            className="pl-12 h-14 text-lg text-foreground placeholder:text-foreground/60"
+            style={{ width: "100%" }}
             disabled={loading}
           />
         </div>
