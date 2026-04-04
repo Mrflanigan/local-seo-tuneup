@@ -50,10 +50,10 @@ export default function UrlInputForm({ onSubmit, loading }: UrlInputFormProps) {
           <button
             type="button"
             onClick={() => setBusinessType("online")}
-            className={`w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-sm font-medium transition-all border-border text-foreground/80 hover:text-foreground ${
+            className={`w-full flex items-center justify-center gap-2 h-11 rounded-lg text-sm font-medium transition-all ${
               businessType === "online"
-                ? "bg-primary/15 border-primary/50"
-                : "bg-card/60"
+                ? "bg-foreground/15 text-foreground border-2 border-primary"
+                : "bg-foreground/10 text-foreground/80 border border-foreground/20 hover:bg-foreground/15"
             }`}
           >
             <Laptop className="h-4 w-4" />
