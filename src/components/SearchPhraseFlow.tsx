@@ -92,7 +92,7 @@ export default function SearchPhraseFlow({ onSubmit, loading }: SearchPhraseFlow
               placeholder='e.g. "emergency plumber"'
               value={phrase1}
               onChange={(e) => setPhrase1(e.target.value)}
-              className="pl-10 h-12 text-sm text-foreground placeholder:text-foreground/60"
+              className="pl-10 h-14 text-lg text-foreground placeholder:text-foreground/60"
               disabled={searching || loading}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             />
@@ -104,7 +104,7 @@ export default function SearchPhraseFlow({ onSubmit, loading }: SearchPhraseFlow
               placeholder="2nd phrase (optional)"
               value={phrase2}
               onChange={(e) => setPhrase2(e.target.value)}
-              className="pl-10 h-12 text-sm text-foreground placeholder:text-foreground/60"
+              className="pl-10 h-14 text-lg text-foreground placeholder:text-foreground/60"
               disabled={searching || loading}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             />
@@ -112,14 +112,14 @@ export default function SearchPhraseFlow({ onSubmit, loading }: SearchPhraseFlow
         </div>
 
         <div className="flex gap-3" style={{ width: "100%", maxWidth: "100%" }}>
-          <div className="relative" style={{ flex: "1 1 40%", minWidth: 0 }}>
-            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <div className="relative" style={{ flex: "1 1 70%", minWidth: 0 }}>
+            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               type="text"
               placeholder="City or ZIP"
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              className="pl-10 h-14 text-lg text-foreground placeholder:text-foreground/60"
+              className="pl-12 h-14 text-lg text-foreground placeholder:text-foreground/60"
               style={{ width: "100%" }}
               disabled={searching || loading}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
@@ -137,7 +137,7 @@ export default function SearchPhraseFlow({ onSubmit, loading }: SearchPhraseFlow
           </Button>
         </div>
 
-        {error && <p className="text-sm text-red-400">{error}</p>}
+        {error && <p className="text-sm text-destructive">{error}</p>}
       </div>
     );
   }
