@@ -115,19 +115,20 @@ export default function Index() {
 
         {/* ── Stealthy SEO block letters — centered in the mountain ── */}
         <div
-          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
+          className="absolute left-0 top-0 bottom-0 flex items-center pointer-events-none select-none"
           style={{ zIndex: 3 }}
           aria-hidden="true"
         >
           <span
             style={{
-              fontSize: "clamp(10rem, 22vw, 28rem)",
+              fontSize: "clamp(16rem, 32vw, 42rem)",
               fontFamily: "'Arial Black', 'Helvetica Neue', sans-serif",
               fontWeight: 900,
-              letterSpacing: "0.05em",
-              color: "hsl(220 15% 85% / 0.07)",
+              letterSpacing: "0.08em",
+              color: "transparent",
+              WebkitTextStroke: "2px hsl(220 15% 75% / 0.15)",
               lineHeight: 0.85,
-              marginTop: "-8%",
+              marginLeft: "-2%",
             }}
           >
             SEO
