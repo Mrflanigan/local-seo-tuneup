@@ -28,6 +28,7 @@ export default function Report() {
     result: ScoringResult;
     url: string;
     city?: string;
+    businessType?: string;
   } | null;
   if (!state) return <Navigate to="/" replace />;
 
