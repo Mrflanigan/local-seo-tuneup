@@ -9,11 +9,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Globe, MapPin } from "lucide-react";
+import { Globe, MapPin, Search } from "lucide-react";
 import type { BusinessType } from "@/lib/scoring/types";
 
 interface UrlInputFormProps {
-  onSubmit: (url: string, city?: string, businessType?: BusinessType) => void;
+  onSubmit: (url: string, city?: string, businessType?: BusinessType, searchPhrases?: string[]) => void;
   loading?: boolean;
   hideBusinessType?: boolean;
 }
@@ -22,6 +22,8 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
   const [url, setUrl] = useState("");
   const [city, setCity] = useState("");
   const [businessType, setBusinessType] = useState<BusinessType | "">(hideBusinessType ? "local" : "");
+  const [phrase1, setPhrase1] = useState("");
+  const [phrase2, setPhrase2] = useState("");
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -32,7 +34,8 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
     if (cleanUrl && !cleanUrl.startsWith("http")) {
       cleanUrl = "https://" + cleanUrl;
     }
-    onSubmit(cleanUrl, city.trim() || undefined, (businessType || "local") as BusinessType);
+    const phrases = [phrase1.trim(), phrase2.trim()].filter(Boolean);
+    onSubmit(cleanUrl, city.trim() || undefined, (businessType || "local") as BusinessType, phrases.length > 0 ? phrases : undefined);
   };
 
   return (
@@ -72,6 +75,37 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
               className="pl-10 h-12 text-sm text-foreground placeholder:text-foreground/60"
               disabled={loading}
             />
+          </div>
+        </div>
+      )}
+
+      {/* Search phrases — what would someone Google? */}
+      {!hideBusinessType && (
+        <div className="space-y-1">
+          <p className="text-xs text-foreground/70">What would someone Google to find you? (Helps us check your ranking)</p>
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder='e.g. "emergency plumber"'
+                value={phrase1}
+                onChange={(e) => setPhrase1(e.target.value)}
+                className="pl-9 h-12 text-sm text-foreground placeholder:text-foreground/60"
+                disabled={loading}
+              />
+            </div>
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="2nd phrase (optional)"
+                value={phrase2}
+                onChange={(e) => setPhrase2(e.target.value)}
+                className="pl-9 h-12 text-sm text-foreground placeholder:text-foreground/60"
+                disabled={loading}
+              />
+            </div>
           </div>
         </div>
       )}
