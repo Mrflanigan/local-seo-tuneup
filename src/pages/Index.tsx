@@ -144,7 +144,7 @@ export default function Index() {
           style={{
             zIndex: 4,
             left: "52%",
-            bottom: "49%",
+            bottom: "40%",
           }}
         >
           <span
@@ -159,7 +159,7 @@ export default function Index() {
               whiteSpace: "nowrap",
             }}
           >
-            <span style={{ fontSize: "0.72em" }}>A</span>i's Best Optimization
+            AI's Best Optimization
           </span>
           <br />
           <Link
