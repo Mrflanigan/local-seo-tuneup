@@ -34,8 +34,8 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
             type="button"
             onClick={() => setBusinessType("local")}
               className={cn(
-                "w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-sm font-medium transition-all",
-                "bg-primary text-primary-foreground hover:bg-primary/90",
+                "w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-sm font-semibold transition-all",
+                "bg-primary text-white hover:bg-primary/90",
                 businessType === "local" ? "border-primary ring-1 ring-primary/50" : "border-primary/60"
               )}
           >
@@ -52,8 +52,8 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
             type="button"
             onClick={() => setBusinessType("online")}
               className={cn(
-                "w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-sm font-medium transition-all",
-                "bg-primary text-primary-foreground hover:bg-primary/90",
+                "w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-sm font-semibold transition-all",
+                "bg-primary text-white hover:bg-primary/90",
                 businessType === "online" ? "border-primary ring-1 ring-primary/50" : "border-primary/60"
               )}
           >
