@@ -77,7 +77,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             required
-            className="pl-10 h-12 text-base"
+            className="pl-10 h-12 text-base text-white placeholder:text-white/50"
             disabled={loading}
           />
         </div>
