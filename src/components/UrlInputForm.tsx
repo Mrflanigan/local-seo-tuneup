@@ -22,9 +22,12 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
   const [city, setCity] = useState("");
   const [businessType, setBusinessType] = useState<BusinessType | "">(hideBusinessType ? "local" : "");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
     let cleanUrl = url.trim();
+    if (!cleanUrl) {
+      return;
+    }
     if (cleanUrl && !cleanUrl.startsWith("http")) {
       cleanUrl = "https://" + cleanUrl;
     }
@@ -62,7 +65,6 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
             placeholder="yourbusiness.com"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            required
             className="pl-10 h-12 text-base text-foreground placeholder:text-foreground"
             disabled={loading}
           />
@@ -85,9 +87,10 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
           />
         </div>
         <Button
-          type="submit"
+          type="button"
+          onClick={() => handleSubmit()}
           className="h-12 px-6 text-base font-bold whitespace-nowrap bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-100 disabled:bg-primary disabled:text-primary-foreground italic"
-          disabled={loading || !url.trim()}
+          disabled={loading}
           size="lg"
           style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
         >
