@@ -26,7 +26,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-xl mx-auto space-y-3">
+    <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto space-y-3">
       {!hideBusinessType && (
       <div className="grid grid-cols-2 gap-2">
         <div className="relative group">
@@ -68,37 +68,39 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
       </div>
       )}
 
-      <div className="relative">
-        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-        <Input
-          type="text"
-          placeholder="yourbusiness.com"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          required
-          className="pl-10 h-12 text-base"
-          disabled={loading}
-        />
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder="yourbusiness.com"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            required
+            className="pl-10 h-12 text-base"
+            disabled={loading}
+          />
+        </div>
+        <div className="relative flex-1">
+          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder={businessType === "local" ? "City or ZIP" : "City or ZIP (optional)"}
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            className="pl-10 h-12 text-base"
+            disabled={loading}
+          />
+        </div>
+        <Button
+          type="submit"
+          className="h-12 px-6 text-base font-semibold whitespace-nowrap"
+          disabled={loading || !url.trim()}
+          size="lg"
+        >
+          Run My Free Check
+        </Button>
       </div>
-      <div className="relative">
-        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-        <Input
-          type="text"
-          placeholder={businessType === "local" ? "City or ZIP code (improves local scoring)" : "City or ZIP (optional)"}
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          className="pl-10 h-12 text-base"
-          disabled={loading}
-        />
-      </div>
-      <Button
-        type="submit"
-        className="w-full h-12 text-base font-semibold"
-        disabled={loading || !url.trim()}
-        size="lg"
-      >
-        Run My Free Google Compatibility Check
-      </Button>
     </form>
   );
 }
