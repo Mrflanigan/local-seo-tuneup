@@ -11,7 +11,7 @@ interface UrlInputFormProps {
   hideBusinessType?: boolean;
 }
 
-export default function UrlInputForm({ onSubmit, loading }: UrlInputFormProps) {
+export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: UrlInputFormProps) {
   const [url, setUrl] = useState("");
   const [city, setCity] = useState("");
   const [businessType, setBusinessType] = useState<BusinessType>("local");
