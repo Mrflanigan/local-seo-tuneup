@@ -8,6 +8,7 @@ import YearAgoProjection from "@/components/YearAgoProjection";
 import CompetitorComparison from "@/components/CompetitorComparison";
 import CTABanner from "@/components/CTABanner";
 import PathToPageOne from "@/components/PathToPageOne";
+import LanePicker from "@/components/LanePicker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -145,9 +146,14 @@ export default function Report() {
           <CompetitorComparison result={result} url={url} city={city} />
         </div>
 
-        {/* Path to Page 1 — the magnetism */}
+        {/* Path to Page 1 — score gap + hook */}
         <div className="mt-8">
           <PathToPageOne result={result} url={url} />
+        </div>
+
+        {/* Pick Your Lane — the pricing */}
+        <div className="mt-8">
+          <LanePicker result={result} url={url} />
         </div>
 
         {/* Soft email CTA */}
