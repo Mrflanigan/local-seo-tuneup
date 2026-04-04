@@ -116,7 +116,7 @@ export default function Index() {
         {/* ── Stealthy SEO block letters — centered in the mountain ── */}
         <div
           className="absolute left-0 top-0 bottom-0 flex items-center pointer-events-none select-none"
-          style={{ zIndex: 3 }}
+          style={{ zIndex: 3, marginTop: "-8%" }}
           aria-hidden="true"
         >
           <span
