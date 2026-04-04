@@ -143,7 +143,7 @@ export default function Index() {
           className="absolute select-none"
           style={{
             zIndex: 4,
-            left: "52%",
+            left: "46%",
             bottom: "40%",
           }}
         >
