@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import UrlInputForm from "@/components/UrlInputForm";
+import SearchPhraseFlow from "@/components/SearchPhraseFlow";
 import ScanningView from "@/components/ScanningView";
 import { runCheckup } from "@/lib/api/checkup";
 import type { ScoringResult, BusinessType } from "@/lib/scoring/types";
