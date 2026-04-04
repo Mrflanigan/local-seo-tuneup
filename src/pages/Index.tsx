@@ -140,11 +140,12 @@ export default function Index() {
                 fontSize: "0.085em",
                 color: "hsl(120 100% 30%)",
                 WebkitTextStroke: "0px transparent",
-                letterSpacing: "0.01em",
+                letterSpacing: "0.02em",
                 lineHeight: 1,
-                marginLeft: "0.08em",
-                verticalAlign: "baseline",
+                marginLeft: "0.15em",
+                verticalAlign: "bottom",
                 whiteSpace: "nowrap",
+                display: "inline",
               }}
             >
               <span style={{ fontSize: "0.72em" }}>A</span>i's Best Optimization
