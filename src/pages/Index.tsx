@@ -144,8 +144,7 @@ export default function Index() {
           style={{
             zIndex: 3,
             left: "50%",
-            top: "50%",
-            transform: "translateY(-50%)",
+            top: "38%",
           }}
           aria-hidden="true"
         >
