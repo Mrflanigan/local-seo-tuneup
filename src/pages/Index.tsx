@@ -113,6 +113,27 @@ export default function Index() {
         {/* Gradient overlay — sits above the G */}
         <div className="absolute inset-0" style={{ zIndex: 2, background: "linear-gradient(to bottom, hsl(220 20% 7% / 0.58), hsl(220 20% 7% / 0.38), hsl(220 20% 7% / 0.88))" }} />
 
+        {/* ── Stealthy SEO block letters — centered in the mountain ── */}
+        <div
+          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
+          style={{ zIndex: 3 }}
+          aria-hidden="true"
+        >
+          <span
+            style={{
+              fontSize: "clamp(10rem, 22vw, 28rem)",
+              fontFamily: "'Arial Black', 'Helvetica Neue', sans-serif",
+              fontWeight: 900,
+              letterSpacing: "0.05em",
+              color: "hsl(220 15% 85% / 0.07)",
+              lineHeight: 0.85,
+              marginTop: "-8%",
+            }}
+          >
+            SEO
+          </span>
+        </div>
+
         {/* Headline pinned top-left */}
         <h1 className="absolute top-24 left-6 z-10 text-4xl sm:text-6xl font-bold tracking-tight leading-[1.1]">
           Rise to the Top.
