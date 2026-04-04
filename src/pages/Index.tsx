@@ -180,7 +180,7 @@ export default function Index() {
         </h1>
 
 
-        <div className="relative z-10 mx-auto max-w-5xl px-6 text-center pt-64">
+        <div className="relative z-10 w-full px-6 pt-64" style={{ maxWidth: "900px", margin: "0 auto" }}>
 
           <UrlInputForm onSubmit={handleSubmit} loading={loading} />
 
