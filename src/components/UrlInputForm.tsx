@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Globe, MapPin, Building2, Laptop } from "lucide-react";
 import type { BusinessType } from "@/lib/scoring/types";
+import { cn } from "@/lib/utils";
 
 interface UrlInputFormProps {
   onSubmit: (url: string, city?: string, businessType?: BusinessType) => void;
@@ -31,7 +32,11 @@ export default function UrlInputForm({ onSubmit, loading }: UrlInputFormProps) {
           <button
             type="button"
             onClick={() => setBusinessType("local")}
-            className="w-full flex items-center justify-center gap-2 h-11 rounded-lg border border-foreground/20 bg-foreground/10 text-foreground/90 text-sm font-medium transition-all hover:bg-foreground/15"
+              className={cn(
+                "w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-sm font-medium transition-all",
+                "border-primary/40 text-primary hover:bg-primary/15",
+                businessType === "local" ? "bg-primary text-primary-foreground border-primary" : "bg-primary/10"
+              )}
           >
             <Building2 className="h-4 w-4" />
             Local Customers
@@ -49,7 +54,11 @@ export default function UrlInputForm({ onSubmit, loading }: UrlInputFormProps) {
           <button
             type="button"
             onClick={() => setBusinessType("online")}
-            className="w-full flex items-center justify-center gap-2 h-11 rounded-lg border border-foreground/20 bg-foreground/10 text-foreground/90 text-sm font-medium transition-all hover:bg-foreground/15"
+              className={cn(
+                "w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-sm font-medium transition-all",
+                "border-primary/40 text-primary hover:bg-primary/15",
+                businessType === "online" ? "bg-primary text-primary-foreground border-primary" : "bg-primary/10"
+              )}
           >
             <Laptop className="h-4 w-4" />
             Mostly Online
