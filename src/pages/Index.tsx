@@ -138,6 +138,30 @@ export default function Index() {
           </span>
         </div>
 
+        {/* ── Ai's Best Optimization — across bottom of mountain ── */}
+        <div
+          className="absolute bottom-24 left-0 right-0 pointer-events-none select-none"
+          style={{ zIndex: 3 }}
+          aria-hidden="true"
+        >
+          <span
+            style={{
+              fontSize: "clamp(4rem, 8.4vw, 10.8rem)",
+              fontFamily: "'Arial Narrow', 'Helvetica Neue', sans-serif",
+              fontWeight: 900,
+              fontStretch: "condensed",
+              letterSpacing: "0.04em",
+              color: "transparent",
+              WebkitTextStroke: "2px hsl(120 100% 30%)",
+              marginLeft: "2%",
+              transform: "scaleX(0.6)",
+              transformOrigin: "left center",
+            }}
+          >
+            <span style={{ textTransform: "none" }}>A</span>i's Best Optimization
+          </span>
+        </div>
+
         {/* Headline pinned top-left */}
         <h1 className="absolute top-24 left-6 z-10 text-4xl sm:text-6xl font-bold tracking-tight leading-[1.1]">
           Rise to the Top.
