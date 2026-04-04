@@ -39,7 +39,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
       {!hideBusinessType && (
         <div className="flex gap-2 items-end">
           <div className="flex-1 space-y-1 text-left">
-            <p className="text-xs text-foreground/70">Business Type</p>
+            <p className="text-xs text-foreground/70">How does this business get customers?</p>
             <Select
               value={businessType}
               onValueChange={(value) => setBusinessType(value as BusinessType)}
@@ -55,7 +55,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
             </Select>
           </div>
           <div className="relative flex-1 space-y-1">
-            <p className="text-xs text-foreground/70">Location</p>
+            <p className="text-xs text-foreground/70">Where are your customers? (Helps us score local signals)</p>
             <MapPin className="absolute left-3 bottom-3 h-5 w-5 text-muted-foreground" />
             <Input
               type="text"
