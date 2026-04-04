@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import type { BusinessType } from "@/lib/scoring/types";
+
 
 import {
   Search,
