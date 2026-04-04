@@ -27,30 +27,44 @@ export default function UrlInputForm({ onSubmit, loading }: UrlInputFormProps) {
     <form onSubmit={handleSubmit} className="w-full max-w-xl mx-auto space-y-3">
       {/* Business Type Selector */}
       <div className="grid grid-cols-2 gap-2">
-        <button
-          type="button"
-          onClick={() => setBusinessType("local")}
-          className={`flex items-center justify-center gap-2 h-11 rounded-lg border text-sm font-medium transition-all ${
-            businessType === "local"
-              ? "border-primary bg-primary/10 text-primary"
-              : "border-border bg-card/60 text-muted-foreground hover:border-muted-foreground/40"
-          }`}
-        >
-          <Building2 className="h-4 w-4" />
-          Local Business
-        </button>
-        <button
-          type="button"
-          onClick={() => setBusinessType("online")}
-          className={`flex items-center justify-center gap-2 h-11 rounded-lg border text-sm font-medium transition-all ${
-            businessType === "online"
-              ? "border-primary bg-primary/10 text-primary"
-              : "border-border bg-card/60 text-muted-foreground hover:border-muted-foreground/40"
-          }`}
-        >
-          <Laptop className="h-4 w-4" />
-          Online Business
-        </button>
+        <div className="relative group">
+          <button
+            type="button"
+            onClick={() => setBusinessType("local")}
+            className={`w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-sm font-medium transition-all ${
+              businessType === "local"
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border bg-card/60 text-muted-foreground hover:border-muted-foreground/40"
+            }`}
+          >
+            <Building2 className="h-4 w-4" />
+            Local Customers
+          </button>
+          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1.5 z-50 hidden group-hover:block">
+            <div className="bg-popover border border-border rounded-lg px-3 py-2 text-xs text-muted-foreground shadow-lg whitespace-nowrap">
+              Plumber, dentist, restaurant, retail store, law office…
+            </div>
+          </div>
+        </div>
+        <div className="relative group">
+          <button
+            type="button"
+            onClick={() => setBusinessType("online")}
+            className={`w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-sm font-medium transition-all ${
+              businessType === "online"
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border bg-card/60 text-muted-foreground hover:border-muted-foreground/40"
+            }`}
+          >
+            <Laptop className="h-4 w-4" />
+            Mostly Online
+          </button>
+          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1.5 z-50 hidden group-hover:block">
+            <div className="bg-popover border border-border rounded-lg px-3 py-2 text-xs text-muted-foreground shadow-lg whitespace-nowrap">
+              SaaS, e-commerce, agency, consultant, freelancer…
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="relative">
