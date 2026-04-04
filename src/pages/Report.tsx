@@ -153,7 +153,7 @@ export default function Report() {
 
         {/* Pick Your Lane — the pricing */}
         <div className="mt-8">
-          <LanePicker result={result} url={url} />
+          <MountainLanePicker result={result} url={url} />
         </div>
 
         {/* Soft email CTA */}
