@@ -138,6 +138,33 @@ export default function Index() {
           </span>
         </div>
 
+        {/* ── Ai's Best Optimization — aligned to SEO bottom ── */}
+        <div
+          className="absolute left-0 bottom-0 top-0 flex items-center pointer-events-none select-none"
+          style={{ zIndex: 3, marginTop: "-8%" }}
+          aria-hidden="true"
+        >
+          <span
+            style={{
+              fontSize: "clamp(2rem, 4.2vw, 5.4rem)",
+              fontFamily: "'Arial Narrow', 'Helvetica Neue', sans-serif",
+              fontWeight: 900,
+              fontStretch: "condensed",
+              letterSpacing: "0.05em",
+              color: "hsl(120 100% 30%)",
+              lineHeight: 0.78,
+              marginLeft: "clamp(12rem, 25vw, 32rem)",
+              transform: "scaleX(0.6)",
+              transformOrigin: "left center",
+              alignSelf: "center",
+            }}
+          >
+            <span style={{ textTransform: "uppercase", fontSize: "0.7em" }}>A</span>i's Best
+            <br />
+            Optimization
+          </span>
+        </div>
+
 
         {/* Headline pinned top-left */}
         <h1 className="absolute top-24 left-6 z-10 text-4xl sm:text-6xl font-bold tracking-tight leading-[1.1]">
