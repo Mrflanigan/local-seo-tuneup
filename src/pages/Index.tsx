@@ -164,18 +164,10 @@ export default function Index() {
           <br />
           <Link
             to="/osmosis"
-            className="hover:opacity-80 transition-opacity"
+            className="text-primary font-bold underline decoration-primary underline-offset-2 hover:opacity-80 transition-opacity whitespace-nowrap"
             style={{
-              fontSize: "clamp(0.9rem, 1.6vw, 1.8rem)",
-              fontFamily: "'Arial Narrow', 'Helvetica Neue', sans-serif",
-              fontWeight: 700,
-              fontStretch: "condensed",
-              letterSpacing: "0.02em",
-              color: "hsl(var(--primary))",
+              fontSize: "clamp(1rem, 1.8vw, 2rem)",
               lineHeight: 1.4,
-              whiteSpace: "nowrap",
-              textDecoration: "underline",
-              textUnderlineOffset: "3px",
             }}
           >
             SEO Osmosis™
