@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -36,9 +35,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
     <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto space-y-4">
       {!hideBusinessType && (
         <div className="space-y-2 text-left">
-          <Label htmlFor="business-type" className="text-sm font-semibold text-foreground">
-            </Label>
-            <Select
+          <Select
             value={businessType}
             onValueChange={(value) => setBusinessType(value as BusinessType)}
             disabled={loading}
