@@ -90,7 +90,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
           disabled={loading || !url.trim() || (!hideBusinessType && !businessType)}
           size="lg"
         >
-          Run My Free Check
+          Run SEO Osmosis
         </Button>
       </div>
     </form>
