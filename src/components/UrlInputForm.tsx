@@ -37,7 +37,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
       {!hideBusinessType && (
         <div className="space-y-2 text-left">
           <Label htmlFor="business-type" className="text-sm font-semibold text-foreground">
-            What type of business is this?
+            What Type of Business Is This?
           </Label>
           <Select
             value={businessType}
@@ -45,15 +45,15 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
             disabled={loading}
           >
             <SelectTrigger id="business-type" className="h-12 text-base text-foreground">
-              <SelectValue placeholder="Select business type" />
+              <SelectValue placeholder="Select Business Type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="local">Local business serving a city or area</SelectItem>
-              <SelectItem value="online">Online business serving customers anywhere</SelectItem>
+              <SelectItem value="local">Local Business Serving a City or Area</SelectItem>
+              <SelectItem value="online">Online Business Serving Customers Anywhere</SelectItem>
             </SelectContent>
           </Select>
           <p className="text-sm text-foreground/80">
-            Choose the option that best matches how this business gets customers.
+            Choose the Option That Best Matches How This Business Gets Customers.
           </p>
         </div>
       )}
@@ -80,7 +80,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
                 ? "City or ZIP"
                 : businessType === "online"
                   ? "City or ZIP (optional)"
-                  : "City or ZIP (if you serve a local area)"
+                  : "City or ZIP (if You Serve a Local Area)"
             }
             value={city}
             onChange={(e) => setCity(e.target.value)}
