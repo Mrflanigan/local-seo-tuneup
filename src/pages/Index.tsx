@@ -138,27 +138,24 @@ export default function Index() {
           </span>
         </div>
 
-        {/* ── Ai's Best Optimization — across bottom of mountain ── */}
+        {/* ── Ai's Best Optimization — subtle line below SEO letters ── */}
         <div
-          className="absolute bottom-24 left-0 right-0 pointer-events-none select-none"
-          style={{ zIndex: 3 }}
+          className="absolute left-0 pointer-events-none select-none"
+          style={{ zIndex: 3, bottom: "18%", marginLeft: "2%" }}
           aria-hidden="true"
         >
           <span
             style={{
-              fontSize: "clamp(4rem, 8.4vw, 10.8rem)",
+              fontSize: "clamp(1.2rem, 2.4vw, 2.2rem)",
               fontFamily: "'Arial Narrow', 'Helvetica Neue', sans-serif",
-              fontWeight: 900,
+              fontWeight: 700,
               fontStretch: "condensed",
-              letterSpacing: "0.04em",
+              letterSpacing: "0.12em",
               color: "transparent",
-              WebkitTextStroke: "2px hsl(120 100% 30%)",
-              marginLeft: "2%",
-              transform: "scaleX(0.6)",
-              transformOrigin: "left center",
+              WebkitTextStroke: "1.5px hsl(120 100% 30%)",
             }}
           >
-            <span style={{ textTransform: "none" }}>A</span>i's Best Optimization
+            Ai's Best Optimization
           </span>
         </div>
 
