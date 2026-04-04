@@ -35,7 +35,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-5xl mx-auto space-y-3">
+    <form onSubmit={handleSubmit} className="w-full space-y-3" style={{ maxWidth: "100%" }}>
       {!hideBusinessType && (
         <div className="flex gap-2 items-end">
           <div className="flex-1 space-y-1 text-left">
