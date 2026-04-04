@@ -1,22 +1,26 @@
 
 
-## The Real Answer
+# Move Action Form to Dedicated Page
 
-You're right. I don't need to know where "SEO" is. I just need to place the small text block at the exact page coordinates where its bottom visually lines up with the bottom of the SEO letters. Two independent boxes, each with their own `bottom` and `left` — I just need to get the numbers right.
+## What changes
 
-The SEO block is vertically centered with `marginTop: -8%` and has `lineHeight: 0.78` on a font of `clamp(20rem, 42vw, 54rem)`. At 1097px viewport, that font is roughly 460px. With lineHeight 0.78, the text box is ~359px tall, centered around ~42% from top (due to the -8% margin). That puts the bottom of the SEO letters at roughly 50-52% from the top of the section — or about **48-50% from the bottom**.
+### 1. New file: `src/pages/GetStarted.tsx`
+- Contains the `UrlInputForm` with all fields (business type, city, search phrases, URL)
+- Contains the `handleSubmit` logic, `ScanningView`, and navigation to `/report` — all moved from Index.tsx
+- Clean, focused layout: dark background, brief headline ("Let's check your site"), the form, and the tagline
 
-The small text is currently at `bottom: 46%`. That's close but not matching. I just need to adjust that `bottom` value until it lines up.
+### 2. Edit: `src/pages/Index.tsx`
+- **Remove** the `UrlInputForm` import and both form instances (hero at line 185 and bottom CTA at line 297)
+- **Remove** the scanning state/logic (`handleSubmit`, `loading`, `scanUrl`, `ScanningView`, `runCheckup` import)
+- **Hero section**: Replace the form with a CTA button linking to `/get-started` — styled prominently with the Bookman serif font
+- **Bottom CTA section**: Replace the form with the same CTA button
+- Everything else stays: Denali hero, decorative text, social proof, How It Works, What We Scan, FAQ, footer
 
-## Plan
+### 3. Edit: `src/App.tsx`
+- Add route: `<Route path="/get-started" element={<GetStarted />} />`
 
-**File: `src/pages/Index.tsx`**
-
-1. **Adjust the `bottom` value** on the "Ai's Best Optimization" block (line 147) — change from `46%` to the value that visually aligns it with the bottom of the SEO letters. Start at `48%` and fine-tune.
-
-2. **Move "SEO Osmosis™"** from the top-right paragraph (lines 174-176) into the same small text block after "Ai's Best Optimization", keeping both as inline spans so they share the same baseline automatically.
-
-3. **Delete** the top-right paragraph (lines 174-176).
-
-That's it. Two boxes on the page, each placed where they need to be. No restructuring needed.
+## No changes to
+- `UrlInputForm.tsx` — moves as-is
+- Scoring, report, scanning logic — just relocated
+- Any other pages or components
 
