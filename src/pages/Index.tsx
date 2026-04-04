@@ -138,19 +138,19 @@ export default function Index() {
           </span>
         </div>
 
-        {/* ── Ai's Best Optimization — positioned after O, above form ── */}
+        {/* ── Ai's Best Optimization — right of SEO letters ── */}
         <div
           className="absolute pointer-events-none select-none"
           style={{
-            zIndex: 3,
-            left: "50%",
-            top: "38%",
+            zIndex: 4,
+            left: "52%",
+            bottom: "46%",
           }}
           aria-hidden="true"
         >
           <span
             style={{
-              fontSize: "clamp(1.4rem, 2.8vw, 3.2rem)",
+              fontSize: "clamp(1.6rem, 3vw, 3.6rem)",
               fontFamily: "'Arial Narrow', 'Helvetica Neue', sans-serif",
               fontWeight: 900,
               fontStretch: "condensed",
