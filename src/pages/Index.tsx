@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import UrlInputForm from "@/components/UrlInputForm";
-import ScanningView from "@/components/ScanningView";
-import { runCheckup } from "@/lib/api/checkup";
-import type { ScoringResult, BusinessType } from "@/lib/scoring/types";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+
 
 import {
   Search,
@@ -34,29 +31,7 @@ const landmarks = [
 
 export default function Index() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [scanUrl, setScanUrl] = useState("");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-
-  const handleSubmit = async (url: string, city?: string, businessType?: BusinessType) => {
-    setLoading(true);
-    setScanUrl(url);
-    try {
-      const result: ScoringResult = await runCheckup({ url, city, businessType });
-      // Persist scan so user can resume after reload / navigation
-      try {
-        localStorage.setItem("lastScan", JSON.stringify({ result, url, city, businessType, ts: Date.now() }));
-      } catch { /* storage full — not critical */ }
-      navigate("/report", { state: { result, url, city, businessType } });
-    } catch (err) {
-      toast.error("Something went wrong scanning that site. Please try again.");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) return <ScanningView url={scanUrl} />;
 
   const faqs = [
     { q: "What does the Local SEO Checkup scan?", a: "We scan your website's HTML the same way Google's crawler does — checking meta tags, schema markup, heading structure, local signals, technical SEO, content depth, and more across 5 categories and 30+ individual signals." },
@@ -180,10 +155,15 @@ export default function Index() {
         </h1>
 
 
-        <div className="relative z-10 w-full px-6 pt-64" style={{ maxWidth: "900px", margin: "0 auto" }}>
-
-          <UrlInputForm onSubmit={handleSubmit} loading={loading} />
-
+        <div className="relative z-10 w-full px-6 pt-64 text-center" style={{ maxWidth: "900px", margin: "0 auto" }}>
+          <Button
+            onClick={() => navigate("/get-started")}
+            size="lg"
+            className="h-16 px-12 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic"
+            style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
+          >
+            Get Your Free SEO Checkup
+          </Button>
           <p className="text-xs text-muted-foreground/70 mt-5" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
             No signup · Free instant audit · Real data from your site
           </p>
@@ -294,7 +274,14 @@ export default function Index() {
         <div className="relative z-10 mx-auto max-w-3xl px-6 text-center">
           <h2 className="text-3xl sm:text-5xl font-bold mb-5">Ready to Rise?</h2>
           <p className="text-lg text-muted-foreground mb-10 max-w-lg mx-auto">30 seconds. No signup. Your personalized local SEO audit with real data from your actual site.</p>
-          <UrlInputForm onSubmit={handleSubmit} loading={loading} hideBusinessType />
+          <Button
+            onClick={() => navigate("/get-started")}
+            size="lg"
+            className="h-16 px-12 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic"
+            style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
+          >
+            Get Your Free SEO Checkup
+          </Button>
         </div>
         <LandmarkCaption name={landmarks[3].name} detail={landmarks[3].detail} />
       </section>
