@@ -35,61 +35,62 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto space-y-4">
+    <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto space-y-3">
       {!hideBusinessType && (
-        <div className="space-y-2 text-left">
-          <p className="text-sm text-foreground/80">
-            Choose the Option That Best Matches How This Business Gets Customers
-          </p>
-          <Select
-            value={businessType}
-            onValueChange={(value) => setBusinessType(value as BusinessType)}
-            disabled={loading}
-          >
-            <SelectTrigger id="business-type" className="h-12 text-base text-foreground">
-              <SelectValue placeholder="Select Business Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="local">Local Business Serving a City or Area</SelectItem>
-              <SelectItem value="online">Online Business Serving Customers Anywhere</SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="flex gap-2 items-end">
+          <div className="flex-1 space-y-1 text-left">
+            <p className="text-xs text-foreground/70">Business Type</p>
+            <Select
+              value={businessType}
+              onValueChange={(value) => setBusinessType(value as BusinessType)}
+              disabled={loading}
+            >
+              <SelectTrigger id="business-type" className="h-12 text-sm text-foreground">
+                <SelectValue placeholder="Local or Online?" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="local">Local (City/Area)</SelectItem>
+                <SelectItem value="online">Online (Anywhere)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="relative flex-1 space-y-1">
+            <p className="text-xs text-foreground/70">Location</p>
+            <MapPin className="absolute left-3 bottom-3 h-5 w-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder={
+                businessType === "local"
+                  ? "City or ZIP"
+                  : businessType === "online"
+                    ? "City or ZIP (optional)"
+                    : "City or ZIP"
+              }
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="pl-10 h-12 text-sm text-foreground placeholder:text-foreground/60"
+              disabled={loading}
+            />
+          </div>
         </div>
       )}
 
       <div className="flex gap-2">
-        <div className="relative flex-1">
+        <div className="relative flex-[2]">
           <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             type="text"
             placeholder="yourbusiness.com"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className="pl-10 h-12 text-base text-foreground placeholder:text-foreground"
-            disabled={loading}
-          />
-        </div>
-        <div className="relative flex-1">
-          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder={
-              businessType === "local"
-                ? "City or ZIP"
-                : businessType === "online"
-                  ? "City or ZIP (optional)"
-                  : "City or ZIP (if You Serve a Local Area)"
-            }
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            className="pl-10 h-12 text-base text-foreground placeholder:text-foreground"
+            className="pl-10 h-14 text-lg text-foreground placeholder:text-foreground/60"
             disabled={loading}
           />
         </div>
         <Button
           type="button"
           onClick={() => handleSubmit()}
-          className="h-12 px-6 text-base font-bold whitespace-nowrap bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-100 disabled:bg-primary disabled:text-primary-foreground italic"
+          className="h-14 px-6 text-base font-bold whitespace-nowrap bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-100 disabled:bg-primary disabled:text-primary-foreground italic"
           disabled={loading}
           size="lg"
           style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
