@@ -113,10 +113,10 @@ export default function Index() {
         {/* Gradient overlay — sits above the G */}
         <div className="absolute inset-0" style={{ zIndex: 2, background: "linear-gradient(to bottom, hsl(220 20% 7% / 0.58), hsl(220 20% 7% / 0.38), hsl(220 20% 7% / 0.88))" }} />
 
-        {/* ── Stealthy SEO block letters + Ai's Best Optimization ── */}
+        {/* ── Stealthy SEO block letters — centered in the mountain ── */}
         <div
-          className="absolute left-0 top-0 bottom-0 flex items-end pointer-events-none select-none"
-          style={{ zIndex: 3, paddingBottom: "18%" }}
+          className="absolute left-0 top-0 bottom-0 flex items-center pointer-events-none select-none"
+          style={{ zIndex: 3, marginTop: "-8%" }}
           aria-hidden="true"
         >
           <span
@@ -136,17 +136,27 @@ export default function Index() {
           >
             SEO
           </span>
+        </div>
+
+        {/* ── Ai's Best Optimization — bottom-aligned, non-overlapping ── */}
+        <div
+          className="absolute pointer-events-none select-none"
+          style={{ zIndex: 3, left: "49%", bottom: "29%" }}
+          aria-hidden="true"
+        >
           <span
             style={{
-              fontSize: "clamp(2rem, 4.2vw, 5.4rem)",
+              display: "block",
+              fontSize: "clamp(1.15rem, 2.1vw, 2.6rem)",
               fontFamily: "'Arial Narrow', 'Helvetica Neue', sans-serif",
               fontWeight: 900,
               fontStretch: "condensed",
-              letterSpacing: "0.05em",
+              letterSpacing: "0.01em",
               color: "hsl(120 100% 30%)",
-              lineHeight: 1,
-              marginLeft: "-28%",
-              marginBottom: "0.1em",
+              lineHeight: 0.8,
+              transform: "scaleX(0.78)",
+              transformOrigin: "left bottom",
+              whiteSpace: "nowrap",
             }}
           >
             <span style={{ fontSize: "0.7em" }}>A</span>i's Best
@@ -154,6 +164,7 @@ export default function Index() {
             Optimization
           </span>
         </div>
+
 
 
         {/* Headline pinned top-left */}
