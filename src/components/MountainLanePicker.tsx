@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { ScoringResult } from "@/lib/scoring/types";
+import { Input } from "@/components/ui/input";
+import { KeyRound } from "lucide-react";
 
 interface Props {
   result: ScoringResult;
@@ -82,8 +85,29 @@ export default function MountainLanePicker({ result, url }: Props) {
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
   const [hoveredPath, setHoveredPath] = useState<string | null>(null);
   const [launched, setLaunched] = useState<string | null>(null);
+  const [coupon, setCoupon] = useState("");
+  const [couponApplied, setCouponApplied] = useState(false);
+  const navigate = useNavigate();
+
+  const BYPASS_CODE = "OSMOSIS2026";
+
+  const handleApplyCoupon = () => {
+    if (coupon.trim().toUpperCase() === BYPASS_CODE) {
+      setCouponApplied(true);
+      toast.success("Coupon applied! Select any tier to proceed.");
+    } else {
+      toast.error("Invalid coupon code.");
+    }
+  };
 
   const handleCheckout = async (tierKey: keyof typeof TIER_CONFIG) => {
+    if (couponApplied) {
+      sessionStorage.setItem("scanResult", JSON.stringify(result));
+      sessionStorage.setItem("scanUrl", url || "");
+      navigate(`/payment-success?tier=${tierKey}`);
+      return;
+    }
+
     setLaunched(tierKey);
     setLoadingTier(tierKey);
     await new Promise((r) => setTimeout(r, 1200));
@@ -264,6 +288,34 @@ export default function MountainLanePicker({ result, url }: Props) {
       </div>
 
       {/* Anti-fluff */}
+      {/* Coupon Code */}
+      <div className="rounded-xl border border-border bg-card p-4 sm:p-5">
+        <div className="flex items-center gap-2 mb-2">
+          <KeyRound className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm font-medium text-foreground">Have a coupon?</span>
+        </div>
+        {couponApplied ? (
+          <p className="text-sm text-accent font-semibold">✓ Coupon applied — pick any tier above!</p>
+        ) : (
+          <div className="flex gap-2">
+            <Input
+              type="text"
+              placeholder="Enter coupon code"
+              value={coupon}
+              onChange={(e) => setCoupon(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()}
+              className="h-9 text-sm"
+            />
+            <button
+              onClick={handleApplyCoupon}
+              className="shrink-0 h-9 px-4 rounded-md text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Apply
+            </button>
+          </div>
+        )}
+      </div>
+
       <div className="rounded-lg border border-border/50 bg-secondary/30 p-4 text-center">
         <p className="text-sm text-muted-foreground leading-relaxed">
           <span className="text-foreground font-medium">What we don't charge for:</span>{" "}
