@@ -6,6 +6,7 @@ import Index from "./pages/Index.tsx";
 import Report from "./pages/Report.tsx";
 import CaseStudy from "./pages/CaseStudy.tsx";
 import Osmosis from "./pages/Osmosis.tsx";
+import GetStarted from "./pages/GetStarted.tsx";
 import PaymentSuccess from "./pages/PaymentSuccess.tsx";
 import NotFound from "./pages/NotFound.tsx";
 const queryClient = new QueryClient();
@@ -20,6 +21,7 @@ const App = () => (
           <Route path="/report" element={<Report />} />
           <Route path="/case-study" element={<CaseStudy />} />
           <Route path="/osmosis" element={<Osmosis />} />
+          <Route path="/get-started" element={<GetStarted />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
