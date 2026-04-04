@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 interface UrlInputFormProps {
   onSubmit: (url: string, city?: string, businessType?: BusinessType) => void;
   loading?: boolean;
+  hideBusinessType?: boolean;
 }
 
 export default function UrlInputForm({ onSubmit, loading }: UrlInputFormProps) {
