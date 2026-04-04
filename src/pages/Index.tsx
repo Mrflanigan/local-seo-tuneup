@@ -184,8 +184,7 @@ export default function Index() {
 
         <div className="relative z-10 w-full px-6 pt-64" style={{ maxWidth: "900px", margin: "0 auto" }}>
 
-          {/* Mode toggle */}
-          <div className="flex gap-2 mb-4">
+          <div className="flex gap-2 mb-3">
             <button
               onClick={() => setInputMode("search")}
               className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
@@ -195,7 +194,7 @@ export default function Index() {
               }`}
               style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
             >
-              🔍 Search for my business
+              Find me in Google
             </button>
             <button
               onClick={() => setInputMode("url")}
@@ -206,7 +205,7 @@ export default function Index() {
               }`}
               style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
             >
-              🌐 I have my URL
+              I know my URL
             </button>
           </div>
 
