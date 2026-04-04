@@ -120,7 +120,9 @@ export default function MountainLanePicker({ result, url }: Props) {
         body: { priceId: tier.priceId, mode: tier.mode, businessUrl: url, tierKey },
       });
       if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
+      if (data?.url) {
+        window.location.assign(data.url);
+      }
     } catch (err) {
       console.error("Checkout error:", err);
       toast.error("Something went wrong. Please try again.");
