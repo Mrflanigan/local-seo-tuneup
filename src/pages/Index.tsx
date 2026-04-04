@@ -43,6 +43,10 @@ export default function Index() {
     setScanUrl(url);
     try {
       const result: ScoringResult = await runCheckup({ url, city, businessType });
+      // Persist scan so user can resume after reload / navigation
+      try {
+        localStorage.setItem("lastScan", JSON.stringify({ result, url, city, businessType, ts: Date.now() }));
+      } catch { /* storage full — not critical */ }
       navigate("/report", { state: { result, url, city, businessType } });
     } catch (err) {
       toast.error("Something went wrong scanning that site. Please try again.");

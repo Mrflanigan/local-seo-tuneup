@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import type { ScoringResult } from "@/lib/scoring/types";
 import { saveLead, saveSnapshot } from "@/lib/api/checkup";
@@ -30,9 +30,23 @@ export default function Report() {
     city?: string;
     businessType?: string;
   } | null;
-  if (!state) return <Navigate to="/" replace />;
 
-  const { result, url, city } = state;
+  // Fall back to localStorage if navigated here without state (e.g. page reload)
+  const restored = useMemo(() => {
+    if (state) return state;
+    try {
+      const raw = localStorage.getItem("lastScan");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed?.result && parsed?.url) return parsed as typeof state;
+      }
+    } catch { /* corrupt data */ }
+    return null;
+  }, [state]);
+
+  if (!restored) return <Navigate to="/" replace />;
+
+  const { result, url, city } = restored;
   const name = result.siteContext.businessName;
 
   const handleSnapshotSave = async (label: "before" | "after") => {
