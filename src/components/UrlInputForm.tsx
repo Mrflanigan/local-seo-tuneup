@@ -94,7 +94,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
         </div>
         <Button
           type="submit"
-          className="h-12 px-6 text-base font-semibold whitespace-nowrap"
+          className="h-12 px-6 text-base font-bold whitespace-nowrap bg-primary text-white hover:bg-primary/90"
           disabled={loading || !url.trim()}
           size="lg"
         >
