@@ -57,7 +57,6 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
                 businessType === "online" ? "border-primary ring-1 ring-primary/50" : "border-primary/60"
               )}
           >
-            <Laptop className="h-4 w-4" />
             Mostly Online
           </button>
           <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2.5 z-50 hidden group-hover:block">
