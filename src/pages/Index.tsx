@@ -38,6 +38,7 @@ export default function Index() {
   const [loading, setLoading] = useState(false);
   const [scanUrl, setScanUrl] = useState("");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [inputMode, setInputMode] = useState<"search" | "url">("search");
 
   const handleSubmit = async (url: string, city?: string, businessType?: BusinessType) => {
     setLoading(true);
