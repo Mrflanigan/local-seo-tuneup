@@ -150,7 +150,7 @@ export default function Index() {
           <span
             style={{
               fontSize: "clamp(1.6rem, 3vw, 3.6rem)",
-              fontFamily: "'Helvetica Neue', Helvetica, sans-serif",
+              fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif",
               fontWeight: 900,
               fontStretch: "condensed",
               letterSpacing: "0.02em",
@@ -160,18 +160,18 @@ export default function Index() {
             }}
           >
             Ai's Best Optimization {" "}
-            <Link to="/osmosis" className="text-primary font-bold underline decoration-primary underline-offset-2 hover:decoration-primary transition-colors whitespace-nowrap text-lg sm:text-xl" style={{ fontFamily: "'Helvetica Neue', Helvetica, sans-serif", fontWeight: 700, fontStretch: "normal" }}>SEO Osmosis™</Link>
+            <Link to="/osmosis" className="text-primary font-bold underline decoration-primary underline-offset-2 hover:decoration-primary transition-colors whitespace-nowrap text-lg sm:text-xl" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif", fontWeight: 700, fontStretch: "normal" }}>SEO Osmosis™</Link>
           </span>
         </div>
 
-        <p className="absolute top-28 right-6 z-10 text-lg sm:text-xl text-foreground/80 leading-relaxed text-right max-w-md" style={{ fontFamily: "'Helvetica Neue', Helvetica, sans-serif" }}>
+        <p className="absolute top-28 right-6 z-10 text-lg sm:text-xl text-foreground/80 leading-relaxed text-right max-w-md" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
             We look at your site like Google sees it
         </p>
 
 
 
         {/* Headline pinned top-left */}
-        <h1 className="absolute top-24 left-6 z-10 text-4xl sm:text-6xl font-bold tracking-tight leading-[1.1]" style={{ fontFamily: "'Helvetica Neue', Helvetica, sans-serif" }}>
+        <h1 className="absolute top-24 left-6 z-10 text-4xl sm:text-6xl font-bold tracking-tight leading-[1.1]" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
           Rise to the Top.
         </h1>
 
@@ -180,7 +180,7 @@ export default function Index() {
 
           <UrlInputForm onSubmit={handleSubmit} loading={loading} />
 
-          <p className="text-xs text-muted-foreground/70 mt-5" style={{ fontFamily: "'Helvetica Neue', Helvetica, sans-serif" }}>
+          <p className="text-xs text-muted-foreground/70 mt-5" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
             No signup · Free instant audit · Real data from your site
           </p>
         </div>
