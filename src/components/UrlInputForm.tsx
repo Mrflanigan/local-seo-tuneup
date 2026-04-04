@@ -1,9 +1,16 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Globe, MapPin } from "lucide-react";
 import type { BusinessType } from "@/lib/scoring/types";
-import { cn } from "@/lib/utils";
 
 interface UrlInputFormProps {
   onSubmit: (url: string, city?: string, businessType?: BusinessType) => void;
@@ -14,7 +21,7 @@ interface UrlInputFormProps {
 export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: UrlInputFormProps) {
   const [url, setUrl] = useState("");
   const [city, setCity] = useState("");
-  const [businessType, setBusinessType] = useState<BusinessType>("local");
+  const [businessType, setBusinessType] = useState<BusinessType | "">(hideBusinessType ? "local" : "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,50 +29,33 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
     if (cleanUrl && !cleanUrl.startsWith("http")) {
       cleanUrl = "https://" + cleanUrl;
     }
-    onSubmit(cleanUrl, city.trim() || undefined, businessType);
+    onSubmit(cleanUrl, city.trim() || undefined, businessType || undefined);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto space-y-3">
+    <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto space-y-4">
       {!hideBusinessType && (
-      <div className="grid grid-cols-2 gap-2">
-        <div className="relative group">
-          <button
-            type="button"
-            onClick={() => setBusinessType("local")}
-              className={cn(
-                "w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-base font-bold transition-all",
-                "bg-primary text-primary-foreground hover:bg-primary/90",
-                businessType === "local" ? "border-primary ring-1 ring-primary/50" : "border-primary/60"
-              )}
+        <div className="space-y-2 text-left">
+          <Label htmlFor="business-type" className="text-sm font-semibold text-foreground">
+            What type of business is this?
+          </Label>
+          <Select
+            value={businessType}
+            onValueChange={(value) => setBusinessType(value as BusinessType)}
+            disabled={loading}
           >
-            Local Customers
-          </button>
-          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2.5 z-50 hidden group-hover:block">
-            <div className="bg-popover border border-border rounded-lg px-3 py-2 text-xs text-muted-foreground shadow-lg whitespace-nowrap">
-              Plumber, dentist, restaurant, retail store, law office…
-            </div>
-          </div>
+            <SelectTrigger id="business-type" className="h-12 text-base text-foreground">
+              <SelectValue placeholder="Select business type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="local">Local business serving a city or area</SelectItem>
+              <SelectItem value="online">Online business serving customers anywhere</SelectItem>
+            </SelectContent>
+          </Select>
+          <p className="text-sm text-foreground/80">
+            Choose the option that best matches how this business gets customers.
+          </p>
         </div>
-        <div className="relative group">
-          <button
-            type="button"
-            onClick={() => setBusinessType("online")}
-              className={cn(
-                "w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-base font-bold transition-all",
-                "bg-primary text-primary-foreground hover:bg-primary/90",
-                businessType === "online" ? "border-primary ring-1 ring-primary/50" : "border-primary/60"
-              )}
-          >
-            Mostly Online
-          </button>
-          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2.5 z-50 hidden group-hover:block">
-            <div className="bg-popover border border-border rounded-lg px-3 py-2 text-xs text-muted-foreground shadow-lg whitespace-nowrap">
-              SaaS, e-commerce, agency, consultant, freelancer…
-            </div>
-          </div>
-        </div>
-      </div>
       )}
 
       <div className="flex gap-2">
@@ -85,7 +75,13 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
           <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             type="text"
-            placeholder={businessType === "local" ? "City or ZIP" : "City or ZIP (optional)"}
+            placeholder={
+              businessType === "local"
+                ? "City or ZIP"
+                : businessType === "online"
+                  ? "City or ZIP (optional)"
+                  : "City or ZIP (if you serve a local area)"
+            }
             value={city}
             onChange={(e) => setCity(e.target.value)}
             className="pl-10 h-12 text-base text-foreground placeholder:text-foreground"
@@ -95,7 +91,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
         <Button
           type="submit"
           className="h-12 px-6 text-base font-bold whitespace-nowrap bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-100 disabled:bg-primary disabled:text-primary-foreground"
-          disabled={loading || !url.trim()}
+          disabled={loading || !url.trim() || (!hideBusinessType && !businessType)}
           size="lg"
         >
           Run My Free Check
