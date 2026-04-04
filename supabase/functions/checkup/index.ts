@@ -52,30 +52,38 @@ Deno.serve(async (req) => {
     let pageSpeed = null;
     try {
       const psiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(normalizedUrl)}&category=PERFORMANCE&category=ACCESSIBILITY&category=BEST_PRACTICES&category=SEO&strategy=MOBILE`;
-      const psiRes = await fetch(psiUrl);
-      if (psiRes.ok) {
-        const psi = await psiRes.json();
-        const cats = psi.lighthouseResult?.categories || {};
-        const audits = psi.lighthouseResult?.audits || {};
-        pageSpeed = {
-          performance: Math.round((cats.performance?.score || 0) * 100),
-          accessibility: Math.round((cats.accessibility?.score || 0) * 100),
-          bestPractices: Math.round((cats["best-practices"]?.score || 0) * 100),
-          seo: Math.round((cats.seo?.score || 0) * 100),
-          coreWebVitals: {
-            lcp: audits["largest-contentful-paint"]?.numericValue,
-            fid: audits["max-potential-fid"]?.numericValue,
-            cls: audits["cumulative-layout-shift"]?.numericValue,
-            fcp: audits["first-contentful-paint"]?.numericValue,
-            si: audits["speed-index"]?.numericValue,
-            tbt: audits["total-blocking-time"]?.numericValue,
-            tti: audits["interactive"]?.numericValue,
-          },
-          fetchedAt: new Date().toISOString(),
-        };
-        console.log(`[checkup] PageSpeed: perf=${pageSpeed.performance}, seo=${pageSpeed.seo}`);
-      } else {
-        console.warn(`[checkup] PageSpeed API returned ${psiRes.status}`);
+      const maxAttempts = 3;
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        const psiRes = await fetch(psiUrl);
+        if (psiRes.ok) {
+          const psi = await psiRes.json();
+          const cats = psi.lighthouseResult?.categories || {};
+          const audits = psi.lighthouseResult?.audits || {};
+          pageSpeed = {
+            performance: Math.round((cats.performance?.score || 0) * 100),
+            accessibility: Math.round((cats.accessibility?.score || 0) * 100),
+            bestPractices: Math.round((cats["best-practices"]?.score || 0) * 100),
+            seo: Math.round((cats.seo?.score || 0) * 100),
+            coreWebVitals: {
+              lcp: audits["largest-contentful-paint"]?.numericValue,
+              fid: audits["max-potential-fid"]?.numericValue,
+              cls: audits["cumulative-layout-shift"]?.numericValue,
+              fcp: audits["first-contentful-paint"]?.numericValue,
+              si: audits["speed-index"]?.numericValue,
+              tbt: audits["total-blocking-time"]?.numericValue,
+              tti: audits["interactive"]?.numericValue,
+            },
+            fetchedAt: new Date().toISOString(),
+          };
+          console.log(`[checkup] PageSpeed: perf=${pageSpeed.performance}, seo=${pageSpeed.seo}`);
+          break;
+        } else if (psiRes.status === 429 && attempt < maxAttempts) {
+          console.warn(`[checkup] PageSpeed 429, retrying in ${attempt * 3}s (attempt ${attempt}/${maxAttempts})`);
+          await new Promise(r => setTimeout(r, attempt * 3000));
+        } else {
+          console.warn(`[checkup] PageSpeed API returned ${psiRes.status} on attempt ${attempt}`);
+          break;
+        }
       }
     } catch (psiErr) {
       console.warn("[checkup] PageSpeed fetch failed:", psiErr);
