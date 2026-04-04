@@ -113,10 +113,10 @@ export default function Index() {
         {/* Gradient overlay — sits above the G */}
         <div className="absolute inset-0" style={{ zIndex: 2, background: "linear-gradient(to bottom, hsl(220 20% 7% / 0.58), hsl(220 20% 7% / 0.38), hsl(220 20% 7% / 0.88))" }} />
 
-        {/* ── Stealthy SEO block letters — centered in the mountain ── */}
+        {/* ── Stealthy SEO block letters + Ai's Best Optimization ── */}
         <div
-          className="absolute left-0 top-0 bottom-0 flex items-center pointer-events-none select-none"
-          style={{ zIndex: 3, marginTop: "-8%" }}
+          className="absolute left-0 top-0 bottom-0 flex items-end pointer-events-none select-none"
+          style={{ zIndex: 3, paddingBottom: "18%" }}
           aria-hidden="true"
         >
           <span
@@ -136,14 +136,6 @@ export default function Index() {
           >
             SEO
           </span>
-        </div>
-
-        {/* ── Ai's Best Optimization — aligned to SEO bottom ── */}
-        <div
-          className="absolute left-0 bottom-0 top-0 flex items-center pointer-events-none select-none"
-          style={{ zIndex: 3, marginTop: "-8%" }}
-          aria-hidden="true"
-        >
           <span
             style={{
               fontSize: "clamp(2rem, 4.2vw, 5.4rem)",
@@ -152,14 +144,12 @@ export default function Index() {
               fontStretch: "condensed",
               letterSpacing: "0.05em",
               color: "hsl(120 100% 30%)",
-              lineHeight: 0.78,
-              marginLeft: "clamp(12rem, 25vw, 32rem)",
-              transform: "scaleX(0.6)",
-              transformOrigin: "left center",
-              alignSelf: "center",
+              lineHeight: 1,
+              marginLeft: "-28%",
+              marginBottom: "0.1em",
             }}
           >
-            <span style={{ textTransform: "uppercase", fontSize: "0.7em" }}>A</span>i's Best
+            <span style={{ fontSize: "0.7em" }}>A</span>i's Best
             <br />
             Optimization
           </span>
