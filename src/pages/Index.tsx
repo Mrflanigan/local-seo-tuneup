@@ -113,10 +113,10 @@ export default function Index() {
         {/* Gradient overlay — sits above the G */}
         <div className="absolute inset-0" style={{ zIndex: 2, background: "linear-gradient(to bottom, hsl(220 20% 7% / 0.58), hsl(220 20% 7% / 0.38), hsl(220 20% 7% / 0.88))" }} />
 
-        {/* ── Stealthy SEO block letters with inline continuation ── */}
+        {/* ── Stealthy SEO outline letters ── */}
         <div
           className="absolute left-0 top-0 bottom-0 flex items-center pointer-events-none select-none"
-          style={{ zIndex: 3, marginTop: "-16%" }}
+          style={{ zIndex: 3, marginTop: "-8%" }}
           aria-hidden="true"
         >
           <span
@@ -135,21 +135,33 @@ export default function Index() {
             }}
           >
             SEO
-            <span
-              style={{
-                fontSize: "0.085em",
-                color: "hsl(120 100% 30%)",
-                WebkitTextStroke: "0px transparent",
-                letterSpacing: "0.02em",
-                lineHeight: 1,
-                marginLeft: "0.15em",
-                verticalAlign: "bottom",
-                whiteSpace: "nowrap",
-                display: "inline",
-              }}
-            >
-              <span style={{ fontSize: "0.72em" }}>A</span>i's Best Optimization
-            </span>
+          </span>
+        </div>
+
+        {/* ── Ai's Best Optimization — positioned after O, above form ── */}
+        <div
+          className="absolute pointer-events-none select-none"
+          style={{
+            zIndex: 3,
+            left: "50%",
+            top: "50%",
+            transform: "translateY(-50%)",
+          }}
+          aria-hidden="true"
+        >
+          <span
+            style={{
+              fontSize: "clamp(1.4rem, 2.8vw, 3.2rem)",
+              fontFamily: "'Arial Narrow', 'Helvetica Neue', sans-serif",
+              fontWeight: 900,
+              fontStretch: "condensed",
+              letterSpacing: "0.02em",
+              color: "hsl(120 100% 30%)",
+              lineHeight: 1,
+              whiteSpace: "nowrap",
+            }}
+          >
+            <span style={{ fontSize: "0.72em" }}>A</span>i's Best Optimization
           </span>
         </div>
 
