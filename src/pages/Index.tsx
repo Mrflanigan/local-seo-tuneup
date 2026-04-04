@@ -116,7 +116,7 @@ export default function Index() {
         {/* ── Stealthy SEO block letters — centered in the mountain ── */}
         <div
           className="absolute left-0 top-0 bottom-0 flex items-center pointer-events-none select-none"
-          style={{ zIndex: 3 }}
+          style={{ zIndex: 3, marginTop: "-8%" }}
           aria-hidden="true"
         >
           <span
@@ -127,7 +127,7 @@ export default function Index() {
               fontStretch: "condensed",
               letterSpacing: "-0.02em",
               color: "transparent",
-              WebkitTextStroke: "4px hsl(120 100% 30% / 0.35)",
+              WebkitTextStroke: "4px hsl(120 100% 30%)",
               lineHeight: 0.78,
               marginLeft: "-1%",
               transform: "scaleX(0.6)",
