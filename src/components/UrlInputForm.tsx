@@ -8,9 +8,10 @@ import { cn } from "@/lib/utils";
 interface UrlInputFormProps {
   onSubmit: (url: string, city?: string, businessType?: BusinessType) => void;
   loading?: boolean;
+  hideBusinessType?: boolean;
 }
 
-export default function UrlInputForm({ onSubmit, loading }: UrlInputFormProps) {
+export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: UrlInputFormProps) {
   const [url, setUrl] = useState("");
   const [city, setCity] = useState("");
   const [businessType, setBusinessType] = useState<BusinessType>("local");
@@ -26,7 +27,7 @@ export default function UrlInputForm({ onSubmit, loading }: UrlInputFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-xl mx-auto space-y-3">
-      {/* Business Type Selector */}
+      {!hideBusinessType && (
       <div className="grid grid-cols-2 gap-2">
         <div className="relative group">
           <button
@@ -67,6 +68,7 @@ export default function UrlInputForm({ onSubmit, loading }: UrlInputFormProps) {
           </div>
         </div>
       </div>
+      )}
 
       <div className="relative">
         <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />

@@ -236,7 +236,7 @@ export default function Index() {
         <div className="relative z-10 mx-auto max-w-3xl px-6 text-center">
           <h2 className="text-3xl sm:text-5xl font-bold mb-5">Ready to Rise?</h2>
           <p className="text-lg text-muted-foreground mb-10 max-w-lg mx-auto">30 seconds. No signup. Your personalized local SEO audit with real data from your actual site.</p>
-          <UrlInputForm onSubmit={handleSubmit} loading={loading} />
+          <UrlInputForm onSubmit={handleSubmit} loading={loading} hideBusinessType />
         </div>
         <LandmarkCaption name={landmarks[3].name} detail={landmarks[3].detail} />
       </section>
