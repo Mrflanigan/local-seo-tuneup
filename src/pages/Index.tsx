@@ -180,7 +180,7 @@ export default function Index() {
         </h1>
 
 
-        <div className="relative z-10 mx-auto max-w-3xl px-6 text-center pt-64">
+        <div className="relative z-10 mx-auto max-w-5xl px-6 text-center pt-64">
 
           <UrlInputForm onSubmit={handleSubmit} loading={loading} />
 
