@@ -115,7 +115,7 @@ export default function Index() {
 
         <div className="relative z-10 w-full max-w-6xl mx-auto px-6 pt-24">
 
-          <h1 className="text-4xl sm:text-6xl font-bold tracking-tight mb-6 leading-[1.1] text-left">
+          <h1 className="text-4xl sm:text-6xl font-bold tracking-tight mb-6 leading-[1.1]">
             Rise to the Top.
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground mb-10 max-w-xl mx-auto leading-relaxed">
