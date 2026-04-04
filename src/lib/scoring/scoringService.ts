@@ -597,27 +597,52 @@ export function scoreWebsite(
 
   const businessType = input.businessType || "local";
   
-  // Checks excluded for online businesses
-  const onlineExcludedChecks = ["phone", "nap", "local-schema", "maps", "local-keywords"];
+  // Checks that are "bonus" for online businesses
+  const onlineBonusChecks = ["phone", "nap", "local-schema", "maps", "local-keywords"];
   
   const rawScore = categories.reduce((s, c) => s + c.score, 0);
   
-  // Calculate applicable max by excluding non-applicable checks
-  let applicableMax = 100;
   if (businessType === "online") {
+    // Calculate base score (without bonus checks) and bonus points
+    let baseEarned = 0;
+    let baseMax = 0;
+    let bonusEarned = 0;
+    
     for (const cat of categories) {
       for (const finding of cat.findings) {
-        if (onlineExcludedChecks.includes(finding.id)) {
-          applicableMax -= finding.maxPoints;
+        if (onlineBonusChecks.includes(finding.id)) {
+          bonusEarned += finding.points;
+        } else {
+          baseEarned += finding.points;
+          baseMax += finding.maxPoints;
         }
       }
     }
+    
+    // Normalize base to 100, then add bonus points on top
+    const applicableMax = baseMax;
+    const normalizedBase = applicableMax > 0
+      ? Math.round((baseEarned / applicableMax) * 100)
+      : baseEarned;
+    const overallScore = normalizedBase + bonusEarned;
+    const letterGrade = grade(Math.min(overallScore, 100));
+    const personalizedSummary = generatePersonalizedSummary(ctx, categories, overallScore);
+    
+    return {
+      overallScore,
+      rawScore,
+      applicableMax,
+      businessType,
+      letterGrade,
+      categories,
+      siteContext: ctx,
+      personalizedSummary,
+    };
   }
   
-  // Normalize to 100
-  const overallScore = applicableMax > 0 
-    ? Math.round((rawScore / applicableMax) * 100) 
-    : rawScore;
+  // Local business: straight score out of 100
+  const applicableMax = 100;
+  const overallScore = rawScore;
   const letterGrade = grade(overallScore);
   const personalizedSummary = generatePersonalizedSummary(ctx, categories, overallScore);
 
