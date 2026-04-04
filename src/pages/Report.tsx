@@ -8,7 +8,7 @@ import YearAgoProjection from "@/components/YearAgoProjection";
 import CompetitorComparison from "@/components/CompetitorComparison";
 import CTABanner from "@/components/CTABanner";
 import PathToPageOne from "@/components/PathToPageOne";
-import LanePicker from "@/components/LanePicker";
+import MountainLanePicker from "@/components/MountainLanePicker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -153,7 +153,7 @@ export default function Report() {
 
         {/* Pick Your Lane — the pricing */}
         <div className="mt-8">
-          <LanePicker result={result} url={url} />
+          <MountainLanePicker result={result} url={url} />
         </div>
 
         {/* Soft email CTA */}

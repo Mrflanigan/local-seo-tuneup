@@ -5,6 +5,7 @@ import ScanningView from "@/components/ScanningView";
 import { runCheckup } from "@/lib/api/checkup";
 import type { ScoringResult } from "@/lib/scoring/types";
 import { toast } from "sonner";
+import MountainTeaser from "@/components/MountainTeaser";
 import {
   Search,
   Shield,
@@ -126,6 +127,8 @@ export default function Index() {
           <p className="text-xs text-muted-foreground/70 mt-5">
             No signup · Free instant audit · Real data from your site
           </p>
+
+          <MountainTeaser />
         </div>
 
         {/* Landmark caption */}
