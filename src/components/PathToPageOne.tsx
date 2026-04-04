@@ -58,8 +58,11 @@ export default function PathToPageOne({ result, url }: Props) {
     setLoadingTier(tierKey);
     try {
       const tier = TIER_CONFIG[tierKey];
+      // Stash scan data so the success page can use it
+      sessionStorage.setItem("scanResult", JSON.stringify(result));
+      sessionStorage.setItem("scanUrl", url || "");
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { priceId: tier.priceId, mode: tier.mode, businessUrl: url },
+        body: { priceId: tier.priceId, mode: tier.mode, businessUrl: url, tierKey },
       });
       if (error) throw error;
       if (data?.url) {

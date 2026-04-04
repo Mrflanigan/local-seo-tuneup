@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { priceId, mode, customerEmail, businessUrl } = await req.json();
+    const { priceId, mode, customerEmail, businessUrl, tierKey } = await req.json();
 
     if (!priceId) throw new Error("priceId is required");
 
@@ -22,10 +22,13 @@ serve(async (req) => {
 
     const origin = req.headers.get("origin") || "https://id-preview--d95e4257-ad9d-4a77-897f-9f02759a84b8.lovable.app";
 
+    const successParams = new URLSearchParams();
+    if (tierKey) successParams.set("tier", tierKey);
+
     const sessionParams: any = {
       line_items: [{ price: priceId, quantity: 1 }],
       mode: mode || "payment",
-      success_url: `${origin}/payment-success`,
+      success_url: `${origin}/payment-success?${successParams.toString()}`,
       cancel_url: `${origin}/`,
     };
 
