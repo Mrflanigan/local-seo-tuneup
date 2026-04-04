@@ -38,12 +38,12 @@ export default function Index() {
   const [scanUrl, setScanUrl] = useState("");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  const handleSubmit = async (url: string, city?: string) => {
+  const handleSubmit = async (url: string, city?: string, businessType?: BusinessType) => {
     setLoading(true);
     setScanUrl(url);
     try {
-      const result: ScoringResult = await runCheckup({ url, city });
-      navigate("/report", { state: { result, url, city } });
+      const result: ScoringResult = await runCheckup({ url, city, businessType });
+      navigate("/report", { state: { result, url, city, businessType } });
     } catch (err) {
       toast.error("Something went wrong scanning that site. Please try again.");
       console.error(err);
