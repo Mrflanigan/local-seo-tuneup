@@ -28,7 +28,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
     if (cleanUrl && !cleanUrl.startsWith("http")) {
       cleanUrl = "https://" + cleanUrl;
     }
-    onSubmit(cleanUrl, city.trim() || undefined, businessType || undefined);
+    onSubmit(cleanUrl, city.trim() || undefined, (businessType || "local") as BusinessType);
   };
 
   return (
@@ -87,7 +87,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
         <Button
           type="submit"
           className="h-12 px-6 text-base font-bold whitespace-nowrap bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-100 disabled:bg-primary disabled:text-primary-foreground italic"
-          disabled={loading || !url.trim() || (!hideBusinessType && !businessType)}
+          disabled={loading || !url.trim()}
           size="lg"
           style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
         >
