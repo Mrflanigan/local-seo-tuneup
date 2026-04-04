@@ -77,7 +77,7 @@ export default function Index() {
       </nav>
 
       {/* ═══ HERO — Denali ═══ */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-end justify-center overflow-hidden pb-16">
         <img src={heroDenali} alt="Summit of Denali, highest peak in North America" width={1920} height={1080} className="absolute inset-0 w-full h-full object-cover" />
 
         {/* ── The G — buried into the bottom-left terrain ── */}
