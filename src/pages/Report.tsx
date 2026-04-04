@@ -131,10 +131,27 @@ export default function Report() {
             We scanned your site the same way Google's crawler would. Here's the
             honest breakdown — what's working, what's not, and why it matters.
           </p>
-          {result.businessType === "online" && (
+          {result.businessType === "online" && result.overallScore > 100 && (
+            <div className="mt-3 mx-auto max-w-md rounded-lg border border-accent/30 bg-accent/5 p-3">
+              <p className="text-xs text-accent font-semibold mb-1">🏆 You scored above 100!</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                As an online business, your base score is out of 100. But you also have local signals
+                that most online businesses don't — earning you <strong className="text-foreground">{result.overallScore - 100} bonus points</strong>.
+                {(() => {
+                  const bonusChecks = ["phone", "nap", "local-schema", "maps", "local-keywords"];
+                  const earned = result.categories
+                    .flatMap(c => c.findings)
+                    .filter(f => bonusChecks.includes(f.id) && f.passed);
+                  if (earned.length === 0) return null;
+                  return ` Bonus from: ${earned.map(f => f.generic.split(".")[0]).join(", ")}.`;
+                })()}
+              </p>
+            </div>
+          )}
+          {result.businessType === "online" && result.overallScore <= 100 && (
             <p className="text-xs text-muted-foreground/70 mt-2 max-w-md mx-auto">
               Scored as an <strong className="text-foreground">Online Business</strong> — local-only checks
-              (phone, address, maps, local schema, local keywords) are excluded. Raw points: {result.rawScore}/{result.applicableMax} applicable.
+              can earn bonus points above 100 if present.
             </p>
           )}
           {result.businessType === "local" && (
