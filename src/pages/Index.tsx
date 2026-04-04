@@ -147,8 +147,8 @@ export default function Index() {
           className="absolute select-none pointer-events-none"
           style={{
             zIndex: 4,
-            left: "46%",
-            bottom: "40%",
+            left: "38%",
+            bottom: "34%",
           }}
         >
           <span
@@ -163,7 +163,7 @@ export default function Index() {
               whiteSpace: "nowrap",
             }}
           >
-            Ai's Best Optimization {" "}
+            Ai's Best Optimization Tools {" "}
             <Link to="/osmosis" className="pointer-events-auto text-primary font-bold underline decoration-primary underline-offset-2 hover:decoration-primary transition-colors whitespace-nowrap text-lg sm:text-xl" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif", fontWeight: 700, fontStretch: "normal" }}>SEO Osmosis™</Link>
           </span>
         </div>
