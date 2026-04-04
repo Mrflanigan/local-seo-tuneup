@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import UrlInputForm from "@/components/UrlInputForm";
 import ScanningView from "@/components/ScanningView";
 import { runCheckup } from "@/lib/api/checkup";
-import type { ScoringResult } from "@/lib/scoring/types";
+import type { ScoringResult, BusinessType } from "@/lib/scoring/types";
 import { toast } from "sonner";
 import MountainTeaser from "@/components/MountainTeaser";
 import {
