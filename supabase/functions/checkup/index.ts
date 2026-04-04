@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { url, city, state } = await req.json();
+    const { url, city, state, businessType } = await req.json();
 
     if (!url || typeof url !== "string") {
       return new Response(
@@ -39,13 +39,13 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log(`[checkup] Scraping ${normalizedUrl}, city=${city || "none"}`);
+    console.log(`[checkup] Scraping ${normalizedUrl}, city=${city || "none"}, type=${businessType || "local"}`);
 
     // 1. Scrape with Firecrawl
     const scraped = await scrapeWithFirecrawl(normalizedUrl);
 
     // 2. Score
-    const input: ScanInput = { url: normalizedUrl, city, state };
+    const input: ScanInput = { url: normalizedUrl, city, state, businessType: businessType || "local" };
     const result = scoreWebsite(scraped, input);
 
     console.log(`[checkup] Score: ${result.overallScore} (${result.letterGrade})`);
