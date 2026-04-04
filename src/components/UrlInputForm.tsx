@@ -86,9 +86,10 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
         </div>
         <Button
           type="submit"
-          className="h-12 px-6 text-base font-bold whitespace-nowrap bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-100 disabled:bg-primary disabled:text-primary-foreground"
+          className="h-12 px-6 text-base font-bold whitespace-nowrap bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-100 disabled:bg-primary disabled:text-primary-foreground italic"
           disabled={loading || !url.trim() || (!hideBusinessType && !businessType)}
           size="lg"
+          style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
         >
           Run SEO Osmosis
         </Button>
