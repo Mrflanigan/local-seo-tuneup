@@ -76,7 +76,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
       )}
 
       <div className="flex gap-2">
-        <div className="relative flex-[2]">
+        <div className="relative flex-[3]">
           <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             type="text"
