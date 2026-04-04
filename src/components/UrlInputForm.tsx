@@ -34,7 +34,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
             type="button"
             onClick={() => setBusinessType("local")}
               className={cn(
-                "w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-sm font-semibold transition-all",
+                "w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-base font-bold transition-all",
                 "bg-primary text-white hover:bg-primary/90",
                 businessType === "local" ? "border-primary ring-1 ring-primary/50" : "border-primary/60"
               )}
