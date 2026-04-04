@@ -118,10 +118,11 @@ export default function Index() {
           Rise to the Top.
         </h1>
 
-        <div className="relative z-10 mx-auto max-w-3xl px-6 text-center pt-36">
-          <p className="text-lg sm:text-xl text-muted-foreground mb-10 max-w-xl mx-auto leading-relaxed">
+        <p className="absolute top-28 right-6 z-10 text-lg sm:text-xl text-muted-foreground leading-relaxed text-right max-w-md">
             We look at your site like Google sees it — using <Link to="/osmosis" className="text-primary font-semibold underline decoration-primary/30 underline-offset-2 hover:decoration-primary transition-colors whitespace-nowrap">SEO Osmosis™</Link>.
-          </p>
+        </p>
+
+        <div className="relative z-10 mx-auto max-w-3xl px-6 text-center pt-44">
 
           <UrlInputForm onSubmit={handleSubmit} loading={loading} />
 
