@@ -34,7 +34,7 @@ export default function UrlInputForm({ onSubmit, loading }: UrlInputFormProps) {
             className={`w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-sm font-medium transition-all ${
               businessType === "local"
                 ? "border-primary bg-primary/10 text-primary"
-                : "border-border bg-card/60 text-muted-foreground hover:border-muted-foreground/40"
+                : "border-border bg-card/60 text-muted-foreground hover:text-foreground hover:border-primary/40"
             }`}
           >
             <Building2 className="h-4 w-4" />
@@ -53,7 +53,7 @@ export default function UrlInputForm({ onSubmit, loading }: UrlInputFormProps) {
             className={`w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-sm font-medium transition-all ${
               businessType === "online"
                 ? "border-primary bg-primary/10 text-primary"
-                : "border-border bg-card/60 text-muted-foreground hover:border-muted-foreground/40"
+                : "border-border bg-card/60 text-muted-foreground hover:text-foreground hover:border-primary/40"
             }`}
           >
             <Laptop className="h-4 w-4" />
