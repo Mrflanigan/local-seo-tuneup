@@ -110,7 +110,6 @@ export default function MountainLanePicker({ result, url }: Props) {
 
     setLaunched(tierKey);
     setLoadingTier(tierKey);
-    await new Promise((r) => setTimeout(r, 1200));
 
     try {
       const tier = TIER_CONFIG[tierKey];
@@ -179,6 +178,7 @@ export default function MountainLanePicker({ result, url }: Props) {
             return (
               <button
                 key={path.key}
+                type="button"
                 onClick={() => handleCheckout(path.key)}
                 onMouseEnter={() => setHoveredPath(path.key)}
                 onMouseLeave={() => setHoveredPath(null)}
@@ -309,6 +309,7 @@ export default function MountainLanePicker({ result, url }: Props) {
               className="h-9 text-sm"
             />
             <button
+              type="button"
               onClick={handleApplyCoupon}
               className="shrink-0 h-9 px-4 rounded-md text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
             >
