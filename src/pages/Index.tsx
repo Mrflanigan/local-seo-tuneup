@@ -49,9 +49,12 @@ export default function Index() {
           <span className="text-xl font-bold tracking-tight">
             SEO<span className="text-primary">RiseUp</span>
           </span>
-          <a href="#how-it-works" className="text-sm text-foreground font-semibold hover:text-primary transition-colors">
-            How it works
-          </a>
+          <div className="flex items-center gap-8">
+            <span className="text-sm font-semibold tracking-[0.2em] text-muted-foreground">PAGE 1</span>
+            <a href="#how-it-works" className="text-sm text-foreground font-semibold hover:text-primary transition-colors">
+              How it works
+            </a>
+          </div>
         </div>
       </nav>
 
