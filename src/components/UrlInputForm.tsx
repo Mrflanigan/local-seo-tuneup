@@ -35,7 +35,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
             onClick={() => setBusinessType("local")}
               className={cn(
                 "w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-base font-bold transition-all",
-                "bg-primary text-white hover:bg-primary/90",
+                "bg-primary text-primary-foreground hover:bg-primary/90",
                 businessType === "local" ? "border-primary ring-1 ring-primary/50" : "border-primary/60"
               )}
           >
@@ -53,7 +53,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
             onClick={() => setBusinessType("online")}
               className={cn(
                 "w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-base font-bold transition-all",
-                "bg-primary text-white hover:bg-primary/90",
+                "bg-primary text-primary-foreground hover:bg-primary/90",
                 businessType === "online" ? "border-primary ring-1 ring-primary/50" : "border-primary/60"
               )}
           >
@@ -77,7 +77,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             required
-            className="pl-10 h-12 text-base text-white placeholder:text-white/50"
+            className="pl-10 h-12 text-base text-foreground placeholder:text-foreground"
             disabled={loading}
           />
         </div>
@@ -88,13 +88,13 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
             placeholder={businessType === "local" ? "City or ZIP" : "City or ZIP (optional)"}
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className="pl-10 h-12 text-base text-white placeholder:text-white/50"
+            className="pl-10 h-12 text-base text-foreground placeholder:text-foreground"
             disabled={loading}
           />
         </div>
         <Button
           type="submit"
-          className="h-12 px-6 text-base font-bold whitespace-nowrap bg-primary text-white hover:bg-primary/90"
+          className="h-12 px-6 text-base font-bold whitespace-nowrap bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-100 disabled:bg-primary disabled:text-primary-foreground"
           disabled={loading || !url.trim()}
           size="lg"
         >
