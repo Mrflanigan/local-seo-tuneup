@@ -44,7 +44,7 @@ export default function PaymentSuccess() {
     }
   }, []);
 
-  const scanUrl = sessionStorage.getItem("scanUrl") || "";
+  const _scanUrl = sessionStorage.getItem("scanUrl") || "";
   const findings = result ? getFailedFindings(result) : [];
   const businessName = result?.siteContext?.businessName;
 
