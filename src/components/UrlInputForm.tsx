@@ -31,16 +31,15 @@ export default function UrlInputForm({ onSubmit, loading }: UrlInputFormProps) {
           <button
             type="button"
             onClick={() => setBusinessType("local")}
-            className={`w-full flex items-center justify-center gap-2 h-11 rounded-lg text-sm font-medium transition-all ${
-              businessType === "local"
-                ? "bg-foreground/15 text-foreground border-2 border-primary"
-                : "bg-foreground/10 text-foreground/80 border border-foreground/20 hover:bg-foreground/15"
-            }`}
+            className="w-full flex items-center justify-center gap-2 h-11 rounded-lg border border-foreground/20 bg-foreground/10 text-foreground/90 text-sm font-medium transition-all hover:bg-foreground/15"
           >
             <Building2 className="h-4 w-4" />
             Local Customers
           </button>
-          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1.5 z-50 hidden group-hover:block">
+          {businessType === "local" && (
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2 h-2 rounded-full bg-primary" />
+          )}
+          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2.5 z-50 hidden group-hover:block">
             <div className="bg-popover border border-border rounded-lg px-3 py-2 text-xs text-muted-foreground shadow-lg whitespace-nowrap">
               Plumber, dentist, restaurant, retail store, law office…
             </div>
@@ -50,16 +49,15 @@ export default function UrlInputForm({ onSubmit, loading }: UrlInputFormProps) {
           <button
             type="button"
             onClick={() => setBusinessType("online")}
-            className={`w-full flex items-center justify-center gap-2 h-11 rounded-lg text-sm font-medium transition-all ${
-              businessType === "online"
-                ? "bg-foreground/15 text-foreground border-2 border-primary"
-                : "bg-foreground/10 text-foreground/80 border border-foreground/20 hover:bg-foreground/15"
-            }`}
+            className="w-full flex items-center justify-center gap-2 h-11 rounded-lg border border-foreground/20 bg-foreground/10 text-foreground/90 text-sm font-medium transition-all hover:bg-foreground/15"
           >
             <Laptop className="h-4 w-4" />
             Mostly Online
           </button>
-          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1.5 z-50 hidden group-hover:block">
+          {businessType === "online" && (
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2 h-2 rounded-full bg-primary" />
+          )}
+          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2.5 z-50 hidden group-hover:block">
             <div className="bg-popover border border-border rounded-lg px-3 py-2 text-xs text-muted-foreground shadow-lg whitespace-nowrap">
               SaaS, e-commerce, agency, consultant, freelancer…
             </div>
