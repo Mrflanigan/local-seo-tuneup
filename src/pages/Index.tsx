@@ -283,7 +283,6 @@ export default function Index() {
             Get Your Free SEO Checkup
           </Button>
         </div>
-        </div>
         <LandmarkCaption name={landmarks[3].name} detail={landmarks[3].detail} />
       </section>
 
