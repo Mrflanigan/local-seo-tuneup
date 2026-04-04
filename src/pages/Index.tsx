@@ -70,7 +70,7 @@ export default function Index() {
           <span className="text-xl font-bold tracking-tight">
             SEO<span className="text-primary">RiseUp</span>
           </span>
-          <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <a href="#how-it-works" className="text-sm text-foreground font-semibold hover:text-primary transition-colors">
             How it works
           </a>
         </div>
