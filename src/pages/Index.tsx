@@ -164,7 +164,7 @@ export default function Index() {
           </span>
         </div>
 
-        <p className="absolute top-28 right-6 z-10 text-lg sm:text-xl text-foreground/80 leading-relaxed text-right max-w-md">
+        <p className="absolute top-28 right-6 z-10 text-lg sm:text-xl text-foreground/80 leading-relaxed text-right max-w-md" style={{ fontFamily: "'Helvetica Neue', Helvetica, sans-serif" }}>
             We look at your site like Google sees it
         </p>
 
