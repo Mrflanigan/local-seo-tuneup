@@ -595,12 +595,37 @@ export function scoreWebsite(
     scoreExtras(data, ctx),
   ];
 
-  const overallScore = categories.reduce((s, c) => s + c.score, 0);
+  const businessType = input.businessType || "local";
+  
+  // Checks excluded for online businesses
+  const onlineExcludedChecks = ["phone", "nap", "local-schema", "maps", "local-keywords"];
+  
+  const rawScore = categories.reduce((s, c) => s + c.score, 0);
+  
+  // Calculate applicable max by excluding non-applicable checks
+  let applicableMax = 100;
+  if (businessType === "online") {
+    for (const cat of categories) {
+      for (const finding of cat.findings) {
+        if (onlineExcludedChecks.includes(finding.id)) {
+          applicableMax -= finding.maxPoints;
+        }
+      }
+    }
+  }
+  
+  // Normalize to 100
+  const overallScore = applicableMax > 0 
+    ? Math.round((rawScore / applicableMax) * 100) 
+    : rawScore;
   const letterGrade = grade(overallScore);
   const personalizedSummary = generatePersonalizedSummary(ctx, categories, overallScore);
 
   return {
     overallScore,
+    rawScore,
+    applicableMax,
+    businessType,
     letterGrade,
     categories,
     siteContext: ctx,
