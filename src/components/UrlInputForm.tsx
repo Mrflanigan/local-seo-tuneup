@@ -75,22 +75,22 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
         </div>
       )}
 
-      <div className="flex gap-2">
-        <div className="relative flex-[3]">
-          <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+      <div className="flex gap-3 w-full">
+        <div className="relative flex-1 min-w-0">
+          <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             type="text"
             placeholder="yourbusiness.com"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className="pl-10 h-14 text-lg text-foreground placeholder:text-foreground/60"
+            className="pl-12 h-14 text-lg text-foreground placeholder:text-foreground/60 w-full"
             disabled={loading}
           />
         </div>
         <Button
           type="button"
           onClick={() => handleSubmit()}
-          className="h-14 px-6 text-base font-bold whitespace-nowrap bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-100 disabled:bg-primary disabled:text-primary-foreground italic"
+          className="h-14 px-8 text-base font-bold whitespace-nowrap shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-100 disabled:bg-primary disabled:text-primary-foreground italic"
           disabled={loading}
           size="lg"
           style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
