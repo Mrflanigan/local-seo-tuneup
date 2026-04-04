@@ -35,6 +35,9 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
     <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto space-y-4">
       {!hideBusinessType && (
         <div className="space-y-2 text-left">
+          <p className="text-sm text-foreground/80">
+            Choose the Option That Best Matches How This Business Gets Customers
+          </p>
           <Select
             value={businessType}
             onValueChange={(value) => setBusinessType(value as BusinessType)}
@@ -48,9 +51,6 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
               <SelectItem value="online">Online Business Serving Customers Anywhere</SelectItem>
             </SelectContent>
           </Select>
-          <p className="text-sm text-foreground/80">
-            Choose the Option That Best Matches How This Business Gets Customers
-          </p>
         </div>
       )}
 
