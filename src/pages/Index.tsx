@@ -122,7 +122,7 @@ export default function Index() {
             We look at your site like Google sees it — using <Link to="/osmosis" className="text-primary font-semibold underline decoration-primary/30 underline-offset-2 hover:decoration-primary transition-colors whitespace-nowrap">SEO Osmosis™</Link>.
         </p>
 
-        <div className="relative z-10 mx-auto max-w-3xl px-6 text-center pt-44">
+        <div className="relative z-10 mx-auto max-w-3xl px-6 text-center pt-64">
 
           <UrlInputForm onSubmit={handleSubmit} loading={loading} />
 
