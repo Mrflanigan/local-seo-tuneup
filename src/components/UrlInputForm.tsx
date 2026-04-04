@@ -31,10 +31,10 @@ export default function UrlInputForm({ onSubmit, loading }: UrlInputFormProps) {
           <button
             type="button"
             onClick={() => setBusinessType("local")}
-            className={`w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-sm font-medium transition-all ${
+            className={`w-full flex items-center justify-center gap-2 h-11 rounded-lg border text-sm font-medium transition-all border-border text-foreground/80 hover:text-foreground ${
               businessType === "local"
-                ? "border-primary bg-primary/10 text-primary"
-                : "border-border bg-card/60 text-muted-foreground hover:text-foreground hover:border-primary/40"
+                ? "bg-primary/15 border-primary/50"
+                : "bg-card/60"
             }`}
           >
             <Building2 className="h-4 w-4" />
