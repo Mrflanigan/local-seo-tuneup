@@ -138,15 +138,14 @@ export default function Index() {
           </span>
         </div>
 
-        {/* ── Ai's Best Optimization — right of SEO letters ── */}
+        {/* ── Ai's Best Optimization + SEO Osmosis™ ── */}
         <div
-          className="absolute pointer-events-none select-none"
+          className="absolute select-none"
           style={{
             zIndex: 4,
             left: "52%",
-            bottom: "46%",
+            bottom: "49%",
           }}
-          aria-hidden="true"
         >
           <span
             style={{
@@ -162,6 +161,25 @@ export default function Index() {
           >
             <span style={{ fontSize: "0.72em" }}>A</span>i's Best Optimization
           </span>
+          <br />
+          <Link
+            to="/osmosis"
+            className="hover:opacity-80 transition-opacity"
+            style={{
+              fontSize: "clamp(0.9rem, 1.6vw, 1.8rem)",
+              fontFamily: "'Arial Narrow', 'Helvetica Neue', sans-serif",
+              fontWeight: 700,
+              fontStretch: "condensed",
+              letterSpacing: "0.02em",
+              color: "hsl(var(--primary))",
+              lineHeight: 1.4,
+              whiteSpace: "nowrap",
+              textDecoration: "underline",
+              textUnderlineOffset: "3px",
+            }}
+          >
+            SEO Osmosis™
+          </Link>
         </div>
 
 
