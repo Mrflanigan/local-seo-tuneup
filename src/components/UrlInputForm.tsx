@@ -28,7 +28,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
     if (cleanUrl && !cleanUrl.startsWith("http")) {
       cleanUrl = "https://" + cleanUrl;
     }
-    onSubmit(cleanUrl, city.trim() || undefined, businessType || undefined);
+    onSubmit(cleanUrl, city.trim() || undefined, (businessType || "local") as BusinessType);
   };
 
   return (
