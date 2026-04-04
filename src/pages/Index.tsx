@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import UrlInputForm from "@/components/UrlInputForm";
+import SearchPhraseFlow from "@/components/SearchPhraseFlow";
 import ScanningView from "@/components/ScanningView";
 import { runCheckup } from "@/lib/api/checkup";
 import type { ScoringResult, BusinessType } from "@/lib/scoring/types";
@@ -37,6 +38,7 @@ export default function Index() {
   const [loading, setLoading] = useState(false);
   const [scanUrl, setScanUrl] = useState("");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [inputMode, setInputMode] = useState<"search" | "url">("search");
 
   const handleSubmit = async (url: string, city?: string, businessType?: BusinessType) => {
     setLoading(true);
@@ -182,7 +184,37 @@ export default function Index() {
 
         <div className="relative z-10 w-full px-6 pt-64" style={{ maxWidth: "900px", margin: "0 auto" }}>
 
-          <UrlInputForm onSubmit={handleSubmit} loading={loading} />
+          {/* Mode toggle */}
+          <div className="flex gap-2 mb-4">
+            <button
+              onClick={() => setInputMode("search")}
+              className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                inputMode === "search"
+                  ? "border-primary bg-primary/20 text-primary font-semibold"
+                  : "border-border/50 text-muted-foreground hover:text-foreground"
+              }`}
+              style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
+            >
+              🔍 Search for my business
+            </button>
+            <button
+              onClick={() => setInputMode("url")}
+              className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                inputMode === "url"
+                  ? "border-primary bg-primary/20 text-primary font-semibold"
+                  : "border-border/50 text-muted-foreground hover:text-foreground"
+              }`}
+              style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
+            >
+              🌐 I have my URL
+            </button>
+          </div>
+
+          {inputMode === "search" ? (
+            <SearchPhraseFlow onSubmit={handleSubmit} loading={loading} />
+          ) : (
+            <UrlInputForm onSubmit={handleSubmit} loading={loading} />
+          )}
 
           <p className="text-xs text-muted-foreground/70 mt-5" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
             No signup · Free instant audit · Real data from your site
