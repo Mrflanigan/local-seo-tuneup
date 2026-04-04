@@ -150,7 +150,7 @@ export default function Index() {
           <span
             style={{
               fontSize: "clamp(1.6rem, 3vw, 3.6rem)",
-              fontFamily: "'Arial Narrow', 'Helvetica Neue', sans-serif",
+              fontFamily: "Arial, 'Helvetica Neue', sans-serif",
               fontWeight: 900,
               fontStretch: "condensed",
               letterSpacing: "0.02em",
@@ -160,7 +160,7 @@ export default function Index() {
             }}
           >
             Ai's Best Optimization {" "}
-            <Link to="/osmosis" className="text-primary font-bold underline decoration-primary underline-offset-2 hover:decoration-primary transition-colors whitespace-nowrap text-lg sm:text-xl" style={{ fontFamily: "ui-sans-serif, system-ui, sans-serif", fontWeight: 700, fontStretch: "normal" }}>SEO Osmosis™</Link>
+            <Link to="/osmosis" className="text-primary font-bold underline decoration-primary underline-offset-2 hover:decoration-primary transition-colors whitespace-nowrap text-lg sm:text-xl" style={{ fontFamily: "Arial, 'Helvetica Neue', sans-serif", fontWeight: 700, fontStretch: "normal" }}>SEO Osmosis™</Link>
           </span>
         </div>
 
