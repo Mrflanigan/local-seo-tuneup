@@ -171,7 +171,7 @@ export default function Index() {
 
 
         {/* Headline pinned top-left */}
-        <h1 className="absolute top-24 left-6 z-10 text-4xl sm:text-6xl font-bold tracking-tight leading-[1.1]">
+        <h1 className="absolute top-24 left-6 z-10 text-4xl sm:text-6xl font-bold tracking-tight leading-[1.1]" style={{ fontFamily: "'Helvetica Neue', Helvetica, sans-serif" }}>
           Rise to the Top.
         </h1>
 
