@@ -47,6 +47,24 @@ export interface ScoringResult {
   categories: CategoryResult[];
   siteContext: SiteContext;
   personalizedSummary: string;
+  pageSpeed?: PageSpeedData;
+}
+
+export interface PageSpeedData {
+  performance: number;
+  accessibility: number;
+  bestPractices: number;
+  seo: number;
+  coreWebVitals: {
+    lcp?: number;       // Largest Contentful Paint (ms)
+    fid?: number;       // First Input Delay (ms)
+    cls?: number;       // Cumulative Layout Shift
+    fcp?: number;       // First Contentful Paint (ms)
+    si?: number;        // Speed Index (ms)
+    tbt?: number;       // Total Blocking Time (ms)
+    tti?: number;       // Time to Interactive (ms)
+  };
+  fetchedAt: string;
 }
 
 export interface FirecrawlScrapeResult {

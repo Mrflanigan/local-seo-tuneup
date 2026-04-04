@@ -48,6 +48,44 @@ Deno.serve(async (req) => {
     const input: ScanInput = { url: normalizedUrl, city, state, businessType: businessType || "local" };
     const result = scoreWebsite(scraped, input);
 
+    // 3. Fetch Google PageSpeed Insights (non-blocking — don't fail the scan if this errors)
+    let pageSpeed = null;
+    try {
+      const psiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(normalizedUrl)}&category=PERFORMANCE&category=ACCESSIBILITY&category=BEST_PRACTICES&category=SEO&strategy=MOBILE`;
+      const psiRes = await fetch(psiUrl);
+      if (psiRes.ok) {
+        const psi = await psiRes.json();
+        const cats = psi.lighthouseResult?.categories || {};
+        const audits = psi.lighthouseResult?.audits || {};
+        pageSpeed = {
+          performance: Math.round((cats.performance?.score || 0) * 100),
+          accessibility: Math.round((cats.accessibility?.score || 0) * 100),
+          bestPractices: Math.round((cats["best-practices"]?.score || 0) * 100),
+          seo: Math.round((cats.seo?.score || 0) * 100),
+          coreWebVitals: {
+            lcp: audits["largest-contentful-paint"]?.numericValue,
+            fid: audits["max-potential-fid"]?.numericValue,
+            cls: audits["cumulative-layout-shift"]?.numericValue,
+            fcp: audits["first-contentful-paint"]?.numericValue,
+            si: audits["speed-index"]?.numericValue,
+            tbt: audits["total-blocking-time"]?.numericValue,
+            tti: audits["interactive"]?.numericValue,
+          },
+          fetchedAt: new Date().toISOString(),
+        };
+        console.log(`[checkup] PageSpeed: perf=${pageSpeed.performance}, seo=${pageSpeed.seo}`);
+      } else {
+        console.warn(`[checkup] PageSpeed API returned ${psiRes.status}`);
+      }
+    } catch (psiErr) {
+      console.warn("[checkup] PageSpeed fetch failed:", psiErr);
+    }
+
+    // Attach pageSpeed data to result
+    if (pageSpeed) {
+      (result as any).pageSpeed = pageSpeed;
+    }
+
     console.log(`[checkup] Score: ${result.overallScore} (${result.letterGrade})`);
 
     return new Response(

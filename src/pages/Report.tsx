@@ -9,6 +9,7 @@ import CompetitorComparison from "@/components/CompetitorComparison";
 import CTABanner from "@/components/CTABanner";
 import PathToPageOne from "@/components/PathToPageOne";
 import MountainLanePicker from "@/components/MountainLanePicker";
+import PageSpeedInsights from "@/components/PageSpeedInsights";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -177,6 +178,13 @@ export default function Report() {
 
         {/* Full narrative report — no gate */}
         <WhatGoogleSees result={result} />
+
+        {/* Google PageSpeed Insights — real data from Google */}
+        {result.pageSpeed && (
+          <div className="mt-8">
+            <PageSpeedInsights data={result.pageSpeed} />
+          </div>
+        )}
 
         {/* Personalized impact projection */}
         <div className="mt-8">
