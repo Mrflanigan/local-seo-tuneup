@@ -5,6 +5,18 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  optimizeDeps: {
+    include: [
+      "@radix-ui/react-label",
+      "@radix-ui/react-select",
+      "next-themes",
+      "react",
+      "react-dom/client",
+      "react/jsx-runtime",
+      "react/jsx-dev-runtime",
+      "sonner",
+    ],
+  },
   server: {
     host: "::",
     port: 8080,
