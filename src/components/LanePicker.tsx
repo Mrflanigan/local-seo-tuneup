@@ -110,7 +110,7 @@ export default function LanePicker({ result, url }: Props) {
       });
       if (error) throw error;
       if (data?.url) {
-        window.open(data.url, "_blank");
+        window.location.assign(data.url);
       }
     } catch (err) {
       console.error("Checkout error:", err);
