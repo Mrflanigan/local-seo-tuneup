@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import UrlInputForm from "@/components/UrlInputForm";
 import ScanningView from "@/components/ScanningView";
 import { runCheckup } from "@/lib/api/checkup";
-import type { ScoringResult } from "@/lib/scoring/types";
+import type { ScoringResult, BusinessType } from "@/lib/scoring/types";
 import { toast } from "sonner";
 import MountainTeaser from "@/components/MountainTeaser";
 import {
@@ -38,12 +38,12 @@ export default function Index() {
   const [scanUrl, setScanUrl] = useState("");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  const handleSubmit = async (url: string, city?: string) => {
+  const handleSubmit = async (url: string, city?: string, businessType?: BusinessType) => {
     setLoading(true);
     setScanUrl(url);
     try {
-      const result: ScoringResult = await runCheckup({ url, city });
-      navigate("/report", { state: { result, url, city } });
+      const result: ScoringResult = await runCheckup({ url, city, businessType });
+      navigate("/report", { state: { result, url, city, businessType } });
     } catch (err) {
       toast.error("Something went wrong scanning that site. Please try again.");
       console.error(err);

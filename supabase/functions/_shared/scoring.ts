@@ -36,8 +36,13 @@ export interface CategoryResult {
 
 export type LetterGrade = "A" | "B" | "C" | "D" | "F";
 
+export type BusinessType = "local" | "online";
+
 export interface ScoringResult {
   overallScore: number;
+  rawScore: number;
+  applicableMax: number;
+  businessType: BusinessType;
   letterGrade: LetterGrade;
   categories: CategoryResult[];
   siteContext: SiteContext;
@@ -55,6 +60,7 @@ export interface ScanInput {
   url: string;
   city?: string;
   state?: string;
+  businessType?: BusinessType;
 }
 
 // ── Helpers ──────────────────────────────────────────────
@@ -323,8 +329,27 @@ export function scoreWebsite(data: FirecrawlScrapeResult, input: ScanInput): Sco
     scoreContentUX(data, ctx),
     scoreExtras(data, ctx),
   ];
-  const overallScore = categories.reduce((s, c) => s + c.score, 0);
+  
+  const businessType: BusinessType = input.businessType || "local";
+  const onlineExcludedChecks = ["phone", "nap", "local-schema", "maps", "local-keywords"];
+  
+  const rawScore = categories.reduce((s, c) => s + c.score, 0);
+  
+  let applicableMax = 100;
+  if (businessType === "online") {
+    for (const cat of categories) {
+      for (const finding of cat.findings) {
+        if (onlineExcludedChecks.includes(finding.id)) {
+          applicableMax -= finding.maxPoints;
+        }
+      }
+    }
+  }
+  
+  const overallScore = applicableMax > 0
+    ? Math.round((rawScore / applicableMax) * 100)
+    : rawScore;
   const letterGrade = grade(overallScore);
   const personalizedSummary = generatePersonalizedSummary(ctx, categories, overallScore);
-  return { overallScore, letterGrade, categories, siteContext: ctx, personalizedSummary };
+  return { overallScore, rawScore, applicableMax, businessType, letterGrade, categories, siteContext: ctx, personalizedSummary };
 }

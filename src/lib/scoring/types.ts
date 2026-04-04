@@ -36,8 +36,13 @@ export interface CategoryResult {
 
 export type LetterGrade = "A" | "B" | "C" | "D" | "F";
 
+export type BusinessType = "local" | "online";
+
 export interface ScoringResult {
   overallScore: number;
+  rawScore: number;
+  applicableMax: number;
+  businessType: BusinessType;
   letterGrade: LetterGrade;
   categories: CategoryResult[];
   siteContext: SiteContext;
@@ -62,4 +67,5 @@ export interface ScanInput {
   url: string;
   city?: string;
   state?: string;
+  businessType?: BusinessType;
 }

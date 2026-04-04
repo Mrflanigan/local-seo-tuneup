@@ -7,7 +7,7 @@ import type { ScoringResult, ScanInput } from "@/lib/scoring/types";
  */
 export async function runCheckup(input: ScanInput): Promise<ScoringResult> {
   const { data, error } = await supabase.functions.invoke("checkup", {
-    body: { url: input.url, city: input.city, state: input.state },
+    body: { url: input.url, city: input.city, state: input.state, businessType: input.businessType || "local" },
   });
 
   if (error) {

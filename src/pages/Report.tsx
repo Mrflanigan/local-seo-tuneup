@@ -28,6 +28,7 @@ export default function Report() {
     result: ScoringResult;
     url: string;
     city?: string;
+    businessType?: string;
   } | null;
   if (!state) return <Navigate to="/" replace />;
 
@@ -128,9 +129,19 @@ export default function Report() {
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto leading-relaxed text-sm sm:text-base">
             We scanned your site the same way Google's crawler would. Here's the
-            honest breakdown — what's working, what's not, and why it matters for
-            getting found by local customers.
+            honest breakdown — what's working, what's not, and why it matters.
           </p>
+          {result.businessType === "online" && (
+            <p className="text-xs text-muted-foreground/70 mt-2 max-w-md mx-auto">
+              Scored as an <strong className="text-foreground">Online Business</strong> — local-only checks
+              (phone, address, maps, local schema, local keywords) are excluded. Raw points: {result.rawScore}/{result.applicableMax} applicable.
+            </p>
+          )}
+          {result.businessType === "local" && (
+            <p className="text-xs text-muted-foreground/70 mt-2 max-w-md mx-auto">
+              Scored as a <strong className="text-foreground">Local Business</strong> — all 100 points apply.
+            </p>
+          )}
         </div>
 
         {/* Full narrative report — no gate */}
