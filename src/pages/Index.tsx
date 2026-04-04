@@ -159,7 +159,7 @@ export default function Index() {
               whiteSpace: "nowrap",
             }}
           >
-            AI's Best Optimization
+            Ai's Best Optimization
           </span>
           <br />
           <Link
