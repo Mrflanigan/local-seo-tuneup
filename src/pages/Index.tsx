@@ -150,7 +150,7 @@ export default function Index() {
           <span
             style={{
               fontSize: "clamp(1.6rem, 3vw, 3.6rem)",
-              fontFamily: "Arial, 'Helvetica Neue', sans-serif",
+              fontFamily: "'Helvetica Neue', Helvetica, sans-serif",
               fontWeight: 900,
               fontStretch: "condensed",
               letterSpacing: "0.02em",
