@@ -121,14 +121,17 @@ export default function Index() {
         >
           <span
             style={{
-              fontSize: "clamp(16rem, 32vw, 42rem)",
-              fontFamily: "'Arial Black', 'Helvetica Neue', sans-serif",
+              fontSize: "clamp(20rem, 42vw, 54rem)",
+              fontFamily: "'Arial Narrow', 'Helvetica Neue', sans-serif",
               fontWeight: 900,
-              letterSpacing: "0.08em",
+              fontStretch: "condensed",
+              letterSpacing: "-0.02em",
               color: "transparent",
               WebkitTextStroke: "2px hsl(220 15% 75% / 0.15)",
-              lineHeight: 0.85,
-              marginLeft: "-2%",
+              lineHeight: 0.78,
+              marginLeft: "-1%",
+              transform: "scaleX(0.6)",
+              transformOrigin: "left center",
             }}
           >
             SEO
