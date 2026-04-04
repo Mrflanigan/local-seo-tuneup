@@ -19,7 +19,7 @@ function getFailedFindings(result: ScoringResult) {
       if (!f.passed) {
         findings.push({
           label: f.personalized || f.generic,
-          category: cat.name,
+          category: cat.label,
           impact: f.maxPoints - f.points,
         });
       }
