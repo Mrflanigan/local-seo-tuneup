@@ -140,8 +140,7 @@ export default function Index() {
 
         {/* ── Ai's Best Optimization + SEO Osmosis™ ── */}
         <div
-          className="absolute select-none"
-          onPointerDown={(e) => e.stopPropagation()}
+          className="absolute select-none pointer-events-none"
           style={{
             zIndex: 4,
             left: "46%",
