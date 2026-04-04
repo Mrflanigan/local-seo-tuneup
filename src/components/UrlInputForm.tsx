@@ -81,7 +81,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
           <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="yourbusiness.com"
+            placeholder="your domain or URL"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             className="pl-12 h-14 text-lg text-foreground placeholder:text-foreground/60"
