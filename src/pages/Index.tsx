@@ -127,7 +127,7 @@ export default function Index() {
               fontStretch: "condensed",
               letterSpacing: "-0.02em",
               color: "transparent",
-              WebkitTextStroke: "2px hsl(120 100% 37% / 0.18)",
+              WebkitTextStroke: "2px hsl(120 100% 25% / 0.22)",
               lineHeight: 0.78,
               marginLeft: "-1%",
               transform: "scaleX(0.6)",
