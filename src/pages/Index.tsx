@@ -160,7 +160,7 @@ export default function Index() {
             }}
           >
             Ai's Best Optimization {" "}
-            <Link to="/osmosis" className="text-primary font-bold underline decoration-primary underline-offset-2 hover:decoration-primary transition-colors whitespace-nowrap">SEO Osmosis™</Link>
+            <Link to="/osmosis" className="text-primary font-bold underline decoration-primary underline-offset-2 hover:decoration-primary transition-colors whitespace-nowrap" style={{ fontSize: "clamp(1rem, 1.8vw, 1.3rem)", fontFamily: "inherit", fontWeight: 700, fontStretch: "normal" }}>SEO Osmosis™</Link>
           </span>
         </div>
 
