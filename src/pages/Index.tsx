@@ -147,7 +147,7 @@ export default function Index() {
           className="absolute select-none pointer-events-none"
           style={{
             zIndex: 4,
-            left: "38%",
+            left: "46%",
             bottom: "34%",
           }}
         >
