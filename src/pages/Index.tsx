@@ -144,7 +144,7 @@ export default function Index() {
           style={{
             zIndex: 4,
             left: "52%",
-            bottom: "49%",
+            bottom: "40%",
           }}
         >
           <span
