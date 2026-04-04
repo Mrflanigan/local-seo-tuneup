@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Globe, MapPin, Building2, Laptop } from "lucide-react";
+import { Globe, MapPin } from "lucide-react";
 import type { BusinessType } from "@/lib/scoring/types";
 import { cn } from "@/lib/utils";
 
