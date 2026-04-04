@@ -17,7 +17,17 @@ export default defineConfig(({ mode }) => ({
       "sonner",
     ],
   },
-  undefined [react(), mode === "development" && componentTagger()].filter(Boolean),
+  server: {
+    host: "0.0.0.0",
+    port: 8080,
+    strictPort: true,
+    hmr: {
+      protocol: "wss",
+      clientPort: 443,
+      overlay: false,
+    },
+  },
+  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
