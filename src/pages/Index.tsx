@@ -5,7 +5,7 @@ import ScanningView from "@/components/ScanningView";
 import { runCheckup } from "@/lib/api/checkup";
 import type { ScoringResult, BusinessType } from "@/lib/scoring/types";
 import { toast } from "sonner";
-import MountainTeaser from "@/components/MountainTeaser";
+
 import {
   Search,
   Shield,
@@ -128,7 +128,7 @@ export default function Index() {
             No signup · Free instant audit · Real data from your site
           </p>
 
-          <MountainTeaser />
+          
         </div>
 
         {/* Landmark caption */}
