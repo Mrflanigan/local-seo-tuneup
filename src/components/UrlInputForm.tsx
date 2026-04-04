@@ -88,7 +88,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
             placeholder={businessType === "local" ? "City or ZIP" : "City or ZIP (optional)"}
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className="pl-10 h-12 text-base"
+            className="pl-10 h-12 text-base text-white placeholder:text-white/50"
             disabled={loading}
           />
         </div>
