@@ -180,7 +180,7 @@ export default function Index() {
 
           <UrlInputForm onSubmit={handleSubmit} loading={loading} />
 
-          <p className="text-xs text-muted-foreground/70 mt-5">
+          <p className="text-xs text-muted-foreground/70 mt-5" style={{ fontFamily: "'Helvetica Neue', Helvetica, sans-serif" }}>
             No signup · Free instant audit · Real data from your site
           </p>
         </div>
