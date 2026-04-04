@@ -67,4 +67,5 @@ export interface ScanInput {
   url: string;
   city?: string;
   state?: string;
+  businessType?: BusinessType;
 }
