@@ -47,9 +47,12 @@ export interface PhraseRanking {
 }
 
 export interface PhraseOpticsData {
-  rankings: PhraseRanking[];
-  opticsScore: number;       // 0-100 composite score
-  searchedAt: string;
+  rankings?: PhraseRanking[];
+  opticsScore?: number;       // 0-100 composite score (legacy)
+  searchedAt?: string;
+  // New structured format
+  overallOpticsScore?: number;
+  phraseResults?: import("@/types/phrase-optics").PhraseResult[];
 }
 
 export interface ScoringResult {
