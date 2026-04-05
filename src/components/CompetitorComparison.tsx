@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
 import { Trophy, Target, TrendingUp, Loader2, Swords } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { ScoringResult } from "@/lib/scoring/types";
