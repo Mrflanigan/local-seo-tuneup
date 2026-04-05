@@ -32,6 +32,7 @@ export default function Report() {
     url: string;
     city?: string;
     businessType?: string;
+    searchPhrases?: string[];
   } | null;
 
   // Fall back to localStorage if navigated here without state (e.g. page reload)
