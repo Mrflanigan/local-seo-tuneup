@@ -9,6 +9,7 @@ interface Props {
   result: ScoringResult;
   url: string;
   city?: string;
+  searchPhrases?: string[];
 }
 
 function getGradeColor(grade: string) {
