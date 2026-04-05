@@ -1,5 +1,5 @@
 // Save point — layout stable
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,6 +12,15 @@ import {
 import { Building2, Globe, MapPin, Search } from "lucide-react";
 import type { BusinessType } from "@/lib/scoring/types";
 
+const STORAGE_KEY = "seo-form-inputs";
+
+function loadSaved() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+
 interface UrlInputFormProps {
   onSubmit: (url: string, city?: string, businessType?: BusinessType, searchPhrases?: string[], businessName?: string) => void;
   loading?: boolean;
@@ -19,14 +28,22 @@ interface UrlInputFormProps {
 }
 
 export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: UrlInputFormProps) {
-  const [businessName, setBusinessName] = useState("");
-  const [url, setUrl] = useState("");
-  const [city, setCity] = useState("");
-  const [businessType, setBusinessType] = useState<BusinessType | "">(hideBusinessType ? "local" : "");
-  const [phrase1, setPhrase1] = useState("");
-  const [phrase2, setPhrase2] = useState("");
+  const saved = loadSaved();
+  const [businessName, setBusinessName] = useState(saved.businessName || "");
+  const [url, setUrl] = useState(saved.url || "");
+  const [city, setCity] = useState(saved.city || "");
+  const [businessType, setBusinessType] = useState<BusinessType | "">(hideBusinessType ? "local" : (saved.businessType || ""));
+  const [phrase1, setPhrase1] = useState(saved.phrase1 || "");
+  const [phrase2, setPhrase2] = useState(saved.phrase2 || "");
 
   const name = businessName.trim();
+
+  // Persist inputs on every change
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ businessName, url, city, businessType, phrase1, phrase2 }));
+    } catch { /* storage full */ }
+  }, [businessName, url, city, businessType, phrase1, phrase2]);
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
