@@ -32,6 +32,7 @@ export default function Report() {
     url: string;
     city?: string;
     businessType?: string;
+    searchPhrases?: string[];
   } | null;
 
   // Fall back to localStorage if navigated here without state (e.g. page reload)
@@ -49,7 +50,7 @@ export default function Report() {
 
   if (!restored) return <Navigate to="/" replace />;
 
-  const { result, url, city } = restored;
+  const { result, url, city, searchPhrases } = restored;
   const name = result.siteContext.businessName;
 
   const handleSnapshotSave = async (label: "before" | "after") => {
@@ -273,7 +274,7 @@ export default function Report() {
 
         {/* Competitor Comparison */}
         <div className="mt-8">
-          <CompetitorComparison result={result} url={url} city={city} />
+          <CompetitorComparison result={result} url={url} city={city} searchPhrases={searchPhrases} />
         </div>
 
         {/* Path to Page 1 — score gap + hook */}
