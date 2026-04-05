@@ -87,18 +87,19 @@ export default function WhatGoogleSees({ result }: Props) {
           </h3>
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-          Your site might look great to visitors — but Google doesn't see design.
-          It reads <strong className="text-foreground">code</strong>: meta titles,
-          schema markup, canonical tags, alt attributes, structured data.
+          Your site might look great to visitors — but Google doesn't see the
+          design. It reads the <strong className="text-foreground">code behind it</strong>:
+          your business name, page titles, descriptions, and the hidden data that tells
+          Google what you do and where you do it.
         </p>
         <p className="text-sm text-muted-foreground leading-relaxed">
           Think of it like a résumé. Your business might be the best in town, but
-          if the résumé is messy — missing headers, no keywords, hard to parse —
-          HR never calls.{" "}
+          if the résumé is messy — missing details, no keywords, hard to read —
+          you never get the call.{" "}
           <strong className="text-foreground">
-            Google processes billions of pages. If yours is hard to read, it
-            doesn't penalize you — it just quietly moves on to a competitor whose
-            site is easier to understand.
+            Google looks at billions of websites. If yours is hard to understand,
+            it doesn't punish you — it just quietly sends customers to a
+            competitor whose site is easier to read.
           </strong>
         </p>
       </div>
@@ -112,10 +113,10 @@ export default function WhatGoogleSees({ result }: Props) {
             </div>
             <div>
               <h3 className="text-lg font-semibold text-foreground">
-                What You're Doing Right
+                Here's What You're Doing Right Already
               </h3>
               <p className="text-xs text-muted-foreground">
-                Google can read these signals clearly
+                Google can find and understand these on your site
               </p>
             </div>
           </div>
@@ -143,10 +144,10 @@ export default function WhatGoogleSees({ result }: Props) {
             </div>
             <div>
               <h3 className="text-lg font-semibold text-foreground">
-                Where Google Gets Confused
+                Here's What's Quietly Holding You Back
               </h3>
               <p className="text-xs text-muted-foreground">
-                These make Google treat your site like a hard-to-read résumé
+                These are the things making it harder for Google to recommend you
               </p>
             </div>
           </div>
@@ -174,11 +175,11 @@ export default function WhatGoogleSees({ result }: Props) {
           </h3>
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Your site isn't broken — it's just not speaking Google's language fluently.
+          Your site isn't broken — it just needs a few tweaks so Google understands it better.
           {bad.length > 0 && (
-            <> You have <strong className="text-foreground">{bad.length} signal{bad.length > 1 ? "s" : ""}</strong> that
-            could be clearer. Most are quick technical fixes — the kind that make
-            Google go from skimming past you to actually recommending you.</>
+            <> You have <strong className="text-foreground">{bad.length} thing{bad.length > 1 ? "s" : ""}</strong> we'd
+            fix first. Most are quick changes — the kind that help Google go from
+            skipping past you to actually sending you customers.</>
           )}
         </p>
       </div>

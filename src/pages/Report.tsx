@@ -143,10 +143,10 @@ export default function Report() {
         {result.phraseOptics && (
           <div className="mb-8 text-center">
             <h2 className="text-lg sm:text-xl font-bold text-foreground mb-1">
-              How visible you are on page one for the searches that matter.
+              Can customers actually find you on Google?
             </h2>
             <p className="text-sm text-muted-foreground mb-5 max-w-md mx-auto">
-              Real search results. Real positions. This is what customers see when they search for you.
+              This shows how visible you are for the searches that actually bring you customers. We aim for page 1 for at least one or two of your best phrases.
             </p>
             <div className="flex justify-center">
               <PhraseOpticsRing data={result.phraseOptics} />
@@ -158,7 +158,7 @@ export default function Report() {
         <div className={`mb-8 flex flex-col items-center gap-4 ${result.phraseOptics ? "" : ""}`}>
           <div className="text-center">
             <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
-              {result.phraseOptics ? "How ready your site is in Google's eyes (technical + content)" : "Site Health"}
+              {result.phraseOptics ? "How well your site is set up for Google to trust and recommend you" : "Site Health"}
             </p>
             <ScoreRing score={result.overallScore} grade={result.letterGrade} />
             {!result.phraseOptics && (
@@ -169,12 +169,12 @@ export default function Report() {
         <div className="text-center mb-8">
           <h2 className="text-xl sm:text-2xl font-bold text-foreground mt-4 mb-2">
             {name
-              ? `${name}, your site looks good — but here's what Google thinks`
-              : "Your site looks good — but here's what Google thinks"}
+              ? `${name} — here's what's helping and what's quietly holding you back`
+              : "Here's what's helping and what's quietly holding you back"}
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto leading-relaxed text-sm sm:text-base">
-            We scanned your site the same way Google's crawler would. Here's the
-            honest breakdown — what's working, what's not, and why it matters.
+            We checked your site the same way Google does. Here's the honest
+            breakdown — what you're doing right, and what to fix first to get more calls.
           </p>
           {result.businessType === "online" && result.overallScore > 100 && (
             <div className="mt-3 mx-auto max-w-md rounded-lg border border-accent/30 bg-accent/5 p-3">
@@ -240,12 +240,11 @@ export default function Report() {
         {!submitted ? (
           <div className="rounded-xl border border-border bg-card p-5 sm:p-6 mt-8 text-center">
             <h3 className="text-lg font-semibold text-foreground mb-1">
-              Want a step-by-step fix-it plan?
+              Want us to tell you exactly what to fix first?
             </h3>
             <p className="text-sm text-muted-foreground mb-5 max-w-md mx-auto leading-relaxed">
-              Drop your email and we'll send you a prioritized gameplan — which
-              fixes to tackle first, what they'll cost, and the expected impact on
-              your local rankings.
+              Drop your email and we'll send you a clear plan — which fixes matter
+              most, what they'll cost, and how they'll help you get more customers from Google.
             </p>
             <form
               onSubmit={handleEmailSubmit}
@@ -275,7 +274,7 @@ export default function Report() {
               </div>
               <Button type="submit" className="w-full h-11 font-semibold">
                 <Send className="mr-2 h-4 w-4" />
-                Send Me the Gameplan
+                Get My Implementation Plan
               </Button>
             </form>
             <p className="text-xs text-muted-foreground mt-3">

@@ -34,11 +34,11 @@ export default function Index() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const faqs = [
-    { q: "What does the Local SEO Checkup scan?", a: "We scan your website's HTML the same way Google's crawler does — checking meta tags, schema markup, heading structure, local signals, technical SEO, content depth, and more across 5 categories and 30+ individual signals." },
-    { q: "Is this really free?", a: "Yes. The full audit and score are completely free with no signup required. We offer optional paid services if you want us to implement the fixes for you." },
-    { q: "How is this different from other SEO tools?", a: "Most SEO tools give generic advice. We personalize every finding to your actual business — referencing your real content, phone number, services, and city. Plus we scan your competitors and show you exactly what they're doing that you're not." },
-    { q: "Can you fix my site for me?", a: "Absolutely. After your scan, you can request a personalized gameplan call where we walk through the highest-impact fixes and implement them for you." },
-    { q: "How long does the scan take?", a: "About 30 seconds. We crawl your site in real-time, analyze the HTML, score every signal, and build your personalized report on the spot." },
+    { q: "What exactly do you check?", a: "We look at your website the same way Google does — checking over 30 things that affect whether customers can find you, like your business name and address, page titles, site speed, and more." },
+    { q: "Is this really free?", a: "Yes. The full checkup and score are completely free, no signup needed. We offer optional paid services if you want us to make the fixes for you." },
+    { q: "How is this different from other SEO tools?", a: "Most tools give cookie-cutter advice. We look at your actual business — your real phone number, services, and city — and tell you specifically what's helping and what's hurting your Google visibility." },
+    { q: "Can you fix my site for me?", a: "Absolutely. After your checkup, you can book a quick call where we walk through the biggest wins and handle the fixes for you." },
+    { q: "How long does the scan take?", a: "About 30 seconds. We check your site in real time and build your personalized report on the spot." },
   ];
 
   return (
@@ -147,7 +147,7 @@ export default function Index() {
         </div>
 
         <p className="absolute top-28 right-6 z-10 text-lg sm:text-xl text-foreground/80 leading-relaxed text-right max-w-md" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
-            We look at your site like Google sees it
+            Find out why you're not on page 1 — and how to fix it.
         </p>
 
 
@@ -165,7 +165,7 @@ export default function Index() {
             className="h-16 px-12 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic"
             style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
           >
-            Get Your Free SEO Checkup
+             Run My Free SEO Checkup
           </Button>
           <p className="text-xs text-muted-foreground/70 mt-5" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
             No signup · Free instant audit · Real data from your site
@@ -201,13 +201,13 @@ export default function Index() {
         <div className="relative z-10 mx-auto max-w-5xl px-6">
           <div className="text-center mb-14">
             <h2 className="text-2xl sm:text-4xl font-bold mb-4">How the Checkup Works</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">We read your site's source code and analyze the same signals Google uses to decide who ranks.</p>
+            <p className="text-muted-foreground max-w-lg mx-auto">We look at your website the way Google does — and tell you exactly what's helping and what's hurting your rankings.</p>
           </div>
 
           <div className="grid sm:grid-cols-3 gap-6">
-            <StepCard step={1} icon={<Eye className="h-5 w-5 text-primary" />} title="SEO Osmosis™ Absorbs Your Site" description="Our proprietary scanner reads your HTML just like Googlebot — parsing meta tags, schema markup, heading hierarchy, alt attributes, and structured data." techTerms={["Googlebot crawl", "<meta> tags", "JSON-LD schema"]} />
-            <StepCard step={2} icon={<BarChart3 className="h-5 w-5 text-primary" />} title="We Score 30+ Signals" description="Every signal gets checked against local SEO best practices — from NAP consistency and LocalBusiness schema to SSL and viewport meta." techTerms={["NAP consistency", "SSL/TLS", "canonical URL"]} />
-            <StepCard step={3} icon={<Target className="h-5 w-5 text-primary" />} title="You Get a Plan" description="A personalized report referencing your actual content, plus competitor comparison showing who's outranking you and why." techTerms={["Competitor gap analysis", "Priority fixes"]} />
+            <StepCard step={1} icon={<Eye className="h-5 w-5 text-primary" />} title="We Read Your Site Like Google Does" description="Our scanner looks at your website's code — the part Google actually reads — and checks everything from your business name and address to your page titles and speed." techTerms={["How Google crawls", "Your page code", "Business data"]} />
+            <StepCard step={2} icon={<BarChart3 className="h-5 w-5 text-primary" />} title="We Check 30+ Things That Matter" description="Each check is something Google actually cares about — like whether your phone number is easy to find, your pages load fast, and your business shows up correctly." techTerms={["Business info", "Page speed", "Mobile-friendly"]} />
+            <StepCard step={3} icon={<Target className="h-5 w-5 text-primary" />} title="You Get a Clear Plan" description="A personalized report showing what's working, what's not, and exactly what to fix first — plus how your competitors stack up." techTerms={["What to fix first", "Competitor comparison"]} />
           </div>
         </div>
         <LandmarkCaption name={landmarks[1].name} detail={landmarks[1].detail} />
@@ -219,17 +219,17 @@ export default function Index() {
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
         <div className="relative z-10 mx-auto max-w-5xl px-6">
           <div className="text-center mb-14">
-            <h2 className="text-2xl sm:text-4xl font-bold mb-4">What We Scan (That Most Owners Don't Know Exists)</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">Your site might look great — but Google doesn't see design. It reads code.</p>
+            <h2 className="text-2xl sm:text-4xl font-bold mb-4">The Hidden Stuff That Decides Your Google Ranking</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto">Your site might look great to visitors — but Google reads the code behind it. Here's what we check.</p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <SignalCard icon={<Code2 className="h-4 w-4" />} title="Meta Tags & Title" description="Your <title> tag and meta description are your ad copy in Google results. We check length, keywords, and city targeting." />
-            <SignalCard icon={<Search className="h-4 w-4" />} title="JSON-LD Schema Markup" description="Structured data tells Google your business name, address, hours in machine-readable format — the key to rich results." />
-            <SignalCard icon={<Shield className="h-4 w-4" />} title="Technical SEO Health" description="HTTPS, canonical tags, robots directives, viewport configuration, render-blocking resources." />
-            <SignalCard icon={<Users className="h-4 w-4" />} title="NAP & Local Presence" description="Name, Address, Phone consistency, Google Maps integration, review signals, and geo-targeted content." />
-            <SignalCard icon={<BarChart3 className="h-4 w-4" />} title="Content Depth & Structure" description="Word count, heading hierarchy, FAQ sections, internal linking — signals that separate thin pages from authoritative ones." />
-            <SignalCard icon={<Zap className="h-4 w-4" />} title="Performance & Crawlability" description="Render-blocking scripts, mixed content, mobile-first readiness — if it slows Google down, it slows your rankings." />
+            <SignalCard icon={<Code2 className="h-4 w-4" />} title="Page Titles & Descriptions" description="These are the headlines people see in Google search results. We check if yours are clear, include your city, and make people want to click." />
+            <SignalCard icon={<Search className="h-4 w-4" />} title="Business Info for Google" description="Google needs your business name, address, and hours in a specific format to show you in local results and maps. We check if it's set up." />
+            <SignalCard icon={<Shield className="h-4 w-4" />} title="Site Security & Setup" description="Is your site secure? Can Google read it properly? Can it show up on phones? We check the technical basics that most site owners never see." />
+            <SignalCard icon={<Users className="h-4 w-4" />} title="Local Presence Signals" description="Your name, address, and phone number need to be consistent and easy to find. We also check for Google Maps, reviews, and local content." />
+            <SignalCard icon={<BarChart3 className="h-4 w-4" />} title="Content Quality" description="Google favors pages with real, helpful content. We check if your pages have enough substance to be seen as an authority in your area." />
+            <SignalCard icon={<Zap className="h-4 w-4" />} title="Speed & Mobile Experience" description="Slow-loading pages make people leave before they call you. We check if your site is fast and works well on phones." />
           </div>
         </div>
         <LandmarkCaption name={landmarks[2].name} detail={landmarks[2].detail} />
@@ -239,15 +239,15 @@ export default function Index() {
       <section className="py-20 sm:py-24">
         <div className="mx-auto max-w-4xl px-6">
           <div className="text-center mb-14">
-            <h2 className="text-2xl sm:text-4xl font-bold mb-4">Not Another Generic SEO Tool</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">Built for local business owners tired of vague advice and meaningless scores.</p>
+            <h2 className="text-2xl sm:text-4xl font-bold mb-4">Built for Business Owners, Not SEO Nerds</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto">No jargon. No fluff. Just clear answers about why customers aren't finding you.</p>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-5">
-            <DiffCard icon={<CheckCircle2 className="h-5 w-5 text-accent" />} title="Personalized to Your Business" description="We reference your actual phone number, services, and content — not generic 'add a meta description' advice." />
-            <DiffCard icon={<CheckCircle2 className="h-5 w-5 text-accent" />} title="Real Competitor Intelligence" description="We scan businesses actually outranking you and show exactly what they have that you don't." />
-            <DiffCard icon={<CheckCircle2 className="h-5 w-5 text-accent" />} title="Technical + Understandable" description="Every buzzword explained in plain English. You'll know what a canonical tag is AND why it matters." />
-            <DiffCard icon={<CheckCircle2 className="h-5 w-5 text-accent" />} title="100% Real Data" description="Every finding from your actual HTML. No estimates, no projections, no made-up numbers." />
+            <DiffCard icon={<CheckCircle2 className="h-5 w-5 text-accent" />} title="About Your Business, Not Generic" description="We reference your actual phone number, services, and content — not cookie-cutter 'add a meta description' advice." />
+            <DiffCard icon={<CheckCircle2 className="h-5 w-5 text-accent" />} title="See What Competitors Are Doing" description="We check the businesses actually ranking above you and show what they have that you don't." />
+            <DiffCard icon={<CheckCircle2 className="h-5 w-5 text-accent" />} title="Plain English, No Buzzwords" description="Every technical thing we find is explained so it makes sense. You'll know what matters and why." />
+            <DiffCard icon={<CheckCircle2 className="h-5 w-5 text-accent" />} title="100% Real Data" description="Every finding comes from your actual website. No guesses, no estimates, no made-up numbers." />
           </div>
         </div>
       </section>
@@ -276,14 +276,14 @@ export default function Index() {
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background" />
         <div className="relative z-10 mx-auto max-w-3xl px-6 text-center">
           <h2 className="text-3xl sm:text-5xl font-bold mb-5">Ready to Rise?</h2>
-          <p className="text-lg text-muted-foreground mb-10 max-w-lg mx-auto">30 seconds. No signup. Your personalized local SEO audit with real data from your actual site.</p>
+          <p className="text-lg text-muted-foreground mb-10 max-w-lg mx-auto">30 seconds. No signup. See exactly what's keeping you off page one — and what to do about it.</p>
           <Button
             onClick={() => navigate("/get-started")}
             size="lg"
             className="h-16 px-12 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic"
             style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
           >
-            Get Your Free SEO Checkup
+            Run My Free SEO Checkup
           </Button>
         </div>
         <LandmarkCaption name={landmarks[3].name} detail={landmarks[3].detail} />
