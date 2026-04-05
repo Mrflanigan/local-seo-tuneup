@@ -71,13 +71,19 @@ export default function CompetitorComparison({ result, url, city }: Props) {
 
   const service = result.siteContext.services[0] || "business";
   const location = city || result.siteContext.locations[0];
+  const defaultQuery = location ? `${service} in ${location}` : service;
+  const [editableQuery, setEditableQuery] = useState(defaultQuery);
 
   const handleScan = async () => {
     setLoading(true);
+    // Parse the editable query back into service/city parts
+    const parts = editableQuery.match(/^(.+?)\s+in\s+(.+)$/i);
+    const scanService = parts ? parts[1].trim() : editableQuery.trim();
+    const scanCity = parts ? parts[2].trim() : location;
     try {
       const data = await scanCompetitors({
-        service,
-        city: location,
+        service: scanService,
+        city: scanCity,
         userUrl: url,
       });
       setCompetitors(data.competitors);
