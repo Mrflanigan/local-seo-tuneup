@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import type { ScoringResult } from "@/lib/scoring/types";
 import { saveLead, saveSnapshot } from "@/lib/api/checkup";
+import { selectWinPhrases, buildPathToPageOnePlan, getPotentialLabel } from "@/lib/phrase-optics-utils";
 import ScoreRing from "@/components/ScoreRing";
 import WhatGoogleSees from "@/components/WhatGoogleSees";
 import YearAgoProjection from "@/components/YearAgoProjection";
@@ -14,7 +15,7 @@ import PageSpeedInsights from "@/components/PageSpeedInsights";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowLeft, ExternalLink, Send, Camera } from "lucide-react";
+import { ArrowLeft, ExternalLink, Send, Camera, Trophy } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Report() {
@@ -151,6 +152,55 @@ export default function Report() {
             <div className="flex justify-center">
               <PhraseOpticsRing data={result.phraseOptics} />
             </div>
+
+            {/* Win Phrase Plan */}
+            {(() => {
+              const winPhrases = selectWinPhrases(result.phraseOptics?.phraseResults ?? []);
+              if (!winPhrases.primary) return null;
+              const steps = buildPathToPageOnePlan({
+                phrase: winPhrases.primary,
+                osmosisScore: result.overallScore,
+              });
+              return (
+                <div className="mt-6 rounded-xl border border-accent/30 bg-accent/5 p-5 sm:p-6 text-left max-w-lg mx-auto">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Trophy className="h-5 w-5 text-accent" />
+                    <div>
+                      <h3 className="text-base font-bold text-foreground">
+                        Your Win Phrase: "{winPhrases.primary.phrase}"
+                      </h3>
+                      <p className="text-xs text-muted-foreground">
+                        {winPhrases.primary.currentPosition
+                          ? `Currently #${winPhrases.primary.currentPosition}`
+                          : "Not yet visible"}{" "}
+                        · {getPotentialLabel(winPhrases.primary.pageOnePotential)}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Here's your 3-step path to page one for this phrase:
+                  </p>
+                  <ol className="space-y-2">
+                    {steps.map((step, i) => (
+                      <li key={i} className="flex gap-3 text-sm">
+                        <span className="shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-accent/20 text-accent text-xs font-bold">
+                          {i + 1}
+                        </span>
+                        <span className="text-foreground/90 leading-relaxed">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                  {winPhrases.secondary && (
+                    <p className="text-xs text-muted-foreground mt-4 pt-3 border-t border-border/50">
+                      Runner-up phrase: "<strong className="text-foreground">{winPhrases.secondary.phrase}</strong>"
+                      {winPhrases.secondary.currentPosition
+                        ? ` (#${winPhrases.secondary.currentPosition})`
+                        : " (not yet visible)"}
+                    </p>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         )}
 
