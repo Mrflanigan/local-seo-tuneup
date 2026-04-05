@@ -91,6 +91,9 @@ export default function Report() {
           <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
             <ArrowLeft className="mr-1 h-4 w-4" /> New Scan
           </Button>
+          <div className="text-sm font-semibold tracking-[0.2em] text-muted-foreground">
+            PAGE 3
+          </div>
           <a
             href={url}
             target="_blank"
