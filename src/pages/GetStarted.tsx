@@ -20,9 +20,9 @@ export default function GetStarted() {
     try {
       const result: ScoringResult = await runCheckup({ url, city, businessType, searchPhrases });
       try {
-        localStorage.setItem("lastScan", JSON.stringify({ result, url, city, businessType, ts: Date.now() }));
+        localStorage.setItem("lastScan", JSON.stringify({ result, url, city, businessType, searchPhrases, ts: Date.now() }));
       } catch { /* storage full — not critical */ }
-      navigate("/report", { state: { result, url, city, businessType } });
+      navigate("/report", { state: { result, url, city, businessType, searchPhrases } });
     } catch (err) {
       toast.error("Something went wrong scanning that site. Please try again.");
       console.error(err);
