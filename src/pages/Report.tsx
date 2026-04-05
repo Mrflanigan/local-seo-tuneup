@@ -139,17 +139,32 @@ export default function Report() {
             </Button>
           )}
         </div>
-        {/* Score meters side by side */}
-        <div className={`mb-8 flex flex-col items-center gap-8 ${result.phraseOptics ? "sm:flex-row sm:justify-center sm:items-start sm:gap-16" : ""}`}>
-          <div className="text-center">
-            <ScoreRing score={result.overallScore} grade={result.letterGrade} />
-            <p className="mt-2 text-xs uppercase tracking-widest text-muted-foreground">Site Health</p>
-          </div>
-          {result.phraseOptics && (
-            <div className="text-center">
+        {/* Hero: Phrase Optics first, then Site Health */}
+        {result.phraseOptics && (
+          <div className="mb-8 text-center">
+            <h2 className="text-lg sm:text-xl font-bold text-foreground mb-1">
+              How visible you are on page one for the searches that matter.
+            </h2>
+            <p className="text-sm text-muted-foreground mb-5 max-w-md mx-auto">
+              Real search results. Real positions. This is what customers see when they search for you.
+            </p>
+            <div className="flex justify-center">
               <PhraseOpticsRing data={result.phraseOptics} />
             </div>
-          )}
+          </div>
+        )}
+
+        {/* Supporting metric: Site Health */}
+        <div className={`mb-8 flex flex-col items-center gap-4 ${result.phraseOptics ? "" : ""}`}>
+          <div className="text-center">
+            <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+              {result.phraseOptics ? "How ready your site is in Google's eyes (technical + content)" : "Site Health"}
+            </p>
+            <ScoreRing score={result.overallScore} grade={result.letterGrade} />
+            {!result.phraseOptics && (
+              <p className="mt-2 text-xs uppercase tracking-widest text-muted-foreground">Site Health</p>
+            )}
+          </div>
         </div>
         <div className="text-center mb-8">
           <h2 className="text-xl sm:text-2xl font-bold text-foreground mt-4 mb-2">

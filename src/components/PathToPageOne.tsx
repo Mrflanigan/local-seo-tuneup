@@ -1,5 +1,7 @@
-import { Rocket, TrendingUp, Zap } from "lucide-react";
+import { Rocket, TrendingUp, Zap, Target } from "lucide-react";
 import type { ScoringResult } from "@/lib/scoring/types";
+import type { PhraseResult } from "@/types/phrase-optics";
+import { getPathToPageOnePlan } from "@/lib/phrase-optics-utils";
 
 interface Props {
   result: ScoringResult;
@@ -35,11 +37,24 @@ function getTopFixes(result: ScoringResult, count = 3): string[] {
     .map((f) => f.label);
 }
 
+/** Pick the best phrase to feature (highest potential, or highest score). */
+function getPrimaryPhrase(phraseResults: PhraseResult[]): PhraseResult | null {
+  if (phraseResults.length === 0) return null;
+  const priority = { FAST_TRACK: 3, POSSIBLE: 2, LONG_SHOT: 1 };
+  return [...phraseResults].sort((a, b) =>
+    priority[b.pageOnePotential] - priority[a.pageOnePotential]
+    || b.opticsScore - a.opticsScore
+  )[0];
+}
+
 export default function PathToPageOne({ result }: Props) {
   const fixCount = getFixCount(result);
   const projected = getProjectedScore(result);
   const topFixes = getTopFixes(result);
   const scoreDelta = projected - result.overallScore;
+
+  const phraseResults: PhraseResult[] = result.phraseOptics?.phraseResults ?? [];
+  const primaryPhrase = getPrimaryPhrase(phraseResults);
 
   return (
     <div className="space-y-6">
@@ -55,6 +70,30 @@ export default function PathToPageOne({ result }: Props) {
           <span className="text-foreground font-medium">Here's how.</span>
         </p>
       </div>
+
+      {/* Phrase-specific mini-plan */}
+      {primaryPhrase && (
+        <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 sm:p-6">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-primary/10">
+              <Target className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-foreground">
+                Your Best Shot: "{primaryPhrase.phrase}"
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                {primaryPhrase.currentPosition
+                  ? `Currently #${primaryPhrase.currentPosition}`
+                  : "Not yet visible"} · {primaryPhrase.pageOnePotential.replace("_", " ")}
+              </p>
+            </div>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {getPathToPageOnePlan(primaryPhrase.pageOnePotential)}
+          </p>
+        </div>
+      )}
 
       {/* The Gap */}
       <div className="rounded-xl border border-border bg-card p-5 sm:p-6">
