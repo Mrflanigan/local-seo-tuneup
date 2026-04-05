@@ -274,7 +274,7 @@ export default function Report() {
 
         {/* Competitor Comparison */}
         <div className="mt-8">
-          <CompetitorComparison result={result} url={url} city={city} />
+          <CompetitorComparison result={result} url={url} city={city} searchPhrases={searchPhrases} />
         </div>
 
         {/* Path to Page 1 — score gap + hook */}
