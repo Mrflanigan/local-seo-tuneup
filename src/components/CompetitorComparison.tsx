@@ -106,15 +106,20 @@ export default function CompetitorComparison({ result, url, city }: Props) {
             How Do You Stack Up?
           </h3>
         </div>
-        <p className="text-sm text-muted-foreground mb-5 max-w-md mx-auto leading-relaxed">
-          We'll search Google for{" "}
-          <strong className="text-foreground">
-            "{service}
-            {location ? ` in ${location}` : ""}"
-          </strong>
-          , scan your top competitors, and show you exactly what they're doing
-          that you're not — and what it would take to overtake them.
+        <p className="text-sm text-muted-foreground mb-3 max-w-md mx-auto leading-relaxed">
+          We'll search for competitors using this query. Edit it if you'd like to refine the search:
         </p>
+        <div className="max-w-sm mx-auto mb-5">
+          <Input
+            value={editableQuery}
+            onChange={(e) => setEditableQuery(e.target.value)}
+            className="h-10 text-center font-medium"
+            placeholder="e.g. plumber in Denver"
+          />
+          <p className="text-xs text-muted-foreground mt-1.5">
+            Tip: use "<em>service in city</em>" format for best results
+          </p>
+        </div>
         <Button
           onClick={handleScan}
           disabled={loading}
