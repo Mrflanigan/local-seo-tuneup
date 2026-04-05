@@ -38,6 +38,20 @@ export type LetterGrade = "A" | "B" | "C" | "D" | "F";
 
 export type BusinessType = "local" | "online";
 
+export interface PhraseRanking {
+  phrase: string;
+  position: number | null;  // null = not found in top results
+  page: number | null;
+  totalResults: number;
+  topResult?: { title: string; url: string };
+}
+
+export interface PhraseOpticsData {
+  rankings: PhraseRanking[];
+  opticsScore: number;       // 0-100 composite score
+  searchedAt: string;
+}
+
 export interface ScoringResult {
   overallScore: number;
   rawScore: number;
@@ -48,6 +62,7 @@ export interface ScoringResult {
   siteContext: SiteContext;
   personalizedSummary: string;
   pageSpeed?: PageSpeedData;
+  phraseOptics?: PhraseOpticsData;
 }
 
 export interface PageSpeedData {
@@ -86,4 +101,5 @@ export interface ScanInput {
   city?: string;
   state?: string;
   businessType?: BusinessType;
+  searchPhrases?: string[];
 }
