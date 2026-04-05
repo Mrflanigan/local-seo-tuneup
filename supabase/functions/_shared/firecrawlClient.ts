@@ -31,7 +31,8 @@ export async function scrapeWithFirecrawl(url: string): Promise<ScrapeResult> {
       url: formattedUrl,
       formats: ["markdown", "html", "links"],
       onlyMainContent: false,
-      waitFor: 2000,
+      waitFor: 5000,
+      timeout: 60000,
     }),
   });
 
