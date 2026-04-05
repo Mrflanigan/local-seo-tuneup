@@ -44,7 +44,7 @@ export default function GetStarted() {
         height={1080}
       />
       {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-black/60" />
+      <div className="absolute inset-0 bg-black/40" />
 
       {/* Content */}
       <div className="relative z-10 flex min-h-screen w-full flex-col px-8 sm:px-16 py-6">
