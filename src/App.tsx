@@ -8,6 +8,7 @@ import CaseStudy from "./pages/CaseStudy.tsx";
 import Osmosis from "./pages/Osmosis.tsx";
 import GetStarted from "./pages/GetStarted.tsx";
 import PaymentSuccess from "./pages/PaymentSuccess.tsx";
+import Summary from "./pages/Summary.tsx";
 import NotFound from "./pages/NotFound.tsx";
 const queryClient = new QueryClient();
 
