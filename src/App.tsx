@@ -24,6 +24,7 @@ const App = () => (
           <Route path="/osmosis" element={<Osmosis />} />
           <Route path="/get-started" element={<GetStarted />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/summary" element={<Summary />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
