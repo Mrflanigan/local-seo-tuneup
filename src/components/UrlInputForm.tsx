@@ -108,7 +108,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
       {!hideBusinessType && (
         <div className="space-y-1">
           <p className="text-xs text-foreground/70">
-            {name ? `What would someone Google to find ${name}?` : "What would someone Google to find you?"}
+            {name ? `What might someone Google to find ${name}?` : "What might someone Google to find you?"}
           </p>
           <div className="flex gap-2">
             <div className="relative flex-1">
