@@ -9,21 +9,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Globe, MapPin, Search } from "lucide-react";
+import { Building2, Globe, MapPin, Search } from "lucide-react";
 import type { BusinessType } from "@/lib/scoring/types";
 
 interface UrlInputFormProps {
-  onSubmit: (url: string, city?: string, businessType?: BusinessType, searchPhrases?: string[]) => void;
+  onSubmit: (url: string, city?: string, businessType?: BusinessType, searchPhrases?: string[], businessName?: string) => void;
   loading?: boolean;
   hideBusinessType?: boolean;
 }
 
 export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: UrlInputFormProps) {
+  const [businessName, setBusinessName] = useState("");
   const [url, setUrl] = useState("");
   const [city, setCity] = useState("");
   const [businessType, setBusinessType] = useState<BusinessType | "">(hideBusinessType ? "local" : "");
   const [phrase1, setPhrase1] = useState("");
   const [phrase2, setPhrase2] = useState("");
+
+  const name = businessName.trim();
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -35,15 +38,35 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
       cleanUrl = "https://" + cleanUrl;
     }
     const phrases = [phrase1.trim(), phrase2.trim()].filter(Boolean);
-    onSubmit(cleanUrl, city.trim() || undefined, (businessType || "local") as BusinessType, phrases.length > 0 ? phrases : undefined);
+    onSubmit(cleanUrl, city.trim() || undefined, (businessType || "local") as BusinessType, phrases.length > 0 ? phrases : undefined, name || undefined);
   };
 
   return (
     <form onSubmit={handleSubmit} className="w-full space-y-3" style={{ maxWidth: "100%" }}>
+      {/* Business name — first field */}
+      {!hideBusinessType && (
+        <div className="space-y-1 text-left">
+          <p className="text-xs text-foreground/70">What's the name of your business?</p>
+          <div className="relative">
+            <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="e.g. Acme Plumbing"
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              className="pl-10 h-12 text-sm text-foreground placeholder:text-foreground/60"
+              disabled={loading}
+            />
+          </div>
+        </div>
+      )}
+
       {!hideBusinessType && (
         <div className="flex gap-2 items-end">
           <div className="flex-1 space-y-1 text-left">
-            <p className="text-xs text-foreground/70">How does this business get customers?</p>
+            <p className="text-xs text-foreground/70">
+              {name ? `How does ${name} get customers?` : "How does this business get customers?"}
+            </p>
             <Select
               value={businessType}
               onValueChange={(value) => setBusinessType(value as BusinessType)}
@@ -59,7 +82,9 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
             </Select>
           </div>
           <div className="relative flex-1 space-y-1">
-            <p className="text-xs text-foreground/70">Where are your customers? (Helps us score local signals)</p>
+            <p className="text-xs text-foreground/70">
+              {name ? `Where are ${name}'s customers?` : "Where are your customers? (Helps us score local signals)"}
+            </p>
             <MapPin className="absolute left-3 bottom-3 h-5 w-5 text-muted-foreground" />
             <Input
               type="text"
@@ -79,10 +104,12 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
         </div>
       )}
 
-      {/* Search phrases — what would someone Google? */}
+      {/* Search phrases */}
       {!hideBusinessType && (
         <div className="space-y-1">
-          <p className="text-xs text-foreground/70">What would someone Google to find you? (Helps us check your ranking)</p>
+          <p className="text-xs text-foreground/70">
+            {name ? `What would someone Google to find ${name}?` : "What would someone Google to find you?"}
+          </p>
           <div className="flex gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
