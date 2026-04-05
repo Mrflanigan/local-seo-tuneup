@@ -63,7 +63,7 @@ Deno.serve(async (req) => {
     const userHost = userUrl ? new URL(userUrl.startsWith("http") ? userUrl : `https://${userUrl}`).hostname.replace(/^www\./, "") : null;
 
     // Filter out the user's own site, directories (yelp, yellowpages, etc), and take top 3
-    const directoryDomains = ["yelp.com", "yellowpages.com", "bbb.org", "facebook.com", "instagram.com", "twitter.com", "linkedin.com", "nextdoor.com", "angieslist.com", "homeadvisor.com", "thumbtack.com", "google.com", "mapquest.com", "manta.com"];
+    const directoryDomains = ["yelp.com", "yellowpages.com", "bbb.org", "facebook.com", "instagram.com", "twitter.com", "linkedin.com", "nextdoor.com", "angieslist.com", "homeadvisor.com", "thumbtack.com", "google.com", "mapquest.com", "manta.com", "lawnstarter.com", "landscapers-online.com", "angi.com", "houzz.com", "bark.com", "taskrabbit.com", "porch.com", "fixr.com", "expertise.com", "chamberofcommerce.com", "superpages.com", "citysearch.com"];
     
     const competitorResults = results.filter((r: any) => {
       if (!r.url) return false;
