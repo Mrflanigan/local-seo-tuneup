@@ -65,7 +65,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
         <div className="flex gap-2 items-end">
           <div className="flex-1 space-y-1 text-left">
             <p className="text-xs text-foreground/70">
-              {name ? `How does ${name} get customers?` : "How does this business get customers?"}
+              {name ? `Where does ${name} get customers?` : "Where does this business get customers?"}
             </p>
             <Select
               value={businessType}
