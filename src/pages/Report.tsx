@@ -50,7 +50,7 @@ export default function Report() {
 
   if (!restored) return <Navigate to="/" replace />;
 
-  const { result, url, city } = restored;
+  const { result, url, city, searchPhrases } = restored;
   const name = result.siteContext.businessName;
 
   const handleSnapshotSave = async (label: "before" | "after") => {
