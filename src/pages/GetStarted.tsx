@@ -34,38 +34,38 @@ export default function GetStarted() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-6">
-        <div className="mb-10 flex items-start justify-between gap-4">
+      <div className="mx-auto flex min-h-screen w-full flex-col px-8 sm:px-16 py-6">
+        <div className="mb-8 flex items-start justify-between gap-4">
           <Button
             type="button"
             variant="ghost"
             onClick={() => navigate("/")}
-            className="h-auto px-0 text-sm font-semibold text-foreground hover:bg-transparent hover:text-primary"
+            className="h-auto px-0 text-base font-semibold text-foreground hover:bg-transparent hover:text-primary"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ArrowLeft className="mr-2 h-5 w-5" />
             Back
           </Button>
-          <div className="text-sm font-semibold tracking-[0.2em] text-muted-foreground">
+          <div className="text-base font-semibold tracking-[0.2em] text-muted-foreground">
             PAGE 2
           </div>
         </div>
 
         <div className="flex flex-1 items-center justify-center">
-          <div className="w-full max-w-2xl">
+          <div className="w-full">
             <h1
-              className="text-3xl sm:text-4xl font-bold tracking-tight mb-3"
+              className="text-4xl sm:text-5xl font-bold tracking-tight mb-4"
               style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
             >
               Let's check your site.
             </h1>
-            <p className="text-muted-foreground mb-10">
+            <p className="text-lg text-muted-foreground mb-10">
               Enter your domain and a couple of search phrases your customers might use to find you.
             </p>
 
             <UrlInputForm onSubmit={handleSubmit} loading={loading} />
 
             <p
-              className="text-xs text-muted-foreground/70 mt-5"
+              className="text-sm text-muted-foreground/70 mt-6"
               style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
             >
               No signup · Free instant audit · Real data from your site
