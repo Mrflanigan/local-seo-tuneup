@@ -9,6 +9,7 @@ import CompetitorComparison from "@/components/CompetitorComparison";
 import CTABanner from "@/components/CTABanner";
 import PathToPageOne from "@/components/PathToPageOne";
 import MountainLanePicker from "@/components/MountainLanePicker";
+import PhraseOpticsRing from "@/components/PhraseOpticsRing";
 import PageSpeedInsights from "@/components/PageSpeedInsights";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -138,8 +139,19 @@ export default function Report() {
             </Button>
           )}
         </div>
+        {/* Score meters side by side */}
+        <div className={`mb-8 flex flex-col items-center gap-8 ${result.phraseOptics ? "sm:flex-row sm:justify-center sm:items-start sm:gap-16" : ""}`}>
+          <div className="text-center">
+            <ScoreRing score={result.overallScore} grade={result.letterGrade} />
+            <p className="mt-2 text-xs uppercase tracking-widest text-muted-foreground">Site Health</p>
+          </div>
+          {result.phraseOptics && (
+            <div className="text-center">
+              <PhraseOpticsRing data={result.phraseOptics} />
+            </div>
+          )}
+        </div>
         <div className="text-center mb-8">
-          <ScoreRing score={result.overallScore} grade={result.letterGrade} />
           <h2 className="text-xl sm:text-2xl font-bold text-foreground mt-4 mb-2">
             {name
               ? `${name}, your site looks good — but here's what Google thinks`

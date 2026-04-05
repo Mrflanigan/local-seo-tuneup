@@ -18,7 +18,7 @@ export default function GetStarted() {
     setLoading(true);
     setScanUrl(url);
     try {
-      const result: ScoringResult = await runCheckup({ url, city, businessType });
+      const result: ScoringResult = await runCheckup({ url, city, businessType, searchPhrases });
       try {
         localStorage.setItem("lastScan", JSON.stringify({ result, url, city, businessType, ts: Date.now() }));
       } catch { /* storage full — not critical */ }
