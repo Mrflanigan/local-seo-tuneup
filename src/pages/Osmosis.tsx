@@ -124,10 +124,10 @@ export default function Osmosis() {
             What is <span className="text-primary">SEO Osmosis™</span>?
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            SEO Osmosis™ absorbs your website's source code the same way
-            Google's crawler does — then scores 30+ individual signals across 5
-            categories to reveal exactly what's helping your rankings and what's
-            holding you back.
+            SEO Osmosis™ is our scan that checks how Google sees your site.
+            We look at over 30 things that affect your rankings — from your
+            business name and address to your page speed and content — and
+            tell you exactly what's working and what needs to change.
           </p>
         </div>
       </section>
@@ -145,31 +145,30 @@ export default function Osmosis() {
                   The Process — 30 Seconds, Zero Guesswork
                 </h2>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  You enter a URL. SEO Osmosis™ fetches and parses the raw HTML
-                  — the same source code Googlebot sees. No browser rendering
-                  tricks, no JavaScript-only content. We read what the crawler
-                  reads, score every signal against local SEO best practices, and
-                  generate a personalized report referencing your actual business
-                  data.
-                </p>
+                   You enter your website address. SEO Osmosis™ reads your site
+                   the same way Google does — looking at the code behind your pages,
+                   not just the design. We check every important detail against
+                   what works for local businesses and build a personalized report
+                   about your actual business.
+                 </p>
               </div>
             </div>
 
             <div className="grid sm:grid-cols-3 gap-4">
               <ProcessStep
                 step="01"
-                title="Fetch & Parse"
-                detail="Raw HTML retrieval via headless crawl, identical to Googlebot's first pass."
+                title="Read Your Site"
+                detail="We pull up your website and read the code — the same stuff Google looks at when deciding who to show first."
               />
               <ProcessStep
                 step="02"
-                title="Score & Classify"
-                detail="30+ signals scored across 5 weighted categories totaling 100 points."
+                title="Check 30+ Things"
+                detail="We score over 30 things across 5 categories, each one something Google actually cares about."
               />
               <ProcessStep
                 step="03"
-                title="Personalize & Report"
-                detail="Findings reference your real business name, phone, services, and city."
+                title="Build Your Report"
+                detail="Every finding mentions your real business name, phone number, services, and city — not generic advice."
               />
             </div>
           </div>

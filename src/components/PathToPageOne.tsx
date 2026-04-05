@@ -62,12 +62,11 @@ export default function PathToPageOne({ result }: Props) {
       <div className="rounded-xl border border-accent/30 bg-accent/5 p-6 sm:p-8 text-center">
         <Rocket className="h-8 w-8 text-accent mx-auto mb-4" />
         <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
-          Let's get down to it.
+          Here's what we'd fix first to get you more calls.
         </h3>
         <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto">
-          You want to be on page one — and you want more than your share when
-          you get there.{" "}
-          <span className="text-foreground font-medium">Here's how.</span>
+          You want to be on page one — where customers actually click.{" "}
+          <span className="text-foreground font-medium">Here's the plan.</span>
         </p>
       </div>
 

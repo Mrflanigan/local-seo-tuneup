@@ -69,10 +69,10 @@ export default function GetStarted() {
               className="text-4xl sm:text-5xl font-bold tracking-tight mb-4 text-white"
               style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
             >
-              Let's check your site.
+              Enter your website to run your free Google checkup.
             </h1>
             <p className="text-lg text-white/70 mb-10">
-              Enter your domain and a couple of search phrases your customers might use to find you.
+              Add your city and a couple of searches your customers would type — we'll show you where you stand.
             </p>
 
             <UrlInputForm onSubmit={handleSubmit} loading={loading} />
