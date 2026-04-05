@@ -88,7 +88,7 @@ export default function GetStarted() {
 
         {/* Tribute */}
         <div className="mt-auto pb-4 text-right">
-          <p className="text-[11px] tracking-widest text-white/20 uppercase">
+          <p className="text-[11px] tracking-widest text-white/50 uppercase">
             Burj Khalifa · Dubai · 2,717 ft · Tallest structure ever built
           </p>
         </div>
