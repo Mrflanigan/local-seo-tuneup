@@ -65,15 +65,18 @@ const gapLabels: Record<string, string> = {
   "url-slug": "SEO-friendly URLs",
 };
 
-export default function CompetitorComparison({ result, url, city }: Props) {
+export default function CompetitorComparison({ result, url, city, searchPhrases }: Props) {
   const [competitors, setCompetitors] = useState<CompetitorResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [scanned, setScanned] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   const location = city || result.siteContext.locations[0];
-  const winPhrases = selectWinPhrases(result.phraseOptics?.phraseResults ?? []);
-  const service = winPhrases.primary?.phrase || result.siteContext.services[0] || "business";
+  // Priority: user's typed phrase > win phrase from optics > detected service > fallback
+  const service = searchPhrases?.[0]
+    || selectWinPhrases(result.phraseOptics?.phraseResults ?? []).primary?.phrase
+    || result.siteContext.services[0]
+    || "business";
   const defaultQuery = location ? `${service} in ${location}` : service;
 
   const handleScan = async () => {
