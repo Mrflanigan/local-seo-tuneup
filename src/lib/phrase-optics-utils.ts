@@ -205,3 +205,76 @@ export function getOpticsExplanation(score: number): string {
   if (score >= 40) return "You're findable for some searches, but leaving big opportunities on the table.";
   return "You're mostly invisible for your chosen phrases.";
 }
+
+// ── Win Phrase Selection ─────────────────────────────────
+
+export interface WinPhraseSelection {
+  primary: PhraseResult | null;
+  secondary: PhraseResult | null;
+}
+
+export function selectWinPhrases(phrases: PhraseResult[]): WinPhraseSelection {
+  if (!phrases || phrases.length === 0) {
+    return { primary: null, secondary: null };
+  }
+
+  // Filter out obvious long-shots first
+  const candidates = phrases.filter((p) => p.pageOnePotential !== "LONG_SHOT");
+  const sorted = (candidates.length > 0 ? candidates : phrases)
+    .slice()
+    .sort((a, b) => {
+      const scoreDiff = (b.opticsScore ?? 0) - (a.opticsScore ?? 0);
+      if (scoreDiff !== 0) return scoreDiff;
+      const posA = a.currentPosition ?? 999;
+      const posB = b.currentPosition ?? 999;
+      return posA - posB;
+    });
+
+  return {
+    primary: sorted[0] ?? null,
+    secondary: sorted[1] ?? null,
+  };
+}
+
+// ── 3-Step Path to Page One Plan ─────────────────────────
+
+export function buildPathToPageOnePlan(args: {
+  phrase: PhraseResult;
+  osmosisScore: number;
+}): string[] {
+  const { phrase, osmosisScore } = args;
+  const steps: string[] = [];
+
+  // Step 1: on-page optimization for the phrase
+  steps.push(
+    `Make your main "${phrase.phrase}" page crystal clear for Google: put this phrase in the page title, main heading, and a few times in the content in natural language.`
+  );
+
+  // Step 2: fix site issues or maintain strength
+  if (osmosisScore < 70) {
+    steps.push(
+      "Fix the most important issues on your site so Google is comfortable ranking you higher — things like missing business details, slow loading, or weak mobile experience."
+    );
+  } else {
+    steps.push(
+      "Keep your technical foundation strong and make it easy for visitors to call, text, or book from that page."
+    );
+  }
+
+  // Step 3: build authority based on potential
+  if (phrase.pageOnePotential === "FAST_TRACK") {
+    steps.push(
+      "Build a handful of strong local signals: update your Google Business Profile, get a few new reviews that mention this service, and add a citation or two on trusted directories."
+    );
+  } else if (phrase.pageOnePotential === "POSSIBLE") {
+    steps.push(
+      "Build consistent local authority over the next few months: regular Google Business posts, steady review generation, and content that demonstrates your expertise in this service."
+    );
+  } else {
+    steps.push(
+      "Consider targeting a more specific version of this phrase (e.g., add your city or a niche qualifier), or commit to a longer campaign to build enough authority to compete."
+    );
+  }
+
+  return steps;
+}
