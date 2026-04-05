@@ -13,17 +13,20 @@ import { Globe, MapPin, Search } from "lucide-react";
 import type { BusinessType } from "@/lib/scoring/types";
 
 interface UrlInputFormProps {
-  onSubmit: (url: string, city?: string, businessType?: BusinessType, searchPhrases?: string[]) => void;
+  onSubmit: (url: string, city?: string, businessType?: BusinessType, searchPhrases?: string[], businessName?: string) => void;
   loading?: boolean;
   hideBusinessType?: boolean;
 }
 
 export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: UrlInputFormProps) {
+  const [businessName, setBusinessName] = useState("");
   const [url, setUrl] = useState("");
   const [city, setCity] = useState("");
   const [businessType, setBusinessType] = useState<BusinessType | "">(hideBusinessType ? "local" : "");
   const [phrase1, setPhrase1] = useState("");
   const [phrase2, setPhrase2] = useState("");
+
+  const name = businessName.trim();
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -35,7 +38,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
       cleanUrl = "https://" + cleanUrl;
     }
     const phrases = [phrase1.trim(), phrase2.trim()].filter(Boolean);
-    onSubmit(cleanUrl, city.trim() || undefined, (businessType || "local") as BusinessType, phrases.length > 0 ? phrases : undefined);
+    onSubmit(cleanUrl, city.trim() || undefined, (businessType || "local") as BusinessType, phrases.length > 0 ? phrases : undefined, name || undefined);
   };
 
   return (
