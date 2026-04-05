@@ -34,7 +34,7 @@ export default function GetStarted() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-6">
+      <div className="mx-auto flex min-h-screen w-full flex-col px-8 sm:px-16 py-6">
         <div className="mb-8 flex items-start justify-between gap-4">
           <Button
             type="button"
