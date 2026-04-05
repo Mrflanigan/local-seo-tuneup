@@ -239,15 +239,15 @@ export default function Index() {
       <section className="py-20 sm:py-24">
         <div className="mx-auto max-w-4xl px-6">
           <div className="text-center mb-14">
-            <h2 className="text-2xl sm:text-4xl font-bold mb-4">Not Another Generic SEO Tool</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">Built for local business owners tired of vague advice and meaningless scores.</p>
+            <h2 className="text-2xl sm:text-4xl font-bold mb-4">Built for Business Owners, Not SEO Nerds</h2>
+            <p className="text-muted-foreground max-w-lg mx-auto">No jargon. No fluff. Just clear answers about why customers aren't finding you.</p>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-5">
-            <DiffCard icon={<CheckCircle2 className="h-5 w-5 text-accent" />} title="Personalized to Your Business" description="We reference your actual phone number, services, and content — not generic 'add a meta description' advice." />
-            <DiffCard icon={<CheckCircle2 className="h-5 w-5 text-accent" />} title="Real Competitor Intelligence" description="We scan businesses actually outranking you and show exactly what they have that you don't." />
-            <DiffCard icon={<CheckCircle2 className="h-5 w-5 text-accent" />} title="Technical + Understandable" description="Every buzzword explained in plain English. You'll know what a canonical tag is AND why it matters." />
-            <DiffCard icon={<CheckCircle2 className="h-5 w-5 text-accent" />} title="100% Real Data" description="Every finding from your actual HTML. No estimates, no projections, no made-up numbers." />
+            <DiffCard icon={<CheckCircle2 className="h-5 w-5 text-accent" />} title="About Your Business, Not Generic" description="We reference your actual phone number, services, and content — not cookie-cutter 'add a meta description' advice." />
+            <DiffCard icon={<CheckCircle2 className="h-5 w-5 text-accent" />} title="See What Competitors Are Doing" description="We check the businesses actually ranking above you and show what they have that you don't." />
+            <DiffCard icon={<CheckCircle2 className="h-5 w-5 text-accent" />} title="Plain English, No Buzzwords" description="Every technical thing we find is explained so it makes sense. You'll know what matters and why." />
+            <DiffCard icon={<CheckCircle2 className="h-5 w-5 text-accent" />} title="100% Real Data" description="Every finding comes from your actual website. No guesses, no estimates, no made-up numbers." />
           </div>
         </div>
       </section>
