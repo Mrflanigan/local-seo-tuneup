@@ -95,6 +95,9 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
             onChange={(e) => setDescription(e.target.value)}
             className="min-h-[80px] text-sm text-foreground placeholder:text-foreground/60 resize-none"
             disabled={loading}
+            spellCheck={true}
+            autoCorrect="on"
+            autoCapitalize="sentences"
           />
         </div>
       )}
