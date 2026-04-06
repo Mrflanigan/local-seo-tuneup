@@ -1,15 +1,8 @@
-// Save point — layout stable
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Building2, Globe, MapPin, Search } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Building2, Globe, MapPin } from "lucide-react";
 import type { BusinessType } from "@/lib/scoring/types";
 
 const STORAGE_KEY = "seo-form-inputs";
@@ -22,7 +15,7 @@ function loadSaved() {
 }
 
 interface UrlInputFormProps {
-  onSubmit: (url: string, city?: string, businessType?: BusinessType, searchPhrases?: string[], businessName?: string) => void;
+  onSubmit: (url: string, city?: string, businessType?: BusinessType, searchPhrases?: string[], businessName?: string, description?: string) => void;
   loading?: boolean;
   hideBusinessType?: boolean;
 }
@@ -32,35 +25,27 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
   const [businessName, setBusinessName] = useState(saved.businessName || "");
   const [url, setUrl] = useState(saved.url || "");
   const [city, setCity] = useState(saved.city || "");
-  const [businessType, setBusinessType] = useState<BusinessType | "">(hideBusinessType ? "local" : (saved.businessType || ""));
-  const [phrase1, setPhrase1] = useState(saved.phrase1 || "");
-  const [phrase2, setPhrase2] = useState(saved.phrase2 || "");
+  const [description, setDescription] = useState(saved.description || "");
 
   const name = businessName.trim();
 
-  // Persist inputs on every change
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ businessName, url, city, businessType, phrase1, phrase2 }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ businessName, url, city, description }));
     } catch { /* storage full */ }
-  }, [businessName, url, city, businessType, phrase1, phrase2]);
+  }, [businessName, url, city, description]);
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
     let cleanUrl = url.trim();
-    if (!cleanUrl) {
-      return;
-    }
-    if (cleanUrl && !cleanUrl.startsWith("http")) {
-      cleanUrl = "https://" + cleanUrl;
-    }
-    const phrases = [phrase1.trim(), phrase2.trim()].filter(Boolean);
-    onSubmit(cleanUrl, city.trim() || undefined, (businessType || "local") as BusinessType, phrases.length > 0 ? phrases : undefined, name || undefined);
+    if (!cleanUrl) return;
+    if (!cleanUrl.startsWith("http")) cleanUrl = "https://" + cleanUrl;
+    onSubmit(cleanUrl, city.trim() || undefined, "local" as BusinessType, undefined, name || undefined, description.trim() || undefined);
   };
 
   return (
     <form onSubmit={handleSubmit} className="w-full space-y-3" style={{ maxWidth: "100%" }}>
-      {/* Business name — first field */}
+      {/* Business name */}
       {!hideBusinessType && (
         <div className="space-y-1 text-left">
           <p className="text-xs text-foreground/70">What's the name of your business?</p>
@@ -78,40 +63,17 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
         </div>
       )}
 
+      {/* City (optional) */}
       {!hideBusinessType && (
-        <div className="flex gap-2 items-end">
-          <div className="flex-1 space-y-1 text-left">
-            <p className="text-xs text-foreground/70">
-              {name ? `Where does ${name} get customers?` : "Where does this business get customers?"}
-            </p>
-            <Select
-              value={businessType}
-              onValueChange={(value) => setBusinessType(value as BusinessType)}
-              disabled={loading}
-            >
-              <SelectTrigger id="business-type" className="h-12 text-sm text-foreground">
-                <SelectValue placeholder="Local or Online?" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="local">Local (City/Area)</SelectItem>
-                <SelectItem value="online">Online (Anywhere)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="relative flex-1 space-y-1">
-            <p className="text-xs text-foreground/70">
-              {name ? `Where are ${name}'s customers?` : "Where are your customers? (Helps us score local signals)"}
-            </p>
-            <MapPin className="absolute left-3 bottom-3 h-5 w-5 text-muted-foreground" />
+        <div className="space-y-1 text-left">
+          <p className="text-xs text-foreground/70">
+            {name ? `Where are ${name}'s customers?` : "Where are your customers? (optional)"}
+          </p>
+          <div className="relative">
+            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               type="text"
-              placeholder={
-                businessType === "local"
-                  ? "City or ZIP"
-                  : businessType === "online"
-                    ? "City or ZIP (optional)"
-                    : "City or ZIP"
-              }
+              placeholder="City or ZIP (optional)"
               value={city}
               onChange={(e) => setCity(e.target.value)}
               className="pl-10 h-12 text-sm text-foreground placeholder:text-foreground/60"
@@ -121,39 +83,23 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
         </div>
       )}
 
-      {/* Search phrases */}
+      {/* Describe what you do */}
       {!hideBusinessType && (
-        <div className="space-y-1">
+        <div className="space-y-1 text-left">
           <p className="text-xs text-foreground/70">
-            {name ? `What might someone Google to find ${name}?` : "What might someone Google to find you?"}
+            {name ? `Describe what ${name} does` : "Describe what your business does"}
           </p>
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder='e.g. "emergency plumber"'
-                value={phrase1}
-                onChange={(e) => setPhrase1(e.target.value)}
-                className="pl-9 h-12 text-sm text-foreground placeholder:text-foreground/60"
-                disabled={loading}
-              />
-            </div>
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="2nd phrase (optional)"
-                value={phrase2}
-                onChange={(e) => setPhrase2(e.target.value)}
-                className="pl-9 h-12 text-sm text-foreground placeholder:text-foreground/60"
-                disabled={loading}
-              />
-            </div>
-          </div>
+          <Textarea
+            placeholder="e.g. We do residential and commercial lawn care, landscaping, moss removal, and seasonal cleanups"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="min-h-[80px] text-sm text-foreground placeholder:text-foreground/60 resize-none"
+            disabled={loading}
+          />
         </div>
       )}
 
+      {/* URL + submit */}
       <div className="flex gap-3" style={{ width: "100%", maxWidth: "100%" }}>
         <div className="relative" style={{ flex: "1 1 70%", minWidth: 0 }}>
           <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
