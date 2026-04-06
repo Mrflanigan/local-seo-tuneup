@@ -5,6 +5,7 @@ import UrlInputForm from "@/components/UrlInputForm";
 import ScanningView from "@/components/ScanningView";
 import { Button } from "@/components/ui/button";
 import { runCheckup } from "@/lib/api/checkup";
+import { supabase } from "@/integrations/supabase/client";
 import type { ScoringResult, BusinessType } from "@/lib/scoring/types";
 import { toast } from "sonner";
 import peakBg from "@/assets/getstarted-peak.jpg";
@@ -14,15 +15,32 @@ export default function GetStarted() {
   const [loading, setLoading] = useState(false);
   const [scanUrl, setScanUrl] = useState("");
 
-  const handleSubmit = async (url: string, city?: string, businessType?: BusinessType, searchPhrases?: string[]) => {
+  const handleSubmit = async (url: string, city?: string, businessType?: BusinessType, _searchPhrases?: string[], businessName?: string, description?: string) => {
     setLoading(true);
     setScanUrl(url);
     try {
+      // Step 1: If we have a description, generate real search phrases from it
+      let searchPhrases: string[] | undefined = _searchPhrases;
+      if (description) {
+        try {
+          const { data, error } = await supabase.functions.invoke('generate-phrases', {
+            body: { description, city, businessName },
+          });
+          if (!error && data?.success && data.phrases?.length > 0) {
+            searchPhrases = data.phrases;
+            console.log('AI-generated phrases:', searchPhrases);
+          }
+        } catch (e) {
+          console.warn('Phrase generation failed, continuing without:', e);
+        }
+      }
+
+      // Step 2: Run the checkup with AI-generated phrases
       const result: ScoringResult = await runCheckup({ url, city, businessType, searchPhrases });
       try {
-        localStorage.setItem("lastScan", JSON.stringify({ result, url, city, businessType, searchPhrases, ts: Date.now() }));
-      } catch { /* storage full — not critical */ }
-      navigate("/report", { state: { result, url, city, businessType, searchPhrases } });
+        localStorage.setItem("lastScan", JSON.stringify({ result, url, city, businessType, searchPhrases, businessName, description, ts: Date.now() }));
+      } catch { /* storage full */ }
+      navigate("/report", { state: { result, url, city, businessType, searchPhrases, businessName } });
     } catch (err) {
       toast.error("Something went wrong scanning that site. Please try again.");
       console.error(err);
@@ -35,7 +53,6 @@ export default function GetStarted() {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Background image */}
       <img
         src={peakBg}
         alt=""
@@ -43,10 +60,8 @@ export default function GetStarted() {
         width={1920}
         height={1080}
       />
-      {/* Dark overlay for readability */}
       <div className="absolute inset-0 bg-black/40" />
 
-      {/* Content */}
       <div className="relative z-10 flex min-h-screen w-full flex-col px-8 sm:px-16 py-6">
         <div className="mb-8 flex items-start justify-between gap-4">
           <Button
@@ -72,7 +87,7 @@ export default function GetStarted() {
               Enter your website to run your free Google checkup.
             </h1>
             <p className="text-lg text-white/70 mb-10">
-              Add your city and a couple of searches your customers would type — we'll show you where you stand.
+              Tell us what you do — we'll find the search terms that matter and show you where you stand.
             </p>
 
             <UrlInputForm onSubmit={handleSubmit} loading={loading} />
@@ -86,7 +101,6 @@ export default function GetStarted() {
           </div>
         </div>
 
-        {/* Tribute */}
         <div className="mt-auto pb-4 text-right">
           <p className="text-[11px] tracking-widest text-white/50 uppercase">
             Burj Khalifa · Dubai · 2,717 ft · Tallest structure ever built
