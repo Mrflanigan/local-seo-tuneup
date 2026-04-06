@@ -1,9 +1,8 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import UrlInputForm from "@/components/UrlInputForm";
 import ScanningView from "@/components/ScanningView";
-import KeywordTeaser from "@/components/KeywordTeaser";
 import { Button } from "@/components/ui/button";
 import { runCheckup } from "@/lib/api/checkup";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,97 +16,50 @@ export default function GetStarted() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [scanUrl, setScanUrl] = useState("");
+  const [scanKeywords, setScanKeywords] = useState<KeywordVolume[] | null>(null);
 
-  // Teaser state
-  const [teaserKeywords, setTeaserKeywords] = useState<KeywordVolume[] | null>(null);
-  const [pendingScan, setPendingScan] = useState<{
-    url: string; city?: string; businessType?: BusinessType;
-    searchPhrases?: string[]; businessName?: string; description?: string;
-    keywordVolumes: KeywordVolume[] | null;
-  } | null>(null);
-
-  const continueScan = useCallback(async (params: NonNullable<typeof pendingScan>) => {
-    setTeaserKeywords(null);
-    setPendingScan(null);
+  const handleSubmit = async (url: string, city?: string, businessType?: BusinessType, _searchPhrases?: string[], businessName?: string, description?: string) => {
     setLoading(true);
-    setScanUrl(params.url);
+    setScanUrl(url);
+    setScanKeywords(null);
 
     try {
-      const result: ScoringResult = await runCheckup({
-        url: params.url,
-        city: params.city,
-        businessType: params.businessType,
-        searchPhrases: params.searchPhrases,
-      });
+      // Step 1: If we have a description, generate real search phrases
+      let searchPhrases: string[] | undefined = _searchPhrases;
+      let keywordVolumes: KeywordVolume[] | null = null;
+      if (description) {
+        try {
+          const { data, error } = await supabase.functions.invoke('generate-phrases', {
+            body: { description, city, businessName },
+          });
+          if (!error && data?.success && data.phrases?.length > 0) {
+            searchPhrases = data.phrases;
+            keywordVolumes = data.volumes || null;
+            // Pass keywords to scanning view so they appear during the scan
+            if (keywordVolumes) {
+              setScanKeywords(keywordVolumes);
+            }
+          }
+        } catch (e) {
+          console.warn('Phrase generation failed, continuing without:', e);
+        }
+      }
+
+      // Step 2: Run the checkup
+      const result: ScoringResult = await runCheckup({ url, city, businessType, searchPhrases });
       try {
-        localStorage.setItem("lastScan", JSON.stringify({
-          result, url: params.url, city: params.city, businessType: params.businessType,
-          searchPhrases: params.searchPhrases, businessName: params.businessName,
-          description: params.description, keywordVolumes: params.keywordVolumes, ts: Date.now(),
-        }));
+        localStorage.setItem("lastScan", JSON.stringify({ result, url, city, businessType, searchPhrases, businessName, description, keywordVolumes, ts: Date.now() }));
       } catch { /* storage full */ }
-      navigate("/report", {
-        state: {
-          result, url: params.url, city: params.city,
-          businessType: params.businessType, searchPhrases: params.searchPhrases,
-          businessName: params.businessName, keywordVolumes: params.keywordVolumes,
-        },
-      });
+      navigate("/report", { state: { result, url, city, businessType, searchPhrases, businessName, keywordVolumes } });
     } catch (err) {
       toast.error("Something went wrong scanning that site. Please try again.");
       console.error(err);
     } finally {
       setLoading(false);
     }
-  }, [navigate]);
-
-  const handleSubmit = async (
-    url: string, city?: string, businessType?: BusinessType,
-    _searchPhrases?: string[], businessName?: string, description?: string
-  ) => {
-    let searchPhrases: string[] | undefined = _searchPhrases;
-    let keywordVolumes: KeywordVolume[] | null = null;
-
-    // Step 1: Get real keywords from DataForSEO
-    if (description) {
-      setLoading(true);
-      setScanUrl(url);
-      try {
-        const { data, error } = await supabase.functions.invoke('generate-phrases', {
-          body: { description, city, businessName },
-        });
-        if (!error && data?.success && data.phrases?.length > 0) {
-          searchPhrases = data.phrases;
-          keywordVolumes = data.volumes || null;
-        }
-      } catch (e) {
-        console.warn('Phrase generation failed, continuing without:', e);
-      }
-      setLoading(false);
-    }
-
-    const scanParams = { url, city, businessType, searchPhrases, businessName, description, keywordVolumes };
-
-    // Step 2: If we got keyword volumes, show the teaser ONCE
-    const teaserKey = `kw_teaser_${url}`;
-    if (keywordVolumes && keywordVolumes.length > 0 && !sessionStorage.getItem(teaserKey)) {
-      sessionStorage.setItem(teaserKey, "shown");
-      setTeaserKeywords(keywordVolumes);
-      setPendingScan(scanParams);
-      return; // Wait for teaser dismiss
-    }
-
-    // No teaser — go straight to scan
-    await continueScan(scanParams);
   };
 
-  const handleTeaserDismiss = () => {
-    if (pendingScan) {
-      continueScan(pendingScan);
-    }
-  };
-
-  if (loading) return <ScanningView url={scanUrl} />;
+  if (loading) return <ScanningView url={scanUrl} keywords={scanKeywords} />;
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -119,11 +71,6 @@ export default function GetStarted() {
         height={1080}
       />
       <div className="absolute inset-0 bg-black/40" />
-
-      {/* Keyword teaser overlay */}
-      {teaserKeywords && (
-        <KeywordTeaser keywords={teaserKeywords} onDismiss={handleTeaserDismiss} />
-      )}
 
       <div className="relative z-10 flex min-h-screen w-full flex-col px-8 sm:px-16 py-6">
         <div className="mb-8 flex items-start justify-between gap-4">
