@@ -43,9 +43,9 @@ export default function GetStarted() {
       // Step 2: Run the checkup with AI-generated phrases
       const result: ScoringResult = await runCheckup({ url, city, businessType, searchPhrases });
       try {
-        localStorage.setItem("lastScan", JSON.stringify({ result, url, city, businessType, searchPhrases, businessName, description, ts: Date.now() }));
+        localStorage.setItem("lastScan", JSON.stringify({ result, url, city, businessType, searchPhrases, businessName, description, keywordVolumes, ts: Date.now() }));
       } catch { /* storage full */ }
-      navigate("/report", { state: { result, url, city, businessType, searchPhrases, businessName } });
+      navigate("/report", { state: { result, url, city, businessType, searchPhrases, businessName, keywordVolumes } });
     } catch (err) {
       toast.error("Something went wrong scanning that site. Please try again.");
       console.error(err);
