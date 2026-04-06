@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Loader2, TrendingUp, Search } from "lucide-react";
+import { Loader2, TrendingUp, Search, Shield, X, Check } from "lucide-react";
 
 interface KeywordVolume {
   keyword: string;
@@ -18,6 +18,15 @@ const baseMessages = [
   "Almost done — building your personalized report…",
 ];
 
+const comparisonRows = [
+  { label: "Real Google search volumes", us: true, them: false },
+  { label: "Live rank checking", us: true, them: false },
+  { label: "Full technical site audit", us: true, them: true },
+  { label: "Competitor analysis", us: true, them: false },
+  { label: "No signup required", us: true, them: false },
+  { label: "100% free", us: true, them: false },
+];
+
 interface ScanningViewProps {
   url: string;
   keywords?: KeywordVolume[] | null;
@@ -28,6 +37,9 @@ export default function ScanningView({ url, keywords }: ScanningViewProps) {
   const [showKeywords, setShowKeywords] = useState(false);
   const [visibleKeywords, setVisibleKeywords] = useState(0);
   const [keywordsDone, setKeywordsDone] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
+  const [visibleRows, setVisibleRows] = useState(0);
+  const [comparisonDone, setComparisonDone] = useState(false);
 
   const hasKeywords = keywords && keywords.length > 0;
   const topKeywords = hasKeywords
@@ -37,18 +49,32 @@ export default function ScanningView({ url, keywords }: ScanningViewProps) {
         .slice(0, 5)
     : [];
 
-  // Keyword step appears after message index 1 (after "Checking local presence")
-  const keywordStepIndex = 2;
+  // Comparison flash appears at step 1 (right after "absorbing your site data")
+  const comparisonStepIndex = 1;
+  // Keyword step appears after comparison
+  const keywordStepIndex = hasKeywords ? 3 : 2;
 
-  // Build the full message list — inject keyword step
-  const messages = hasKeywords
-    ? [
-        ...baseMessages.slice(0, keywordStepIndex),
+  // Build the full message list — inject comparison + keyword steps
+  const buildMessages = () => {
+    let msgs = [...baseMessages];
+    // Insert comparison step at index 1
+    msgs = [
+      ...msgs.slice(0, comparisonStepIndex),
+      "This isn't like other SEO tools…",
+      ...msgs.slice(comparisonStepIndex),
+    ];
+    // Insert keyword step
+    if (hasKeywords) {
+      msgs = [
+        ...msgs.slice(0, comparisonStepIndex + 2),
         "Discovering what people actually search for…",
-        ...baseMessages.slice(keywordStepIndex),
-      ]
-    : baseMessages;
+        ...msgs.slice(comparisonStepIndex + 2),
+      ];
+    }
+    return msgs;
+  };
 
+  const messages = buildMessages();
   const totalSteps = messages.length;
 
   useEffect(() => {
@@ -56,11 +82,17 @@ export default function ScanningView({ url, keywords }: ScanningViewProps) {
       setMessageIndex((i) => {
         if (i < totalSteps - 1) {
           const next = i + 1;
-          // When we hit the keyword step, show keywords
+          // Comparison step
+          if (next === comparisonStepIndex) {
+            setShowComparison(true);
+          }
+          if (next === comparisonStepIndex + 1) {
+            setComparisonDone(true);
+          }
+          // Keyword step
           if (hasKeywords && next === keywordStepIndex) {
             setShowKeywords(true);
           }
-          // When we move past keywords, mark done
           if (hasKeywords && next === keywordStepIndex + 1) {
             setKeywordsDone(true);
           }
@@ -70,7 +102,20 @@ export default function ScanningView({ url, keywords }: ScanningViewProps) {
       });
     }, 3000);
     return () => clearInterval(interval);
-  }, [totalSteps, hasKeywords]);
+  }, [totalSteps, hasKeywords, keywordStepIndex]);
+
+  // Cascade comparison rows
+  useEffect(() => {
+    if (!showComparison) return;
+    setVisibleRows(0);
+    let count = 0;
+    const interval = setInterval(() => {
+      count++;
+      setVisibleRows(count);
+      if (count >= comparisonRows.length) clearInterval(interval);
+    }, 350);
+    return () => clearInterval(interval);
+  }, [showComparison]);
 
   // Cascade keywords in one at a time
   useEffect(() => {
@@ -95,6 +140,7 @@ export default function ScanningView({ url, keywords }: ScanningViewProps) {
   const formatNumber = (n: number) => n.toLocaleString();
 
   const isKeywordPhase = showKeywords && !keywordsDone;
+  const isComparisonPhase = showComparison && !comparisonDone;
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
@@ -109,6 +155,60 @@ export default function ScanningView({ url, keywords }: ScanningViewProps) {
         >
           {messages[messageIndex]}
         </p>
+
+        {/* Comparison flash — appears early in scan */}
+        {isComparisonPhase && (
+          <div className="mt-6 max-w-sm mx-auto text-left">
+            <div className="flex items-center gap-2 mb-3">
+              <Shield className="h-4 w-4 text-accent" />
+              <p className="text-xs font-semibold text-accent uppercase tracking-wider">
+                The only free tool that does all of this
+              </p>
+            </div>
+            <div className="rounded-lg border border-border/40 bg-card/60 overflow-hidden">
+              <div className="grid grid-cols-[1fr,4rem,4rem] text-[10px] uppercase tracking-wider text-muted-foreground px-4 py-2 border-b border-border/30">
+                <span></span>
+                <span className="text-center text-accent font-bold">Us</span>
+                <span className="text-center">Others</span>
+              </div>
+              {comparisonRows.map((row, i) => (
+                <div
+                  key={row.label}
+                  className={`grid grid-cols-[1fr,4rem,4rem] items-center px-4 py-2 border-b border-border/20 last:border-b-0 transition-all duration-500 ${
+                    i < visibleRows
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-2"
+                  }`}
+                >
+                  <span className="text-sm text-foreground">{row.label}</span>
+                  <span className="flex justify-center">
+                    {row.us ? (
+                      <Check className="h-4 w-4 text-accent" />
+                    ) : (
+                      <X className="h-4 w-4 text-muted-foreground/40" />
+                    )}
+                  </span>
+                  <span className="flex justify-center">
+                    {row.them ? (
+                      <Check className="h-4 w-4 text-muted-foreground/60" />
+                    ) : (
+                      <X className="h-4 w-4 text-destructive/60" />
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Fading comparison */}
+        {comparisonDone && !showKeywords && (
+          <div className="mt-6 max-w-sm mx-auto animate-fade-out">
+            <p className="text-xs text-muted-foreground">
+              ✓ You're getting what others charge hundreds for — for free.
+            </p>
+          </div>
+        )}
 
         {/* Keyword cascade — appears naturally during scan */}
         {isKeywordPhase && topKeywords.length > 0 && (
