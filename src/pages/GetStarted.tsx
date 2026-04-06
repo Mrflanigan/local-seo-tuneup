@@ -21,6 +21,7 @@ export default function GetStarted() {
     try {
       // Step 1: If we have a description, generate real search phrases from it
       let searchPhrases: string[] | undefined = _searchPhrases;
+      let keywordVolumes: { keyword: string; monthlySearches: number; competition: string | null; cpc: number | null }[] | null = null;
       if (description) {
         try {
           const { data, error } = await supabase.functions.invoke('generate-phrases', {
@@ -28,7 +29,11 @@ export default function GetStarted() {
           });
           if (!error && data?.success && data.phrases?.length > 0) {
             searchPhrases = data.phrases;
-            console.log('AI-generated phrases:', searchPhrases);
+            keywordVolumes = data.volumes || null;
+            console.log('Keywords with real volume:', searchPhrases);
+            if (keywordVolumes) {
+              console.log('Search volumes:', keywordVolumes);
+            }
           }
         } catch (e) {
           console.warn('Phrase generation failed, continuing without:', e);
