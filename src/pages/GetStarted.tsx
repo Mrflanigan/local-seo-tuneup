@@ -74,7 +74,7 @@ export default function GetStarted() {
     }
   };
 
-  if (loading) return <ScanningView url={scanUrl} keywords={scanKeywords} />;
+  if (loading) return <ScanningView url={scanUrl} keywords={scanKeywords} rankPage={scanRankPage} city={scanCity} businessName={scanBusinessName} />;
 
   return (
     <div className="relative min-h-screen overflow-hidden">
