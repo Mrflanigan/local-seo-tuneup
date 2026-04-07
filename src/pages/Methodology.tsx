@@ -317,6 +317,12 @@ export default function Methodology() {
                           <span className="font-semibold text-foreground">How to fix: </span>
                           <span className="text-muted-foreground">{check.fix}</span>
                         </p>
+                        {"methodology" in check && (check as any).methodology && (
+                          <p className="text-xs leading-relaxed border-t border-border/30 pt-2 mt-2">
+                            <span className="font-semibold text-foreground">How we detect this: </span>
+                            <span className="text-muted-foreground">{(check as any).methodology}</span>
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
