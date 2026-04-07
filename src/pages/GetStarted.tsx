@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowLeft, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import UrlInputForm from "@/components/UrlInputForm";
 import ScanningView from "@/components/ScanningView";
@@ -12,6 +12,38 @@ import peakBg from "@/assets/getstarted-peak.jpg";
 
 type KeywordVolume = { keyword: string; monthlySearches: number; competition: string | null; cpc: number | null };
 
+interface RateLimitStatus {
+  allowed: boolean;
+  scanCount: number;
+  remaining: number;
+  needsContext: boolean;
+  reason?: string;
+  message?: string;
+}
+
+async function checkScanLimit(): Promise<RateLimitStatus> {
+  try {
+    const { data, error } = await supabase.functions.invoke("check-scan-limit", {
+      body: { action: "check" },
+    });
+    if (error) throw error;
+    return data as RateLimitStatus;
+  } catch {
+    // Fail open — don't block real users on errors
+    return { allowed: true, scanCount: 0, remaining: 3, needsContext: false };
+  }
+}
+
+async function incrementScanCount(): Promise<void> {
+  try {
+    await supabase.functions.invoke("check-scan-limit", {
+      body: { action: "increment" },
+    });
+  } catch {
+    // Non-critical
+  }
+}
+
 export default function GetStarted() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -21,7 +53,37 @@ export default function GetStarted() {
   const [scanCity, setScanCity] = useState<string | undefined>();
   const [scanBusinessName, setScanBusinessName] = useState<string | undefined>();
 
+  // Rate limiting state
+  const [rateLimitStatus, setRateLimitStatus] = useState<RateLimitStatus | null>(null);
+  const [limitBlocked, setLimitBlocked] = useState(false);
+  const [limitMessage, setLimitMessage] = useState("");
+
+  // Check rate limit on mount
+  useEffect(() => {
+    checkScanLimit().then((status) => {
+      setRateLimitStatus(status);
+      if (!status.allowed) {
+        setLimitBlocked(true);
+        setLimitMessage(
+          status.message ||
+            "You've used your complimentary scans from this connection today. If you're an agency or need more, reach out and we'll set you up properly instead of hacking around it."
+        );
+      }
+    });
+  }, []);
+
   const handleSubmit = async (url: string, city?: string, businessType?: BusinessType, _searchPhrases?: string[], businessName?: string, description?: string) => {
+    // Re-check limit right before scanning
+    const freshStatus = await checkScanLimit();
+    if (!freshStatus.allowed) {
+      setLimitBlocked(true);
+      setLimitMessage(
+        freshStatus.message ||
+          "You've used your complimentary scans from this connection today. If you're an agency or need more, reach out and we'll set you up properly instead of hacking around it."
+      );
+      return;
+    }
+
     setLoading(true);
     setScanUrl(url);
     setScanKeywords(null);
@@ -30,6 +92,9 @@ export default function GetStarted() {
     setScanBusinessName(businessName);
 
     try {
+      // Increment scan count
+      await incrementScanCount();
+
       // Step 1: If we have a description, generate real search phrases
       let searchPhrases: string[] | undefined = _searchPhrases;
       let keywordVolumes: KeywordVolume[] | null = null;
@@ -41,7 +106,6 @@ export default function GetStarted() {
           if (!error && data?.success && data.phrases?.length > 0) {
             searchPhrases = data.phrases;
             keywordVolumes = data.volumes || null;
-            // Pass keywords to scanning view so they appear during the scan
             if (keywordVolumes) {
               setScanKeywords(keywordVolumes);
             }
@@ -53,7 +117,6 @@ export default function GetStarted() {
 
       // Step 2: Run the checkup
       const result: ScoringResult = await runCheckup({ url, city, businessType, searchPhrases });
-      // Extract best rank page for the page-flash animation
       const bestRank = result.phraseOptics?.rankings
         ?.filter((r) => r.page !== null)
         ?.sort((a, b) => (a.page ?? 99) - (b.page ?? 99))[0];
@@ -63,7 +126,6 @@ export default function GetStarted() {
       try {
         localStorage.setItem("lastScan", JSON.stringify({ result, url, city, businessType, searchPhrases, businessName, description, keywordVolumes, ts: Date.now() }));
       } catch { /* storage full */ }
-      // Small delay so user sees the rank page flash before navigating
       await new Promise((r) => setTimeout(r, 3000));
       navigate("/report", { state: { result, url, city, businessType, searchPhrases, businessName, keywordVolumes } });
     } catch (err) {
@@ -115,14 +177,30 @@ export default function GetStarted() {
               Tell us what you do — we'll find the search terms that matter and show you where you stand.
             </p>
 
-            <UrlInputForm onSubmit={handleSubmit} loading={loading} />
+            {/* Rate limit block message */}
+            {limitBlocked && (
+              <div className="rounded-xl border border-accent/30 bg-accent/10 p-5 mb-6">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="h-5 w-5 text-accent shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-semibold text-white mb-1">Today's complimentary scans used</p>
+                    <p className="text-sm text-white/70">{limitMessage}</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
-            <p
-              className="text-sm text-white/40 mt-6"
-              style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
-            >
-              No signup · Complimentary instant audit · Real data from your site
-            </p>
+            {!limitBlocked && (
+              <>
+                <UrlInputForm onSubmit={handleSubmit} loading={loading} />
+                <p
+                  className="text-sm text-white/40 mt-6"
+                  style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
+                >
+                  Complimentary: up to 3 scans a day per location. No login.
+                </p>
+              </>
+            )}
           </div>
         </div>
 
