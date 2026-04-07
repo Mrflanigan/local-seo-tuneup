@@ -4,6 +4,7 @@ import type {
   ScoringResult,
   CategoryResult,
   Finding,
+  FindingEvidence,
   LetterGrade,
   ScanInput,
 } from "./types";
@@ -36,9 +37,10 @@ function finding(
   points: number,
   maxPoints: number,
   generic: string,
-  personalized: string
+  personalized: string,
+  evidence?: FindingEvidence[]
 ): Finding {
-  return { id, passed, points, maxPoints, generic, personalized };
+  return { id, passed, points, maxPoints, generic, personalized, evidence };
 }
 
 // ── Context Extraction ──────────────────────────────────
@@ -521,16 +523,74 @@ function scoreExtras(
       : "Adding FAQPage, Service, or Breadcrumb schema can earn you enhanced search features like FAQ dropdowns and breadcrumb navigation in results."
   ));
 
-  // 2. No obvious spam (3 pts)
+  // 2. No obvious spam (3 pts) — now with evidence-backed heuristics
   const spamPatterns = /casino|poker|essay\s*writing|payday\s*loan|viagra|cialis|crypto\s*trading|forex\s*signal/i;
   const spamLinks = (html.match(/<a[^>]*href\s*=\s*["'][^"']*["'][^>]*>[^<]*<\/a>/gi) || [])
     .filter(link => spamPatterns.test(link));
-  const hasSpam = spamLinks.length > 0 || spamPatterns.test(lowerMd);
+  const spamEvidence: FindingEvidence[] = [];
+
+  // Heuristic 1: Suspicious outbound links
+  if (spamLinks.length > 0) {
+    spamEvidence.push({
+      heuristic: "Suspicious outbound links detected",
+      snippet: spamLinks.slice(0, 3).map(l => l.replace(/<[^>]+>/g, "").trim()).join(" | "),
+      detail: `Found ${spamLinks.length} link(s) matching known spam patterns (gambling, pharma, essay writing).`,
+    });
+  }
+
+  // Heuristic 2: Keyword stuffing — same phrase repeated excessively
+  const words = lowerMd.split(/\s+/);
+  const totalWords = words.length;
+  if (totalWords >= 100) {
+    // Check 2-3 word phrases
+    const phraseCounts: Record<string, number> = {};
+    for (let i = 0; i < words.length - 1; i++) {
+      const bi = words[i] + " " + words[i + 1];
+      if (bi.length > 5) phraseCounts[bi] = (phraseCounts[bi] || 0) + 1;
+      if (i < words.length - 2) {
+        const tri = bi + " " + words[i + 2];
+        if (tri.length > 8) phraseCounts[tri] = (phraseCounts[tri] || 0) + 1;
+      }
+    }
+    const stuffingThreshold = Math.max(6, Math.floor(totalWords / 50));
+    const stuffedPhrases = Object.entries(phraseCounts)
+      .filter(([, count]) => count >= stuffingThreshold)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 3);
+    for (const [phrase, count] of stuffedPhrases) {
+      // Find a snippet around the phrase
+      const idx = lowerMd.indexOf(phrase);
+      const snippetStart = Math.max(0, idx - 40);
+      const snippetEnd = Math.min(lowerMd.length, idx + phrase.length + 40);
+      const snippet = "…" + lowerMd.slice(snippetStart, snippetEnd).replace(/\n/g, " ") + "…";
+      spamEvidence.push({
+        heuristic: "Potential keyword stuffing",
+        snippet,
+        detail: `The phrase "${phrase}" appears ${count} times in ~${totalWords} words (threshold: ${stuffingThreshold}). This density may look unnatural to Google.`,
+      });
+    }
+  }
+
+  // Heuristic 3: Location stuffing — long list of cities/ZIPs in one block
+  const cityListPattern = /(?:(?:[A-Z][a-z]+(?:\s[A-Z][a-z]+)*,?\s*(?:[A-Z]{2})?\s*(?:\d{5})?)\s*[,|·•]\s*){5,}/g;
+  const cityListMatches = html.match(cityListPattern);
+  if (cityListMatches) {
+    for (const match of cityListMatches.slice(0, 2)) {
+      spamEvidence.push({
+        heuristic: "Potential location stuffing",
+        snippet: truncate(match.replace(/<[^>]+>/g, ""), 120),
+        detail: "A long list of cities or ZIP codes in one block can look like doorway content to Google.",
+      });
+    }
+  }
+
+  const hasSpam = spamLinks.length > 0 || spamPatterns.test(lowerMd) || spamEvidence.some(e => e.heuristic.includes("stuffing"));
   findings.push(finding("no-spam", !hasSpam, hasSpam ? 0 : 3, 3,
     !hasSpam ? "No spammy content or links detected." : "Potentially spammy content or links found.",
     !hasSpam
-      ? "Your page is clean — no suspicious outbound links or spammy content detected."
-      : `We found ${spamLinks.length} suspicious link(s) or content that could trigger spam filters. Remove any unrelated outbound links to gambling, essay, or pharma sites.`
+      ? "Your page is clean — no suspicious outbound links or spammy content patterns detected."
+      : `We found ${spamEvidence.length} potential issue(s): ${spamEvidence.map(e => e.heuristic.toLowerCase()).join(", ")}. Review the evidence below for specifics.`,
+    spamEvidence.length > 0 ? spamEvidence : undefined
   ));
 
   // 3. Trust indicators — testimonials, social links (3 pts)
