@@ -53,9 +53,18 @@ export default function GetStarted() {
 
       // Step 2: Run the checkup
       const result: ScoringResult = await runCheckup({ url, city, businessType, searchPhrases });
+      // Extract best rank page for the page-flash animation
+      const bestRank = result.phraseOptics?.rankings
+        ?.filter((r) => r.page !== null)
+        ?.sort((a, b) => (a.page ?? 99) - (b.page ?? 99))[0];
+      if (bestRank?.page) {
+        setScanRankPage(bestRank.page);
+      }
       try {
         localStorage.setItem("lastScan", JSON.stringify({ result, url, city, businessType, searchPhrases, businessName, description, keywordVolumes, ts: Date.now() }));
       } catch { /* storage full */ }
+      // Small delay so user sees the rank page flash before navigating
+      await new Promise((r) => setTimeout(r, 3000));
       navigate("/report", { state: { result, url, city, businessType, searchPhrases, businessName, keywordVolumes } });
     } catch (err) {
       toast.error("Something went wrong scanning that site. Please try again.");
