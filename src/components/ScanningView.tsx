@@ -336,7 +336,7 @@ export default function ScanningView({ url, keywords, rankPage, city, businessNa
                       w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold
                       transition-all duration-300 border
                       ${isLocked
-                        ? "bg-accent text-accent-foreground border-accent scale-125 shadow-lg shadow-accent/30"
+                        ? "bg-[hsl(142,71%,45%)]/20 text-[hsl(142,71%,45%)] border-[hsl(142,71%,45%)] scale-125 shadow-lg shadow-[hsl(142,71%,45%)]/30"
                         : isActive && !notFound
                         ? "bg-primary/20 text-primary border-primary/40 scale-110"
                         : isPassed
