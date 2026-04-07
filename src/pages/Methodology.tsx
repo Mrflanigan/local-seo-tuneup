@@ -125,6 +125,28 @@ export default function Methodology() {
           </p>
         </div>
 
+        <div className="rounded-xl border border-border bg-card p-4 sm:p-5 mb-8">
+          <h2 className="text-base font-semibold text-foreground mb-3">How to use this snapshot</h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-accent mb-2">Best for</p>
+              <ul className="space-y-1.5 text-sm text-muted-foreground">
+                <li className="flex gap-2"><span className="text-accent">✓</span> Pre‑sales audits for prospects</li>
+                <li className="flex gap-2"><span className="text-accent">✓</span> Quick health checks before or after major site changes</li>
+                <li className="flex gap-2"><span className="text-accent">✓</span> Explaining priorities to non‑technical owners</li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Not for</p>
+              <ul className="space-y-1.5 text-sm text-muted-foreground">
+                <li className="flex gap-2"><span className="text-muted-foreground/50">✗</span> Deep technical forensics across your entire site</li>
+                <li className="flex gap-2"><span className="text-muted-foreground/50">✗</span> Backlink and authority analysis</li>
+                <li className="flex gap-2"><span className="text-muted-foreground/50">✗</span> Ongoing rank tracking or full SEO reporting</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
         <div className="space-y-6">
           {categories.map((cat) => (
             <div key={cat.label} className="rounded-xl border border-border bg-card p-4 sm:p-5">
