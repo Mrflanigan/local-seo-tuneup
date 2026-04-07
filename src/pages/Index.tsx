@@ -35,7 +35,7 @@ export default function Index() {
 
   const faqs = [
     { q: "What exactly do you check?", a: "We look at your website the same way Google does — checking over 30 things that affect whether customers can find you, like your business name and address, page titles, site speed, and more." },
-    { q: "Is this really free?", a: "Yes. The full checkup and score are completely free, no signup needed. We offer optional paid services if you want us to make the fixes for you." },
+    { q: "Is this really complimentary?", a: "Yes. The full checkup and score are completely complimentary, no signup needed. We offer optional paid services if you want us to make the fixes for you." },
     { q: "How is this different from other SEO tools?", a: "Most tools give cookie-cutter advice. We look at your actual business — your real phone number, services, and city — and tell you specifically what's helping and what's hurting your Google visibility." },
     { q: "Can you fix my site for me?", a: "Absolutely. After your checkup, you can book a quick call where we walk through the biggest wins and handle the fixes for you." },
     { q: "How long does the scan take?", a: "About 30 seconds. We check your site in real time and build your personalized report on the spot." },
@@ -165,10 +165,10 @@ export default function Index() {
             className="h-16 px-12 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic"
             style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
           >
-             Run My Free SEO Checkup
+             Run My Complimentary SEO Checkup
           </Button>
           <p className="text-xs text-muted-foreground/70 mt-5" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
-            No signup · Free instant audit · Real data from your site
+            No signup · Complimentary instant audit · Real data from your site
           </p>
         </div>
 
@@ -283,7 +283,7 @@ export default function Index() {
             className="h-16 px-12 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic"
             style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
           >
-            Run My Free SEO Checkup
+            Run My Complimentary SEO Checkup
           </Button>
         </div>
         <LandmarkCaption name={landmarks[3].name} detail={landmarks[3].detail} />

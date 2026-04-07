@@ -94,7 +94,7 @@ export default function GetStarted() {
               className="text-4xl sm:text-5xl font-bold tracking-tight mb-4 text-white"
               style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
             >
-              Enter your website to run your free Google checkup.
+              Enter your website to run your complimentary Google checkup.
             </h1>
             <p className="text-lg text-white/70 mb-10">
               Tell us what you do — we'll find the search terms that matter and show you where you stand.
@@ -106,7 +106,7 @@ export default function GetStarted() {
               className="text-sm text-white/40 mt-6"
               style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
             >
-              No signup · Free instant audit · Real data from your site
+              No signup · Complimentary instant audit · Real data from your site
             </p>
           </div>
         </div>
