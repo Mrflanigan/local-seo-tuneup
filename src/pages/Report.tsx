@@ -272,6 +272,11 @@ export default function Report() {
           </p>
         </div>
 
+        <p className="text-xs text-muted-foreground/70 text-center mb-8 max-w-md mx-auto leading-relaxed">
+          <span className="font-medium text-muted-foreground">How to use this report:</span>{" "}
+          Use it as a 60‑second health check and conversation starter, not a full forensic audit. Ideal for pre‑sales, quick check‑ins, and educating owners on what matters most next.
+        </p>
+
         {/* Full narrative report — no gate */}
         <WhatGoogleSees result={result} />
 
