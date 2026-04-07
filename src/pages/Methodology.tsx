@@ -112,6 +112,19 @@ export default function Methodology() {
           </ul>
         </div>
 
+        <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 sm:p-5 mb-8">
+          <h2 className="text-base font-semibold text-foreground mb-2">Our Lane (as of today)</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+            SEO Osmosis specializes in one thing: a 60‑second, no‑sign‑up snapshot for local service businesses and the agencies that sell to them.
+          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+            We are not a full‑stack SEO suite. We don't replace your backlink tools, rank trackers, or deep SERP analysis platforms.
+          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            If we decide to move into those areas in the future, we'll approach them the same way we approached this product: clearly scoped, opinionated, and aiming to be best‑in‑class in that lane.
+          </p>
+        </div>
+
         <div className="space-y-6">
           {categories.map((cat) => (
             <div key={cat.label} className="rounded-xl border border-border bg-card p-4 sm:p-5">
