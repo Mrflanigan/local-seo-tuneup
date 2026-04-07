@@ -1,4 +1,4 @@
-import { Eye, EyeOff, AlertTriangle, CheckCircle2, ExternalLink } from "lucide-react";
+import { Eye, EyeOff, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { ScoringResult } from "@/lib/scoring/types";
 
@@ -124,9 +124,12 @@ export default function WhatGoogleSees({ result }: Props) {
           <ul className="space-y-4">
             {good.map((item) => (
               <li key={item.buzzword} className="border-b border-border/50 pb-4 last:border-0 last:pb-0">
-                <code className="text-xs font-mono bg-green-500/10 text-green-600 dark:text-green-400 px-2 py-0.5 rounded">
+                <Link
+                  to={`/methodology#check-${item.findingId}`}
+                  className="text-xs font-mono bg-green-500/10 text-green-600 dark:text-green-400 px-2 py-0.5 rounded hover:underline hover:bg-green-500/20 transition-colors"
+                >
                   {item.buzzword}
-                </code>
+                </Link>
                 <p className="text-sm text-foreground mt-1.5 leading-relaxed">
                   {item.plain}
                 </p>
@@ -155,9 +158,12 @@ export default function WhatGoogleSees({ result }: Props) {
           <ul className="space-y-4">
             {bad.map((item) => (
               <li key={item.buzzword} className="border-b border-border/50 pb-4 last:border-0 last:pb-0">
-                <code className="text-xs font-mono bg-destructive/10 text-destructive px-2 py-0.5 rounded">
+                <Link
+                  to={`/methodology#check-${item.findingId}`}
+                  className="text-xs font-mono bg-destructive/10 text-destructive px-2 py-0.5 rounded hover:underline hover:bg-destructive/20 transition-colors"
+                >
                   {item.buzzword}
-                </code>
+                </Link>
                 <p className="text-sm text-foreground mt-1.5 leading-relaxed">
                   {item.plain}
                 </p>
