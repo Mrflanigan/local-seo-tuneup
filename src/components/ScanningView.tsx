@@ -355,11 +355,8 @@ export default function ScanningView({ url, keywords, rankPage, city, businessNa
             {pageFlashLocked && (
               <div className="mt-4 animate-fade-in">
                 {currentPage <= 10 ? (
-                  <p className="text-sm text-accent font-semibold">
-                    Found on page {currentPage}
-                    {currentPage === 1 && " — great position!"}
-                    {currentPage > 1 && currentPage <= 3 && " — close to the top"}
-                    {currentPage > 3 && " — room to climb"}
+                  <p className="text-lg font-bold text-[hsl(142,71%,45%)]">
+                    Found ya 👀
                   </p>
                 ) : (
                   <p className="text-sm text-destructive/80 font-semibold">
