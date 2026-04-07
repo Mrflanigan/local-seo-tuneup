@@ -17,6 +17,9 @@ export default function GetStarted() {
   const [loading, setLoading] = useState(false);
   const [scanUrl, setScanUrl] = useState("");
   const [scanKeywords, setScanKeywords] = useState<KeywordVolume[] | null>(null);
+  const [scanRankPage, setScanRankPage] = useState<number | null>(null);
+  const [scanCity, setScanCity] = useState<string | undefined>();
+  const [scanBusinessName, setScanBusinessName] = useState<string | undefined>();
 
   const handleSubmit = async (url: string, city?: string, businessType?: BusinessType, _searchPhrases?: string[], businessName?: string, description?: string) => {
     setLoading(true);
