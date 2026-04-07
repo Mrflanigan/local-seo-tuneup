@@ -131,6 +131,39 @@ export type Database = {
         }
         Relationships: []
       }
+      scan_rate_limits: {
+        Row: {
+          blocked_until: string | null
+          created_at: string
+          id: string
+          ip_address: string
+          is_blocked: boolean
+          scan_count: number
+          scan_date: string
+          updated_at: string
+        }
+        Insert: {
+          blocked_until?: string | null
+          created_at?: string
+          id?: string
+          ip_address: string
+          is_blocked?: boolean
+          scan_count?: number
+          scan_date?: string
+          updated_at?: string
+        }
+        Update: {
+          blocked_until?: string | null
+          created_at?: string
+          id?: string
+          ip_address?: string
+          is_blocked?: boolean
+          scan_count?: number
+          scan_date?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       scan_snapshots: {
         Row: {
           city: string | null
