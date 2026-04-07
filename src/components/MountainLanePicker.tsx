@@ -1,25 +1,17 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { ScoringResult } from "@/lib/scoring/types";
 import { Input } from "@/components/ui/input";
-import { KeyRound } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { Send, CheckCircle2 } from "lucide-react";
 
 interface Props {
   result: ScoringResult;
   url?: string;
 }
 
-const TIER_CONFIG = {
-  fix: { priceId: "price_1TIHQ62KBr5H993I4oAp6473", mode: "payment" as const },
-  stayAhead: { priceId: "price_1TIHQq2KBr5H993I7a0eigx9", mode: "subscription" as const },
-  handleIt: { priceId: "price_1TIHRD2KBr5H993IoI0OwHUg", mode: "subscription" as const },
-  domination: { priceId: "price_1TIHRV2KBr5H993IiWOsOkUn", mode: "subscription" as const },
-};
-
 interface PathOption {
-  key: keyof typeof TIER_CONFIG;
+  key: string;
   emoji: string;
   name: string;
   price: string;
@@ -28,7 +20,7 @@ interface PathOption {
   altitude: string;
   features: string[];
   gradient: string;
-  elevation: number; // percentage of mountain height for visual
+  elevation: number;
 }
 
 const PATHS: PathOption[] = [
@@ -82,52 +74,53 @@ const PATHS: PathOption[] = [
 ];
 
 export default function MountainLanePicker({ result, url }: Props) {
-  const [loadingTier, setLoadingTier] = useState<string | null>(null);
   const [hoveredPath, setHoveredPath] = useState<string | null>(null);
-  const [launched, setLaunched] = useState<string | null>(null);
-  const [coupon, setCoupon] = useState("");
-  const [couponApplied, setCouponApplied] = useState(false);
-  const navigate = useNavigate();
+  const [selectedTier, setSelectedTier] = useState<string | null>(null);
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  const BYPASS_CODE = "OSMOSIS2026";
-
-  const handleApplyCoupon = () => {
-    if (coupon.trim().toUpperCase() === BYPASS_CODE) {
-      setCouponApplied(true);
-      toast.success("Coupon applied! Select any tier to proceed.");
-    } else {
-      toast.error("Invalid coupon code.");
-    }
+  const handleTierClick = (tierKey: string) => {
+    setSelectedTier(selectedTier === tierKey ? null : tierKey);
+    setSubmitted(false);
   };
 
-  const handleCheckout = async (tierKey: keyof typeof TIER_CONFIG) => {
-    if (couponApplied) {
-      sessionStorage.setItem("scanResult", JSON.stringify(result));
-      sessionStorage.setItem("scanUrl", url || "");
-      navigate(`/payment-success?tier=${tierKey}`);
+  const handleInquiry = async () => {
+    if (!contactEmail.trim()) {
+      toast.error("We need your email to get back to you.");
       return;
     }
 
-    setLaunched(tierKey);
-    setLoadingTier(tierKey);
-
+    setSubmitting(true);
     try {
-      const tier = TIER_CONFIG[tierKey];
-      sessionStorage.setItem("scanResult", JSON.stringify(result));
-      sessionStorage.setItem("scanUrl", url || "");
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { priceId: tier.priceId, mode: tier.mode, businessUrl: url, tierKey },
+      const selectedPath = PATHS.find((p) => p.key === selectedTier);
+      const { error } = await supabase.functions.invoke("save-lead", {
+        body: {
+          email: contactEmail.trim(),
+          url: url || "",
+          report_json: {
+            ...result,
+            inquiry: {
+              tier: selectedTier,
+              tierName: selectedPath?.name,
+              contactName: contactName.trim(),
+              contactPhone: contactPhone.trim(),
+              timestamp: new Date().toISOString(),
+            },
+          },
+          wants_gameplan: true,
+        },
       });
       if (error) throw error;
-      if (data?.url) {
-        window.location.assign(data.url);
-      }
+      setSubmitted(true);
+      toast.success("We'll be in touch shortly.");
     } catch (err) {
-      console.error("Checkout error:", err);
+      console.error("Inquiry error:", err);
       toast.error("Something went wrong. Please try again.");
     } finally {
-      setLoadingTier(null);
-      setTimeout(() => setLaunched(null), 500);
+      setSubmitting(false);
     }
   };
 
@@ -137,11 +130,6 @@ export default function MountainLanePicker({ result, url }: Props) {
         @keyframes float-up {
           0%, 100% { transform: translateY(0px); }
           50% { transform: translateY(-8px); }
-        }
-        @keyframes ascend {
-          0% { transform: translateY(0) scale(1); opacity: 1; }
-          50% { transform: translateY(-80px) scale(1.15); opacity: 1; }
-          100% { transform: translateY(-300px) scale(0.5); opacity: 0; }
         }
         @keyframes pulse-glow {
           0%, 100% { box-shadow: 0 0 20px hsl(var(--accent) / 0.2); }
@@ -155,47 +143,37 @@ export default function MountainLanePicker({ result, url }: Props) {
           How do you want to reach the top?
         </h3>
         <p className="text-muted-foreground text-sm sm:text-base">
-          Same summit — page one. Pick your path up.
+          Same summit — page one. Pick your path and we'll walk you through it.
         </p>
       </div>
 
       {/* Mountain Paths */}
       <div className="relative rounded-2xl border border-border bg-card overflow-hidden">
-        {/* Mountain silhouette background */}
-        <div
-          className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage: `polygon(0% 100%, 15% 60%, 25% 70%, 40% 30%, 50% 45%, 65% 15%, 75% 35%, 85% 20%, 100% 50%, 100% 100%)`,
-          }}
-        />
-
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-0">
           {PATHS.map((path, index) => {
             const isHovered = hoveredPath === path.key;
-            const isLaunched = launched === path.key;
-            const isOtherLaunched = launched && launched !== path.key;
+            const isSelected = selectedTier === path.key;
 
             return (
               <button
                 key={path.key}
                 type="button"
-                onClick={() => handleCheckout(path.key)}
+                onClick={() => handleTierClick(path.key)}
                 onMouseEnter={() => setHoveredPath(path.key)}
                 onMouseLeave={() => setHoveredPath(null)}
-                disabled={loadingTier !== null}
                 className={`
                   relative flex flex-col items-center text-center p-4 sm:p-6 pt-8
                   border-r border-border/30 last:border-r-0
                   transition-all duration-500 cursor-pointer
-                  ${isHovered ? "bg-secondary/60" : "bg-card"}
-                  ${isOtherLaunched ? "opacity-30 scale-95" : "opacity-100"}
+                  ${isSelected ? "bg-accent/10 ring-2 ring-accent/40 ring-inset" : isHovered ? "bg-secondary/60" : "bg-card"}
                   focus:outline-none focus-visible:ring-2 focus-visible:ring-ring
                 `}
               >
-                {/* Elevation bar — shows how high this path takes you */}
-                <div className="absolute left-0 bottom-0 w-1 transition-all duration-700 rounded-t-full"
+                {/* Elevation bar */}
+                <div
+                  className="absolute left-0 bottom-0 w-1 transition-all duration-700 rounded-t-full"
                   style={{
-                    height: isHovered ? `${path.elevation}%` : `${path.elevation * 0.4}%`,
+                    height: isHovered || isSelected ? `${path.elevation}%` : `${path.elevation * 0.4}%`,
                     background: `linear-gradient(to top, hsl(var(--accent) / 0.6), hsl(var(--primary) / 0.3))`,
                   }}
                 />
@@ -207,16 +185,10 @@ export default function MountainLanePicker({ result, url }: Props) {
                   </div>
                 )}
 
-                {/* The emoji / icon */}
+                {/* Emoji */}
                 <div
-                  className={`
-                    text-4xl sm:text-5xl mb-3 relative z-10 transition-transform duration-300
-                    ${isLaunched ? "animate-[ascend_1.2s_ease-in_forwards]" : ""}
-                    ${!isLaunched ? "animate-[float-up_3s_ease-in-out_infinite]" : ""}
-                  `}
-                  style={{
-                    animationDelay: !isLaunched ? `${index * 0.3}s` : undefined,
-                  }}
+                  className="text-4xl sm:text-5xl mb-3 relative z-10 transition-transform duration-300 animate-[float-up_3s_ease-in-out_infinite]"
+                  style={{ animationDelay: `${index * 0.3}s` }}
                 >
                   {path.emoji}
                 </div>
@@ -263,22 +235,80 @@ export default function MountainLanePicker({ result, url }: Props) {
                   className={`
                     text-xs font-semibold py-1.5 px-4 rounded-full relative z-10
                     transition-all duration-300
-                    ${isHovered ? "opacity-100 scale-100" : "opacity-60 scale-95"}
+                    ${isSelected ? "opacity-100 scale-100" : isHovered ? "opacity-100 scale-100" : "opacity-60 scale-95"}
                   `}
                   style={{
-                    backgroundColor: isHovered ? "hsl(var(--accent))" : "transparent",
-                    color: isHovered ? "hsl(var(--accent-foreground))" : "hsl(var(--accent))",
+                    backgroundColor: isSelected ? "hsl(var(--accent))" : isHovered ? "hsl(var(--accent))" : "transparent",
+                    color: isSelected || isHovered ? "hsl(var(--accent-foreground))" : "hsl(var(--accent))",
                     border: "1px solid hsl(var(--accent) / 0.5)",
-                    ...(isHovered ? { animation: "pulse-glow 2s ease-in-out infinite" } : {}),
+                    ...(isSelected ? { animation: "pulse-glow 2s ease-in-out infinite" } : {}),
                   }}
                 >
-                  {isLaunched ? "Ascending…" : "Choose This Path"}
+                  {isSelected ? "✓ Selected" : "Tell Me More"}
                 </div>
               </button>
             );
           })}
         </div>
       </div>
+
+      {/* Inquiry form — slides open when a tier is selected */}
+      {selectedTier && !submitted && (
+        <div className="rounded-xl border border-accent/30 bg-accent/5 p-5 sm:p-6 animate-in slide-in-from-top-2 duration-300">
+          <div className="flex items-center gap-3 mb-4">
+            <Send className="h-5 w-5 text-accent" />
+            <h4 className="text-lg font-semibold text-foreground">
+              Interested in {PATHS.find((p) => p.key === selectedTier)?.name}? Let's talk.
+            </h4>
+          </div>
+          <p className="text-sm text-muted-foreground mb-4">
+            Drop your info below. No sales pitch — we'll explain exactly what this looks like for your business and answer any questions.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Input
+              type="text"
+              placeholder="Your name"
+              value={contactName}
+              onChange={(e) => setContactName(e.target.value)}
+              className="h-10 text-sm"
+            />
+            <Input
+              type="email"
+              placeholder="Email (required)"
+              value={contactEmail}
+              onChange={(e) => setContactEmail(e.target.value)}
+              className="h-10 text-sm"
+              required
+            />
+            <Input
+              type="tel"
+              placeholder="Phone (optional)"
+              value={contactPhone}
+              onChange={(e) => setContactPhone(e.target.value)}
+              className="h-10 text-sm sm:col-span-2"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={handleInquiry}
+            disabled={submitting}
+            className="mt-4 w-full h-11 rounded-lg text-sm font-semibold bg-accent text-accent-foreground hover:bg-accent/90 transition-colors disabled:opacity-50"
+          >
+            {submitting ? "Sending…" : "I'm interested — reach out"}
+          </button>
+        </div>
+      )}
+
+      {/* Success state */}
+      {submitted && (
+        <div className="rounded-xl border border-accent/30 bg-accent/5 p-5 sm:p-6 text-center animate-in fade-in duration-300">
+          <CheckCircle2 className="h-10 w-10 text-accent mx-auto mb-3" />
+          <h4 className="text-lg font-semibold text-foreground mb-1">We got it.</h4>
+          <p className="text-sm text-muted-foreground">
+            We'll review your scan and reach out with a plan tailored to your business. No fluff, no runaround.
+          </p>
+        </div>
+      )}
 
       {/* Express add-on */}
       <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 sm:p-5 text-center">
@@ -290,35 +320,6 @@ export default function MountainLanePicker({ result, url }: Props) {
       </div>
 
       {/* Anti-fluff */}
-      {/* Coupon Code */}
-      <div className="rounded-xl border border-border bg-card p-4 sm:p-5">
-        <div className="flex items-center gap-2 mb-2">
-          <KeyRound className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm font-medium text-foreground">Have a coupon?</span>
-        </div>
-        {couponApplied ? (
-          <p className="text-sm text-accent font-semibold">✓ Coupon applied — pick any tier above!</p>
-        ) : (
-          <div className="flex gap-2">
-            <Input
-              type="text"
-              placeholder="Enter coupon code"
-              value={coupon}
-              onChange={(e) => setCoupon(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()}
-              className="h-9 text-sm"
-            />
-            <button
-              type="button"
-              onClick={handleApplyCoupon}
-              className="shrink-0 h-9 px-4 rounded-md text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-            >
-              Apply
-            </button>
-          </div>
-        )}
-      </div>
-
       <div className="rounded-lg border border-border/50 bg-secondary/30 p-4 text-center">
         <p className="text-sm text-muted-foreground leading-relaxed">
           <span className="text-foreground font-medium">What we don't charge for:</span>{" "}
