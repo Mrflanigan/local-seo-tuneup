@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Loader2, TrendingUp, Search, Shield, X, Check } from "lucide-react";
+import { useEffect, useState, useMemo } from "react";
+import { Loader2, TrendingUp, Search, Shield, X, Check, MapPin } from "lucide-react";
 
 interface KeywordVolume {
   keyword: string;
@@ -24,15 +24,18 @@ const comparisonRows = [
   { label: "Full technical site audit", us: true, them: true },
   { label: "Competitor analysis", us: true, them: false },
   { label: "No signup required", us: true, them: false },
-  { label: "100% free", us: true, them: false },
+  { label: "100% complimentary", us: true, them: false },
 ];
 
 interface ScanningViewProps {
   url: string;
   keywords?: KeywordVolume[] | null;
+  rankPage?: number | null;
+  city?: string;
+  businessName?: string;
 }
 
-export default function ScanningView({ url, keywords }: ScanningViewProps) {
+export default function ScanningView({ url, keywords, rankPage, city, businessName }: ScanningViewProps) {
   const [messageIndex, setMessageIndex] = useState(0);
   const [showKeywords, setShowKeywords] = useState(false);
   const [visibleKeywords, setVisibleKeywords] = useState(0);
@@ -40,22 +43,38 @@ export default function ScanningView({ url, keywords }: ScanningViewProps) {
   const [showComparison, setShowComparison] = useState(false);
   const [visibleRows, setVisibleRows] = useState(0);
   const [comparisonDone, setComparisonDone] = useState(false);
+  const [showPageFlash, setShowPageFlash] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageFlashDone, setPageFlashDone] = useState(false);
+  const [pageFlashLocked, setPageFlashLocked] = useState(false);
 
   const hasKeywords = keywords && keywords.length > 0;
-  const topKeywords = hasKeywords
+  const topKeywords = useMemo(() => hasKeywords
     ? keywords
         .filter((k) => k.monthlySearches > 0)
         .sort((a, b) => b.monthlySearches - a.monthlySearches)
         .slice(0, 5)
-    : [];
+    : [], [keywords, hasKeywords]);
 
-  // Comparison flash appears at step 1 (right after "absorbing your site data")
+  let hostname = "";
+  try {
+    hostname = new URL(url).hostname;
+  } catch {
+    hostname = url;
+  }
+
+  const displayName = businessName || hostname;
+  const locationText = city ? `${city} and surrounding areas` : "your area";
+
+  // Comparison flash appears at step 1
   const comparisonStepIndex = 1;
   // Keyword step appears after comparison
   const keywordStepIndex = hasKeywords ? 3 : 2;
+  // Page flash step appears after keywords (or after comparison if no keywords)
+  const pageFlashStepIndex = hasKeywords ? 5 : 3;
 
-  // Build the full message list — inject comparison + keyword steps
-  const buildMessages = () => {
+  // Build the full message list — inject comparison + keyword + page flash steps
+  const messages = useMemo(() => {
     let msgs = [...baseMessages];
     // Insert comparison step at index 1
     msgs = [
@@ -71,10 +90,16 @@ export default function ScanningView({ url, keywords }: ScanningViewProps) {
         ...msgs.slice(comparisonStepIndex + 2),
       ];
     }
+    // Insert page flash step
+    const pageInsertIdx = hasKeywords ? comparisonStepIndex + 4 : comparisonStepIndex + 2;
+    msgs = [
+      ...msgs.slice(0, pageInsertIdx),
+      `Searching ${locationText} for ${displayName}…`,
+      ...msgs.slice(pageInsertIdx),
+    ];
     return msgs;
-  };
+  }, [hasKeywords, locationText, displayName]);
 
-  const messages = buildMessages();
   const totalSteps = messages.length;
 
   useEffect(() => {
@@ -96,13 +121,20 @@ export default function ScanningView({ url, keywords }: ScanningViewProps) {
           if (hasKeywords && next === keywordStepIndex + 1) {
             setKeywordsDone(true);
           }
+          // Page flash step
+          if (next === pageFlashStepIndex) {
+            setShowPageFlash(true);
+          }
+          if (next === pageFlashStepIndex + 1) {
+            setPageFlashDone(true);
+          }
           return next;
         }
         return i;
       });
     }, 3000);
     return () => clearInterval(interval);
-  }, [totalSteps, hasKeywords, keywordStepIndex]);
+  }, [totalSteps, hasKeywords, keywordStepIndex, pageFlashStepIndex]);
 
   // Cascade comparison rows
   useEffect(() => {
@@ -117,7 +149,7 @@ export default function ScanningView({ url, keywords }: ScanningViewProps) {
     return () => clearInterval(interval);
   }, [showComparison]);
 
-  // Cascade keywords in one at a time
+  // Cascade keywords
   useEffect(() => {
     if (!showKeywords || topKeywords.length === 0) return;
     setVisibleKeywords(0);
@@ -130,17 +162,44 @@ export default function ScanningView({ url, keywords }: ScanningViewProps) {
     return () => clearInterval(interval);
   }, [showKeywords, topKeywords.length]);
 
-  let hostname = "";
-  try {
-    hostname = new URL(url).hostname;
-  } catch {
-    hostname = url;
-  }
+  // Page number flash animation — counts 1→10, locks on rankPage if found
+  useEffect(() => {
+    if (!showPageFlash || pageFlashLocked) return;
+    setCurrentPage(1);
+    let page = 1;
+    const interval = setInterval(() => {
+      // If we have a real rank page and we've reached it, lock
+      if (rankPage && page === rankPage) {
+        setPageFlashLocked(true);
+        clearInterval(interval);
+        return;
+      }
+      page++;
+      if (page > 10) {
+        // Not found in top 10 — show "10+"
+        setCurrentPage(11);
+        setPageFlashLocked(true);
+        clearInterval(interval);
+        return;
+      }
+      setCurrentPage(page);
+    }, 250);
+    return () => clearInterval(interval);
+  }, [showPageFlash, rankPage, pageFlashLocked]);
+
+  // If rankPage arrives after flash started, lock immediately
+  useEffect(() => {
+    if (showPageFlash && rankPage && !pageFlashLocked && currentPage >= rankPage) {
+      setCurrentPage(rankPage);
+      setPageFlashLocked(true);
+    }
+  }, [rankPage, showPageFlash, pageFlashLocked, currentPage]);
 
   const formatNumber = (n: number) => n.toLocaleString();
 
   const isKeywordPhase = showKeywords && !keywordsDone;
   const isComparisonPhase = showComparison && !comparisonDone;
+  const isPageFlashPhase = showPageFlash && !pageFlashDone;
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
@@ -156,13 +215,13 @@ export default function ScanningView({ url, keywords }: ScanningViewProps) {
           {messages[messageIndex]}
         </p>
 
-        {/* Comparison flash — appears early in scan */}
+        {/* Comparison flash — Us vs Others */}
         {isComparisonPhase && (
           <div className="mt-6 max-w-sm mx-auto text-left">
             <div className="flex items-center gap-2 mb-3">
               <Shield className="h-4 w-4 text-accent" />
               <p className="text-xs font-semibold text-accent uppercase tracking-wider">
-                The only free tool that does all of this
+                The only complimentary tool that does all of this
               </p>
             </div>
             <div className="rounded-lg border border-border/40 bg-card/60 overflow-hidden">
@@ -202,15 +261,15 @@ export default function ScanningView({ url, keywords }: ScanningViewProps) {
         )}
 
         {/* Fading comparison */}
-        {comparisonDone && !showKeywords && (
+        {comparisonDone && !showKeywords && !showPageFlash && (
           <div className="mt-6 max-w-sm mx-auto animate-fade-out">
             <p className="text-xs text-muted-foreground">
-              ✓ You're getting what others charge hundreds for — for free.
+              ✓ You're getting what others charge hundreds for — complimentary.
             </p>
           </div>
         )}
 
-        {/* Keyword cascade — appears naturally during scan */}
+        {/* Keyword cascade */}
         {isKeywordPhase && topKeywords.length > 0 && (
           <div className="mt-6 space-y-2 text-left max-w-sm mx-auto">
             <div className="flex items-center gap-2 mb-3">
@@ -244,10 +303,79 @@ export default function ScanningView({ url, keywords }: ScanningViewProps) {
         )}
 
         {/* Fading out keywords */}
-        {keywordsDone && topKeywords.length > 0 && (
+        {keywordsDone && !showPageFlash && topKeywords.length > 0 && (
           <div className="mt-6 max-w-sm mx-auto animate-fade-out">
             <p className="text-xs text-muted-foreground">
               ✓ {topKeywords.length} high-volume keywords found — now scanning your rankings…
+            </p>
+          </div>
+        )}
+
+        {/* Page number flash — ticks through pages 1-10, locks on rank page */}
+        {isPageFlashPhase && (
+          <div className="mt-6 max-w-sm mx-auto">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <MapPin className="h-4 w-4 text-accent" />
+              <p className="text-xs font-semibold text-accent uppercase tracking-wider">
+                Finding {displayName} on Google
+              </p>
+            </div>
+
+            {/* Page number grid */}
+            <div className="flex justify-center gap-2 flex-wrap">
+              {Array.from({ length: 10 }, (_, i) => i + 1).map((page) => {
+                const isActive = page === currentPage && currentPage <= 10;
+                const isPassed = page < currentPage;
+                const isLocked = pageFlashLocked && page === currentPage;
+                const notFound = pageFlashLocked && currentPage === 11;
+
+                return (
+                  <div
+                    key={page}
+                    className={`
+                      w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold
+                      transition-all duration-300 border
+                      ${isLocked
+                        ? "bg-accent text-accent-foreground border-accent scale-125 shadow-lg shadow-accent/30"
+                        : isActive && !notFound
+                        ? "bg-primary/20 text-primary border-primary/40 scale-110"
+                        : isPassed
+                        ? "bg-muted/30 text-muted-foreground/40 border-border/20"
+                        : "bg-card/40 text-muted-foreground/60 border-border/30"
+                      }
+                    `}
+                  >
+                    {page}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Result message when locked */}
+            {pageFlashLocked && (
+              <div className="mt-4 animate-fade-in">
+                {currentPage <= 10 ? (
+                  <p className="text-sm text-accent font-semibold">
+                    Found on page {currentPage}
+                    {currentPage === 1 && " — great position!"}
+                    {currentPage > 1 && currentPage <= 3 && " — close to the top"}
+                    {currentPage > 3 && " — room to climb"}
+                  </p>
+                ) : (
+                  <p className="text-sm text-destructive/80 font-semibold">
+                    Not found in the top 10 pages — let's change that
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Fading page flash */}
+        {pageFlashDone && (
+          <div className="mt-6 max-w-sm mx-auto animate-fade-out">
+            <p className="text-xs text-muted-foreground">
+              ✓ Ranking data captured — finalizing your report…
             </p>
           </div>
         )}
