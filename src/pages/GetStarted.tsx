@@ -17,11 +17,17 @@ export default function GetStarted() {
   const [loading, setLoading] = useState(false);
   const [scanUrl, setScanUrl] = useState("");
   const [scanKeywords, setScanKeywords] = useState<KeywordVolume[] | null>(null);
+  const [scanRankPage, setScanRankPage] = useState<number | null>(null);
+  const [scanCity, setScanCity] = useState<string | undefined>();
+  const [scanBusinessName, setScanBusinessName] = useState<string | undefined>();
 
   const handleSubmit = async (url: string, city?: string, businessType?: BusinessType, _searchPhrases?: string[], businessName?: string, description?: string) => {
     setLoading(true);
     setScanUrl(url);
     setScanKeywords(null);
+    setScanRankPage(null);
+    setScanCity(city);
+    setScanBusinessName(businessName);
 
     try {
       // Step 1: If we have a description, generate real search phrases
@@ -47,9 +53,18 @@ export default function GetStarted() {
 
       // Step 2: Run the checkup
       const result: ScoringResult = await runCheckup({ url, city, businessType, searchPhrases });
+      // Extract best rank page for the page-flash animation
+      const bestRank = result.phraseOptics?.rankings
+        ?.filter((r) => r.page !== null)
+        ?.sort((a, b) => (a.page ?? 99) - (b.page ?? 99))[0];
+      if (bestRank?.page) {
+        setScanRankPage(bestRank.page);
+      }
       try {
         localStorage.setItem("lastScan", JSON.stringify({ result, url, city, businessType, searchPhrases, businessName, description, keywordVolumes, ts: Date.now() }));
       } catch { /* storage full */ }
+      // Small delay so user sees the rank page flash before navigating
+      await new Promise((r) => setTimeout(r, 3000));
       navigate("/report", { state: { result, url, city, businessType, searchPhrases, businessName, keywordVolumes } });
     } catch (err) {
       toast.error("Something went wrong scanning that site. Please try again.");
@@ -59,7 +74,7 @@ export default function GetStarted() {
     }
   };
 
-  if (loading) return <ScanningView url={scanUrl} keywords={scanKeywords} />;
+  if (loading) return <ScanningView url={scanUrl} keywords={scanKeywords} rankPage={scanRankPage} city={scanCity} businessName={scanBusinessName} />;
 
   return (
     <div className="relative min-h-screen overflow-hidden">
