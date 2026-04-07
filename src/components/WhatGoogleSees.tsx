@@ -1,6 +1,7 @@
 import { Eye, EyeOff, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import type { ScoringResult } from "@/lib/scoring/types";
+import type { ScoringResult, FindingEvidence } from "@/lib/scoring/types";
 
 interface Props {
   result: ScoringResult;
@@ -11,6 +12,7 @@ interface TranslationItem {
   plain: string;
   status: "good" | "bad";
   findingId: string;
+  evidence?: FindingEvidence[];
 }
 
 function buildTranslations(result: ScoringResult): TranslationItem[] {
@@ -27,6 +29,7 @@ function buildTranslations(result: ScoringResult): TranslationItem[] {
         plain: f.personalized || f.generic,
         status: f.passed ? "good" : "bad",
         findingId: f.id,
+        evidence: f.evidence,
       });
     }
   }
@@ -74,6 +77,7 @@ function getBuzzword(id: string): string | null {
 
 export default function WhatGoogleSees({ result }: Props) {
   const translations = buildTranslations(result);
+  const [expandedEvidence, setExpandedEvidence] = useState<string | null>(null);
   const good = translations.filter((t) => t.status === "good");
   const bad = translations.filter((t) => t.status === "bad");
 
@@ -160,15 +164,44 @@ export default function WhatGoogleSees({ result }: Props) {
           <ul className="space-y-4">
             {bad.map((item) => (
               <li key={item.buzzword} className="border-b border-border/50 pb-4 last:border-0 last:pb-0">
-                <Link
-                  to={`/methodology#check-${item.findingId}`}
-                  className="text-xs font-mono bg-destructive/10 text-destructive px-2 py-0.5 rounded hover:underline hover:bg-destructive/20 transition-colors"
-                >
-                  {item.buzzword}
-                </Link>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Link
+                    to={`/methodology#check-${item.findingId}`}
+                    className="text-xs font-mono bg-destructive/10 text-destructive px-2 py-0.5 rounded hover:underline hover:bg-destructive/20 transition-colors"
+                  >
+                    {item.buzzword}
+                  </Link>
+                  {item.evidence && item.evidence.length > 0 && (
+                    <button
+                      onClick={() => setExpandedEvidence(expandedEvidence === item.findingId ? null : item.findingId)}
+                      className="text-[10px] font-medium text-primary/70 hover:text-primary transition-colors flex items-center gap-1"
+                    >
+                      {expandedEvidence === item.findingId ? "Hide evidence" : "View evidence"}
+                    </button>
+                  )}
+                </div>
                 <p className="text-sm text-foreground mt-1.5 leading-relaxed">
                   {item.plain}
                 </p>
+                {item.evidence && expandedEvidence === item.findingId && (
+                  <div className="mt-3 space-y-2">
+                    {item.evidence.map((ev, i) => (
+                      <div key={i} className="rounded-lg border border-border/50 bg-muted/30 p-3">
+                        <p className="text-xs font-semibold text-foreground mb-1">{ev.heuristic}</p>
+                        {ev.detail && (
+                          <p className="text-xs text-muted-foreground leading-relaxed mb-2">{ev.detail}</p>
+                        )}
+                        {ev.snippet && (
+                          <div className="rounded bg-background/60 border border-border/30 px-3 py-2">
+                            <p className="text-[11px] font-mono text-muted-foreground leading-relaxed break-all">
+                              {ev.snippet}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </li>
             ))}
           </ul>

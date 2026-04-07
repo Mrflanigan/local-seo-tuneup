@@ -9,6 +9,12 @@ export interface SiteContext {
   h1Text: string | null;
 }
 
+export interface FindingEvidence {
+  heuristic: string;
+  snippet?: string;
+  detail?: string;
+}
+
 export interface Finding {
   id: string;
   passed: boolean;
@@ -16,6 +22,7 @@ export interface Finding {
   personalized: string;
   points: number;
   maxPoints: number;
+  evidence?: FindingEvidence[];
 }
 
 export type CategoryId =
