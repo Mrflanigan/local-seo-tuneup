@@ -147,8 +147,12 @@ export default function Report() {
             <h2 className="text-lg sm:text-xl font-bold text-foreground mb-1">
               Can customers actually find you on Google?
             </h2>
-            <p className="text-sm text-muted-foreground mb-5 max-w-md mx-auto">
+            <p className="text-sm text-muted-foreground mb-1 max-w-md mx-auto">
               This shows how visible you are for the searches that actually bring you customers. We aim for page 1 for at least one or two of your best phrases.
+            </p>
+            <p className="text-[10px] text-muted-foreground/50 mb-5 max-w-sm mx-auto">
+              Based on current ranking signals. Does not factor backlink profiles or domain authority.{" "}
+              <button onClick={() => navigate("/methodology")} className="text-primary/60 hover:text-primary hover:underline">Learn more</button>
             </p>
             <div className="flex justify-center">
               <PhraseOpticsRing data={result.phraseOptics} />
@@ -215,6 +219,9 @@ export default function Report() {
             {!result.phraseOptics && (
               <p className="mt-2 text-xs uppercase tracking-widest text-muted-foreground">Site Health</p>
             )}
+            <button onClick={() => navigate("/methodology")} className="mt-1 text-[10px] text-primary/70 hover:text-primary hover:underline">
+              How we score →
+            </button>
           </div>
         </div>
         <div className="text-center mb-8">
