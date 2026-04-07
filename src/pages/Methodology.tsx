@@ -193,9 +193,10 @@ const categories = [
       },
       {
         id: "no-spam", name: "No spammy content", pts: 3,
-        what: "We scan for suspicious outbound links and spam-pattern content.",
+        what: "We scan for suspicious outbound links, keyword stuffing, and location stuffing patterns.",
         why: "Spammy outbound links or keyword-stuffed content can trigger Google penalties. Even one bad link to a known spam domain can hurt your credibility.",
-        fix: "Review your outbound links — remove any pointing to unrelated or suspicious sites. Remove any keyword-stuffed text that reads unnaturally.",
+        fix: "Review your outbound links — remove any pointing to unrelated or suspicious sites. Remove any keyword-stuffed text that reads unnaturally. Avoid listing dozens of cities/ZIPs in one block.",
+        methodology: "We use three automated heuristics: (1) link scanning against known spam patterns (gambling, pharma, essay mills), (2) keyword density — flagging any 2-3 word phrase that appears more than ~1× per 50 words, and (3) location stuffing — detecting long blocks of city names or ZIP codes. These are red flags, not legal verdicts — a flag means the pattern is worth reviewing, not that your site is definitely penalized.",
       },
       {
         id: "trust-indicators", name: "Trust indicators", pts: 3,
