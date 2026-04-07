@@ -1,6 +1,7 @@
-import { Eye, EyeOff, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { useState } from "react";
+import { Eye, EyeOff, AlertTriangle, CheckCircle2, Search } from "lucide-react";
 import { Link } from "react-router-dom";
-import type { ScoringResult } from "@/lib/scoring/types";
+import type { ScoringResult, FindingEvidence } from "@/lib/scoring/types";
 
 interface Props {
   result: ScoringResult;
@@ -11,6 +12,7 @@ interface TranslationItem {
   plain: string;
   status: "good" | "bad";
   findingId: string;
+  evidence?: FindingEvidence[];
 }
 
 function buildTranslations(result: ScoringResult): TranslationItem[] {
@@ -27,6 +29,7 @@ function buildTranslations(result: ScoringResult): TranslationItem[] {
         plain: f.personalized || f.generic,
         status: f.passed ? "good" : "bad",
         findingId: f.id,
+        evidence: f.evidence,
       });
     }
   }
