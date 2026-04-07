@@ -10,6 +10,7 @@ interface TranslationItem {
   buzzword: string;
   plain: string;
   status: "good" | "bad";
+  findingId: string;
 }
 
 function buildTranslations(result: ScoringResult): TranslationItem[] {
@@ -25,6 +26,7 @@ function buildTranslations(result: ScoringResult): TranslationItem[] {
         buzzword: buzz,
         plain: f.personalized || f.generic,
         status: f.passed ? "good" : "bad",
+        findingId: f.id,
       });
     }
   }
