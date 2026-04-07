@@ -1,4 +1,5 @@
-import { Eye, EyeOff, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { Eye, EyeOff, AlertTriangle, CheckCircle2, ExternalLink } from "lucide-react";
+import { Link } from "react-router-dom";
 import type { ScoringResult } from "@/lib/scoring/types";
 
 interface Props {
