@@ -176,6 +176,20 @@ export default function Index() {
         <LandmarkCaption name={landmarks[0].name} detail={landmarks[0].detail} />
       </section>
 
+      {/* ═══ Our Lane ═══ */}
+      <div className="border-y border-border/40 bg-card/30 backdrop-blur-sm">
+        <div className="mx-auto max-w-3xl px-6 py-10 text-center">
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+            <span className="text-foreground font-semibold">As of today, this is our lane:</span>{" "}
+            fast, honest local SEO snapshots and action plans for service businesses and the agencies that serve them.
+          </p>
+          <p className="text-xs sm:text-sm text-muted-foreground/70 mt-3 max-w-xl mx-auto leading-relaxed">
+            We don't try to replace your backlink tools, rank trackers, or SERP analysis platforms.
+            If we ever decide to tackle those, you can bet we'll aim to be best‑in‑class there too.
+          </p>
+        </div>
+      </div>
+
       {/* ═══ Social Proof ═══ */}
       <div className="border-y border-border/40 bg-card/50 backdrop-blur-sm">
         <div className="mx-auto max-w-5xl px-6 py-12 grid grid-cols-3 gap-4 text-center">
