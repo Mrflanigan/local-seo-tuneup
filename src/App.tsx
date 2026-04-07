@@ -10,6 +10,7 @@ import GetStarted from "./pages/GetStarted.tsx";
 import PaymentSuccess from "./pages/PaymentSuccess.tsx";
 import Summary from "./pages/Summary.tsx";
 import Admin from "./pages/Admin.tsx";
+import Methodology from "./pages/Methodology.tsx";
 import NotFound from "./pages/NotFound.tsx";
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/summary" element={<Summary />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/methodology" element={<Methodology />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

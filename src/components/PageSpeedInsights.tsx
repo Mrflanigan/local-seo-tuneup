@@ -85,7 +85,7 @@ export default function PageSpeedInsights({ data }: { data: PageSpeedData }) {
       </div>
 
       <p className="text-[10px] text-muted-foreground/60 mt-3 text-center">
-        Powered by Google Lighthouse · Mobile analysis · {new Date(data.fetchedAt).toLocaleDateString()}
+        Powered by Google Lighthouse · Simulated mobile (lab data, not real-user field metrics) · {new Date(data.fetchedAt).toLocaleDateString()}
       </p>
     </div>
   );
