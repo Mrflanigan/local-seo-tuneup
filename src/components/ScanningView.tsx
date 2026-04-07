@@ -336,7 +336,7 @@ export default function ScanningView({ url, keywords, rankPage, city, businessNa
                       w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold
                       transition-all duration-300 border
                       ${isLocked
-                        ? "bg-accent text-accent-foreground border-accent scale-125 shadow-lg shadow-accent/30"
+                        ? "bg-[hsl(142,71%,45%)]/20 text-[hsl(142,71%,45%)] border-[hsl(142,71%,45%)] scale-125 shadow-lg shadow-[hsl(142,71%,45%)]/30"
                         : isActive && !notFound
                         ? "bg-primary/20 text-primary border-primary/40 scale-110"
                         : isPassed
@@ -355,11 +355,8 @@ export default function ScanningView({ url, keywords, rankPage, city, businessNa
             {pageFlashLocked && (
               <div className="mt-4 animate-fade-in">
                 {currentPage <= 10 ? (
-                  <p className="text-sm text-accent font-semibold">
-                    Found on page {currentPage}
-                    {currentPage === 1 && " — great position!"}
-                    {currentPage > 1 && currentPage <= 3 && " — close to the top"}
-                    {currentPage > 3 && " — room to climb"}
+                  <p className="text-lg font-bold text-[hsl(142,71%,45%)]">
+                    Found ya 👀
                   </p>
                 ) : (
                   <p className="text-sm text-destructive/80 font-semibold">
