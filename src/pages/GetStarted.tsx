@@ -25,6 +25,9 @@ export default function GetStarted() {
     setLoading(true);
     setScanUrl(url);
     setScanKeywords(null);
+    setScanRankPage(null);
+    setScanCity(city);
+    setScanBusinessName(businessName);
 
     try {
       // Step 1: If we have a description, generate real search phrases
