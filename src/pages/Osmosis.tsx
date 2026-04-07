@@ -258,14 +258,14 @@ export default function Osmosis() {
             See It in Action
           </h2>
           <p className="text-muted-foreground mb-8">
-            Run a free SEO Osmosis™ scan on your website right now — no signup
+            Run a complimentary SEO Osmosis™ scan on your website right now — no signup
             required.
           </p>
           <Link
             to="/"
             className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
           >
-            Scan Your Site Free
+            Scan Your Site — Complimentary
           </Link>
         </div>
       </section>
