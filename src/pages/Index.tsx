@@ -158,7 +158,7 @@ export default function Index() {
         </h1>
 
 
-        <div className="relative z-10 w-full px-6 pt-44 flex items-end justify-between gap-6" style={{ maxWidth: "900px", margin: "0 auto" }}>
+        <div className="absolute z-10 w-full px-6 left-0 right-0 flex items-end justify-between gap-6" style={{ maxWidth: "900px", margin: "0 auto", bottom: "18%" }}>
           {/* CTA — shifted left */}
           <div className="text-left">
             <Button
