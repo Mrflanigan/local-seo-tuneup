@@ -51,17 +51,19 @@ export default function Index() {
           </span>
           <div className="flex items-center gap-8">
             <span className="text-sm font-semibold tracking-[0.2em] text-muted-foreground">PAGE 1</span>
-            <a href="#how-it-works" className="text-sm text-foreground font-semibold hover:text-primary transition-colors">
-              How it works
-            </a>
-          </div>
-          {/* ══ RESERVED: "Best in Class" ribbon ══ */}
-          <div
-            id="best-in-class-slot"
-            className="text-[10px] text-muted-foreground/30 border border-dashed border-muted-foreground/20 rounded px-3 py-1 select-none"
-            aria-hidden="true"
-          >
-            Best in Class slot
+            <div className="flex flex-col items-end">
+              <a href="#how-it-works" className="text-sm text-foreground font-semibold hover:text-primary transition-colors">
+                How it works
+              </a>
+              {/* ══ RESERVED: "Best in Class" ribbon ══ */}
+              <div
+                id="best-in-class-slot"
+                className="text-[10px] text-muted-foreground/30 border border-dashed border-muted-foreground/20 rounded px-3 py-1 mt-1 select-none"
+                aria-hidden="true"
+              >
+                Best in Class slot
+              </div>
+            </div>
           </div>
         </div>
       </nav>
