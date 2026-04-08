@@ -158,18 +158,30 @@ export default function Index() {
         </h1>
 
 
-        <div className="relative z-10 w-full px-6 pt-64 text-center" style={{ maxWidth: "900px", margin: "0 auto" }}>
-          <Button
-            onClick={() => navigate("/get-started")}
-            size="lg"
-            className="h-16 px-12 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic"
-            style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
+        <div className="relative z-10 w-full px-6 pt-56 flex items-end justify-between gap-6" style={{ maxWidth: "900px", margin: "0 auto" }}>
+          {/* CTA — shifted left */}
+          <div className="text-left">
+            <Button
+              onClick={() => navigate("/get-started")}
+              size="lg"
+              className="h-16 px-12 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic"
+              style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
+            >
+               Run My Complimentary SEO Checkup
+            </Button>
+            <p className="text-xs text-muted-foreground/70 mt-3" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
+              No signup · Complimentary instant audit · Real data from your site
+            </p>
+          </div>
+
+          {/* ══ RESERVED: "Best in Class" ribbon goes here ══ */}
+          <div
+            id="best-in-class-slot"
+            className="shrink-0 w-48 h-20 rounded-lg border border-dashed border-muted-foreground/20 flex items-center justify-center"
+            aria-hidden="true"
           >
-             Run My Complimentary SEO Checkup
-          </Button>
-          <p className="text-xs text-muted-foreground/70 mt-5" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
-            No signup · Complimentary instant audit · Real data from your site
-          </p>
+            <span className="text-[10px] text-muted-foreground/30 select-none">Best in Class slot</span>
+          </div>
         </div>
 
         {/* Landmark caption */}
