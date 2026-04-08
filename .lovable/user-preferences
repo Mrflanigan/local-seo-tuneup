@@ -1,4 +1,5 @@
 Be direct and honest about layout limitations; do not overpromise pixel-perfect visual work from description alone.
 For design-heavy requests, say early when visual iteration is likely to be slow or imprecise.
 When the user provides a screenshot/mockup, follow it literally and avoid improvising.
+Never use the plural form when referring to the single GPT page; use singular only.
 When the user asks a question, answer that question directly before taking any action or proposing changes.
