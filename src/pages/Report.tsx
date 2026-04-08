@@ -11,6 +11,7 @@ import CTABanner from "@/components/CTABanner";
 import PathToPageOne from "@/components/PathToPageOne";
 import MountainLanePicker from "@/components/MountainLanePicker";
 import PhraseOpticsRing from "@/components/PhraseOpticsRing";
+import FixTheseFiveFirst from "@/components/FixTheseFiveFirst";
 import PageSpeedInsights from "@/components/PageSpeedInsights";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -278,6 +279,9 @@ export default function Report() {
           <span className="font-medium text-muted-foreground">How to use this report:</span>{" "}
           Use it as a 60‑second health check and conversation starter, not a full forensic audit. Ideal for pre‑sales, quick check‑ins, and educating owners on what matters most next.
         </p>
+
+        {/* Fix These 5 First — priority stack */}
+        <FixTheseFiveFirst result={result} />
 
         {/* Full narrative report — no gate */}
         <WhatGoogleSees result={result} />
