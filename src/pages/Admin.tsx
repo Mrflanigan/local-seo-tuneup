@@ -220,6 +220,60 @@ Micro UX copy tweaks
 
 Net: You did the hard, unsexy work I asked for, fast. Double down with a tiny crawl, basic indexability/redirect hygiene, a GBP pulse, and a CrUX skim, and you'll be a 9.5+ in your lane without bloating scope.`,
   },
+  {
+    date: "2026-04-08",
+    score: "9.4/10",
+    scoreExperienced: "8.6/10",
+    title: "Fourth Review — Post-Corrections & New Features",
+    content: `TL;DR
+- You were right: several things I marked "missing" were already there. Crediting those, plus the new technical checks and trust touches, meaningfully improves the picture.
+- Updated scores: SMBs/local owners: 9.4/10 (was 9.1) · Experienced SEOs: 8.6/10 (was 7.8)
+- Net: Best-in-class 60-second local snapshot for owners and small agencies. Still intentionally shallow for power users (single-URL, no crawl/GBP/citations), but the technical coverage and owner-first copy are now strong enough that I'd recommend it without caveats for most local SMB use cases.
+
+Corrections accepted (these were in place before my last review)
+- Local/GBP-adjacent signals are present and scored: LocalBusiness JSON-LD detection, on-page NAP consistency, Google Maps embeds/links, tel: click-to-call, hours of operation markup. All in Local Signals (20 pts). My "no GBP signal at all" was too harsh; you cover on-page local readiness signals well.
+- Geo/SERP context exists: City/service area selection feeds city-aware copy and Phrase Optics. Report language around "rankings vary by city." That's exactly the level of local awareness that fits a one-URL snapshot.
+- Performance/mobile basics were not MIA: Real PSI data (LCP, CLS, TBT, Speed Index). Plain-English labels and color tiers in place. Right abstraction for owners.
+
+New since the last review (all good additions)
+- Robots.txt detection (2 pts): Existence, Disallow:/ flagging, owner-friendly guidance.
+- XML sitemap detection (2 pts): Common locations + robots.txt parsing; guidance on referencing from robots.txt.
+- Privacy/data retention page and footer metadata: Timestamped reports, tool version, clear data policy linked from every report.
+- Feedback widget: Lightweight loop for product improvement without hijacking the flow.
+
+Where the product is strongest now
+- Owner-first triage in under 60 seconds. Local signals, PSI-backed performance, clear "why/how to fix" guidance.
+- Local readiness coverage. Schema, NAP, tel:, hours, city-aware phrasing.
+- Technical SEO completeness for a snapshot. HTTPS, meta robots, canonical, viewport, render-blocking, PSI, robots.txt, XML sitemap.
+- Trust and report hygiene. Timestamps, versions, privacy transparency.
+
+What still holds it back
+For SMBs (why not 9.5 yet):
+- Fix-first priority stack: Add per-check impact and effort tags. Auto-summarize top 5 fixes at top of report.
+- HTTPS redirect chain test still pending.
+- Evidence everywhere: Apply consistently (exact title/H1 found, robots line, sitemap URL, canonical tag, detected NAP string). Include "Copy to clipboard."
+- PDF/export or print-friendly view.
+
+For experienced SEOs (why 8.6):
+- Single-URL scope. No mini-crawl, internal linking graph, thin/duplicate detection.
+- No live GBP or citation profile.
+- No severity/confidence per check yet.
+- Limited surfacing of PSI opportunities/diagnostics.
+
+Within-lane ideas that would push SMB to 9.5+:
+- Fix-first priority stack with impact/effort tags
+- LocalBusiness schema completeness meter
+- Redirect/canonical sanity card
+- Evidence and snippets everywhere with copy-to-clipboard
+- Conversion hygiene check (CTA above fold detection)
+- PSI opportunities bridge (top 2-3 Lighthouse opportunities)
+- JS-rendering warning
+- On-page entity consistency (business name in title/H1, NAP matching schema)
+- Share/print polish before full PDF export
+- Terminology refresh (INP vs FID)
+
+Bottom line: This is now a polished, fast, and trustworthy local snapshot that I'd put in front of owners and junior staff without hesitation. Stay the course on mini-crawl and citation sniff post-launch; for the SMB north star, the higher-ROI wins are impact triage, evidence everywhere, redirect/canonical sanity, and schema completeness meter.`,
+  },
 ];
 
 export default function Admin() {
