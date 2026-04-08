@@ -343,11 +343,11 @@ function scoreTechnicalSEO(
   const findings: Finding[] = [];
   const lowerHtml = html.toLowerCase();
 
-  // 1. HTTPS (6 pts)
+  // 1. HTTPS (5 pts)
   const isHttps = input.url.startsWith("https");
   const hasMixedContent = isHttps && /(?:src|href)\s*=\s*["']http:\/\//i.test(html);
-  const httpsScore = !isHttps ? 0 : hasMixedContent ? 4 : 6;
-  findings.push(finding("https", httpsScore >= 4, httpsScore, 6,
+  const httpsScore = !isHttps ? 0 : hasMixedContent ? 3 : 5;
+  findings.push(finding("https", httpsScore >= 3, httpsScore, 5,
     !isHttps ? "Site does not use HTTPS." : hasMixedContent ? "HTTPS with mixed content detected." : "Site uses HTTPS.",
     !isHttps
       ? "Your site isn't using HTTPS — Google penalizes non-secure sites and browsers show warnings to visitors."
@@ -399,14 +399,14 @@ function scoreTechnicalSEO(
       : "Your site is missing a proper mobile viewport tag. Over 60% of local searches happen on phones — this is a must-fix."
   ));
 
-  // 5. Render-blocking resources (3 pts)
+  // 5. Render-blocking resources (2 pts)
   const cssInHead = (html.match(/<head[\s\S]*?<\/head>/i)?.[0] || "").match(/<link[^>]*rel\s*=\s*["']stylesheet["'][^>]*>/gi) || [];
   const syncJsInHead = (html.match(/<head[\s\S]*?<\/head>/i)?.[0] || "").match(/<script(?![^>]*(?:async|defer))[^>]*src\s*=/gi) || [];
   const renderBlockingCount = cssInHead.length + syncJsInHead.length;
-  const rbScore = renderBlockingCount <= 3 ? 3 : renderBlockingCount <= 6 ? 2 : 1;
-  findings.push(finding("render-blocking", rbScore >= 2, rbScore, 3,
-    rbScore >= 2 ? "Few render-blocking resources." : `${renderBlockingCount} render-blocking resources in <head>.`,
-    rbScore >= 2
+  const rbScore = renderBlockingCount <= 3 ? 2 : renderBlockingCount <= 6 ? 1 : 0;
+  findings.push(finding("render-blocking", rbScore >= 1, rbScore, 2,
+    rbScore >= 1 ? "Few render-blocking resources." : `${renderBlockingCount} render-blocking resources in <head>.`,
+    rbScore >= 1
       ? `Only ${renderBlockingCount} render-blocking resource(s) in your <head> — your page should load quickly.`
       : `${renderBlockingCount} render-blocking resources (${cssInHead.length} CSS, ${syncJsInHead.length} sync JS) in your <head>. Consider deferring scripts and inlining critical CSS for faster load.`
   ));
