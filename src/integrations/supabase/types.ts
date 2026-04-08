@@ -131,6 +131,30 @@ export type Database = {
         }
         Relationships: []
       }
+      report_feedback: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          rating: number
+          url: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating: number
+          url: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating?: number
+          url?: string
+        }
+        Relationships: []
+      }
       scan_rate_limits: {
         Row: {
           blocked_until: string | null
