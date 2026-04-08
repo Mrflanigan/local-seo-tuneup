@@ -215,11 +215,14 @@ async function fetchCrawlHygiene(normalizedUrl: string) {
 
     const apiKey = Deno.env.get("FIRECRAWL_API_KEY");
 
-    // 1. Scrape with Firecrawl
-    const scraped = await scrapeWithFirecrawl(normalizedUrl);
+    // 1. Scrape with Firecrawl + fetch crawl hygiene in parallel
+    const [scraped, crawlHygiene] = await Promise.all([
+      scrapeWithFirecrawl(normalizedUrl),
+      fetchCrawlHygiene(normalizedUrl),
+    ]);
 
-    // 2. Score
-    const input: ScanInput = { url: normalizedUrl, city, state, businessType: businessType || "local" };
+    // 2. Score (with crawl hygiene data)
+    const input: ScanInput = { url: normalizedUrl, city, state, businessType: businessType || "local", crawlHygiene };
     const result = scoreWebsite(scraped, input);
 
     // 3. Phrase ranking search using shared utilities
