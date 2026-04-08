@@ -12,6 +12,7 @@ import Summary from "./pages/Summary.tsx";
 import Admin from "./pages/Admin.tsx";
 import Methodology from "./pages/Methodology.tsx";
 import Privacy from "./pages/Privacy.tsx";
+import Reviews from "./pages/Reviews.tsx";
 import NotFound from "./pages/NotFound.tsx";
 const queryClient = new QueryClient({});
 
