@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import blueRibbon from "@/assets/blue-ribbon.png";
 
 
 import {
@@ -50,7 +51,10 @@ export default function Index() {
             SEO<span className="text-primary">RiseUp</span>
           </span>
           <div className="flex items-center gap-8">
-            <span className="text-sm font-semibold tracking-[0.2em] text-muted-foreground">PAGE 1</span>
+            <div className="flex flex-col items-center">
+              <span className="text-sm font-semibold tracking-[0.2em] text-muted-foreground">PAGE 1</span>
+              <img src={blueRibbon} alt="Best in Class award" width={36} height={36} className="mt-1" />
+            </div>
             <a href="#how-it-works" className="text-sm text-foreground font-semibold hover:text-primary transition-colors">
               How it works
             </a>
@@ -60,16 +64,13 @@ export default function Index() {
 
       {/* ═══ HERO — Denali ═══ */}
       <section className="relative min-h-screen flex items-end justify-center overflow-hidden pb-16">
-        {/* ══ Best in Class ribbon — pinned top-right, just below nav ══ */}
-        <a
-          href="/methodology"
-          className="absolute top-20 right-6 z-20 flex items-center gap-2 rounded-full bg-primary/90 backdrop-blur-sm px-4 py-2 shadow-lg hover:bg-primary transition-colors group"
-        >
-          <span className="text-xs font-bold text-primary-foreground tracking-wide">Best in Class</span>
-          <span className="text-[10px] text-primary-foreground/70 group-hover:text-primary-foreground transition-colors">
+        {/* ══ Best in Class text — floating on hero, white, no background ══ */}
+        <p className="absolute top-20 right-6 z-20 text-sm text-foreground/90 leading-relaxed text-right">
+          <span className="font-bold">Best in Class</span><br />
+          <a href="/methodology" className="text-[11px] text-foreground/60 hover:text-foreground transition-colors">
             Read GPT‑5 &amp; Gemini's 2026 review →
-          </span>
-        </a>
+          </a>
+        </p>
 
         <img src={heroDenali} alt="Summit of Denali, highest peak in North America" width={1920} height={1080} className="absolute inset-0 w-full h-full object-cover" />
 
