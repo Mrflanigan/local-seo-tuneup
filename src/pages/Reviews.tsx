@@ -27,7 +27,7 @@ export default function Reviews() {
         <div className="mb-10">
           <p className="text-sm text-accent font-semibold tracking-wide uppercase mb-2">Independent Review</p>
           <h1 className="text-2xl sm:text-3xl font-bold mb-4 leading-tight">
-            What GPT‑5.1 said about SEO&nbsp;Osmosis
+            What chatGPT‑5.1 said about SEO&nbsp;Osmosis
           </h1>
           <p className="text-muted-foreground leading-relaxed max-w-2xl">
             We asked an AI (GPT‑5.1) to independently review SEO Osmosis based only on what it could see and infer, before our public launch.
