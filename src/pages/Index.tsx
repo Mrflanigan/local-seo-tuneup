@@ -51,10 +51,7 @@ export default function Index() {
             SEO<span className="text-primary">RiseUp</span>
           </span>
           <div className="flex items-center gap-8">
-            <div className="flex flex-col items-center">
-              <span className="text-sm font-semibold tracking-[0.2em] text-muted-foreground">PAGE 1</span>
-              <img src={blueRibbon} alt="Best in Class award" width={36} height={36} className="mt-1" />
-            </div>
+            <span className="text-sm font-semibold tracking-[0.2em] text-muted-foreground">PAGE 1</span>
             <a href="#how-it-works" className="text-sm text-foreground font-semibold hover:text-primary transition-colors">
               How it works
             </a>
@@ -64,13 +61,16 @@ export default function Index() {
 
       {/* ═══ HERO — Denali ═══ */}
       <section className="relative min-h-screen flex items-end justify-center overflow-hidden pb-16">
-        {/* ══ Best in Class text — floating on hero, white, no background ══ */}
-        <p className="absolute top-20 right-6 z-20 text-sm text-foreground/90 leading-relaxed text-right">
-          <span className="font-bold">Best in Class</span><br />
-          <a href="/methodology" className="text-[11px] text-foreground/60 hover:text-foreground transition-colors">
-            Read GPT‑5 &amp; Gemini's 2026 review →
-          </a>
-        </p>
+        {/* ══ Best in Class — ribbon + text floating on hero ══ */}
+        <div className="absolute top-20 right-6 z-20 flex items-center gap-2 text-right">
+          <img src={blueRibbon} alt="Best in Class award" width={32} height={32} />
+          <div>
+            <span className="text-sm font-bold text-foreground/90">Best in Class</span><br />
+            <a href="/methodology" className="text-[11px] text-foreground/60 hover:text-foreground transition-colors">
+              Read GPT‑5 &amp; Gemini's 2026 review →
+            </a>
+          </div>
+        </div>
 
         <img src={heroDenali} alt="Summit of Denali, highest peak in North America" width={1920} height={1080} className="absolute inset-0 w-full h-full object-cover" />
 
