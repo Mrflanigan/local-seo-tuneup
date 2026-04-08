@@ -11,6 +11,7 @@ import PaymentSuccess from "./pages/PaymentSuccess.tsx";
 import Summary from "./pages/Summary.tsx";
 import Admin from "./pages/Admin.tsx";
 import Methodology from "./pages/Methodology.tsx";
+import Privacy from "./pages/Privacy.tsx";
 import NotFound from "./pages/NotFound.tsx";
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/summary" element={<Summary />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/methodology" element={<Methodology />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
