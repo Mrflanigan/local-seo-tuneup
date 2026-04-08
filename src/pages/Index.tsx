@@ -178,15 +178,6 @@ export default function Index() {
               No signup · Complimentary instant audit · Real data from your site
             </p>
           </div>
-
-          {/* ══ RESERVED: "Best in Class" ribbon goes here ══ */}
-          <div
-            id="best-in-class-slot"
-            className="shrink-0 w-48 h-20 rounded-lg border border-dashed border-muted-foreground/20 flex items-center justify-center"
-            aria-hidden="true"
-          >
-            <span className="text-[10px] text-muted-foreground/30 select-none">Best in Class slot</span>
-          </div>
         </div>
 
         {/* Landmark caption */}
