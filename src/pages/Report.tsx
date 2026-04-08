@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, ExternalLink, Send, Camera, Trophy } from "lucide-react";
 import { toast } from "sonner";
+import ReportFooter from "@/components/ReportFooter";
 
 export default function Report() {
   const location = useLocation();
@@ -355,6 +356,8 @@ export default function Report() {
         ) : (
           <CTABanner />
         )}
+
+        <ReportFooter />
       </div>
     </div>
   );
