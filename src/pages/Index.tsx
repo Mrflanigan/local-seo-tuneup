@@ -55,6 +55,14 @@ export default function Index() {
               How it works
             </a>
           </div>
+          {/* ══ RESERVED: "Best in Class" ribbon ══ */}
+          <div
+            id="best-in-class-slot"
+            className="text-[10px] text-muted-foreground/30 border border-dashed border-muted-foreground/20 rounded px-3 py-1 select-none"
+            aria-hidden="true"
+          >
+            Best in Class slot
+          </div>
         </div>
       </nav>
 
@@ -169,15 +177,6 @@ export default function Index() {
             <p className="text-xs text-muted-foreground/70 mt-3" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
               No signup · Complimentary instant audit · Real data from your site
             </p>
-          </div>
-
-          {/* ══ RESERVED: "Best in Class" ribbon goes here ══ */}
-          <div
-            id="best-in-class-slot"
-            className="shrink-0 w-48 h-20 rounded-lg border border-dashed border-muted-foreground/20 flex items-center justify-center"
-            aria-hidden="true"
-          >
-            <span className="text-[10px] text-muted-foreground/30 select-none">Best in Class slot</span>
           </div>
         </div>
 
