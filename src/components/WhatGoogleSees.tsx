@@ -76,6 +76,47 @@ function getBuzzword(id: string): string | null {
   return map[id] || null;
 }
 
+function EvidenceBlock({ evidence, findingId, copiedSnippet, onCopy }: {
+  evidence: FindingEvidence[];
+  findingId: string;
+  copiedSnippet: string | null;
+  onCopy: (text: string, id: string) => void;
+}) {
+  return (
+    <div className="mt-3 space-y-2">
+      {evidence.map((ev, i) => {
+        const copyId = `${findingId}-${i}`;
+        return (
+          <div key={i} className="rounded-lg border border-border/50 bg-muted/30 p-3">
+            <p className="text-xs font-semibold text-foreground mb-1">{ev.heuristic}</p>
+            {ev.detail && (
+              <p className="text-xs text-muted-foreground leading-relaxed mb-2">{ev.detail}</p>
+            )}
+            {ev.snippet && (
+              <div className="flex items-start gap-2">
+                <div className="flex-1 rounded bg-background/60 border border-border/30 px-3 py-2 min-w-0">
+                  <p className="text-[11px] font-mono text-muted-foreground leading-relaxed break-all whitespace-pre-wrap">
+                    {ev.snippet}
+                  </p>
+                </div>
+                <button
+                  onClick={() => onCopy(ev.snippet!, copyId)}
+                  className="shrink-0 p-1.5 rounded border border-border/50 bg-muted/50 hover:bg-muted transition-colors"
+                  title="Copy to clipboard"
+                >
+                  {copiedSnippet === copyId
+                    ? <Check className="h-3 w-3 text-green-500" />
+                    : <Copy className="h-3 w-3 text-muted-foreground" />}
+                </button>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function WhatGoogleSees({ result }: Props) {
   const translations = buildTranslations(result);
   const [expandedEvidence, setExpandedEvidence] = useState<string | null>(null);
@@ -89,7 +130,6 @@ export default function WhatGoogleSees({ result }: Props) {
     toast.success("Copied to clipboard");
     setTimeout(() => setCopiedSnippet(null), 2000);
   };
-  const bad = translations.filter((t) => t.status === "bad");
 
   return (
     <div className="space-y-8">
