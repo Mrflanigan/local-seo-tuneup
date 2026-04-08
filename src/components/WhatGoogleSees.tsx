@@ -1,7 +1,8 @@
-import { Eye, EyeOff, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { Eye, EyeOff, AlertTriangle, CheckCircle2, Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { ScoringResult, FindingEvidence } from "@/lib/scoring/types";
+import { toast } from "sonner";
 
 interface Props {
   result: ScoringResult;
@@ -75,11 +76,60 @@ function getBuzzword(id: string): string | null {
   return map[id] || null;
 }
 
+function EvidenceBlock({ evidence, findingId, copiedSnippet, onCopy }: {
+  evidence: FindingEvidence[];
+  findingId: string;
+  copiedSnippet: string | null;
+  onCopy: (text: string, id: string) => void;
+}) {
+  return (
+    <div className="mt-3 space-y-2">
+      {evidence.map((ev, i) => {
+        const copyId = `${findingId}-${i}`;
+        return (
+          <div key={i} className="rounded-lg border border-border/50 bg-muted/30 p-3">
+            <p className="text-xs font-semibold text-foreground mb-1">{ev.heuristic}</p>
+            {ev.detail && (
+              <p className="text-xs text-muted-foreground leading-relaxed mb-2">{ev.detail}</p>
+            )}
+            {ev.snippet && (
+              <div className="flex items-start gap-2">
+                <div className="flex-1 rounded bg-background/60 border border-border/30 px-3 py-2 min-w-0">
+                  <p className="text-[11px] font-mono text-muted-foreground leading-relaxed break-all whitespace-pre-wrap">
+                    {ev.snippet}
+                  </p>
+                </div>
+                <button
+                  onClick={() => onCopy(ev.snippet!, copyId)}
+                  className="shrink-0 p-1.5 rounded border border-border/50 bg-muted/50 hover:bg-muted transition-colors"
+                  title="Copy to clipboard"
+                >
+                  {copiedSnippet === copyId
+                    ? <Check className="h-3 w-3 text-green-500" />
+                    : <Copy className="h-3 w-3 text-muted-foreground" />}
+                </button>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function WhatGoogleSees({ result }: Props) {
   const translations = buildTranslations(result);
   const [expandedEvidence, setExpandedEvidence] = useState<string | null>(null);
+  const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
   const good = translations.filter((t) => t.status === "good");
   const bad = translations.filter((t) => t.status === "bad");
+
+  const handleCopy = async (text: string, id: string) => {
+    await navigator.clipboard.writeText(text);
+    setCopiedSnippet(id);
+    toast.success("Copied to clipboard");
+    setTimeout(() => setCopiedSnippet(null), 2000);
+  };
 
   return (
     <div className="space-y-8">
@@ -130,15 +180,28 @@ export default function WhatGoogleSees({ result }: Props) {
           <ul className="space-y-4">
             {good.map((item) => (
               <li key={item.buzzword} className="border-b border-border/50 pb-4 last:border-0 last:pb-0">
-                <Link
-                  to={`/methodology#check-${item.findingId}`}
-                  className="text-xs font-mono bg-green-500/10 text-green-600 dark:text-green-400 px-2 py-0.5 rounded hover:underline hover:bg-green-500/20 transition-colors"
-                >
-                  {item.buzzword}
-                </Link>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Link
+                    to={`/methodology#check-${item.findingId}`}
+                    className="text-xs font-mono bg-green-500/10 text-green-600 dark:text-green-400 px-2 py-0.5 rounded hover:underline hover:bg-green-500/20 transition-colors"
+                  >
+                    {item.buzzword}
+                  </Link>
+                  {item.evidence && item.evidence.length > 0 && (
+                    <button
+                      onClick={() => setExpandedEvidence(expandedEvidence === item.findingId ? null : item.findingId)}
+                      className="text-[10px] font-medium text-primary/70 hover:text-primary transition-colors flex items-center gap-1"
+                    >
+                      {expandedEvidence === item.findingId ? "Hide evidence" : "View evidence"}
+                    </button>
+                  )}
+                </div>
                 <p className="text-sm text-foreground mt-1.5 leading-relaxed">
                   {item.plain}
                 </p>
+                {item.evidence && expandedEvidence === item.findingId && (
+                  <EvidenceBlock evidence={item.evidence} findingId={item.findingId} copiedSnippet={copiedSnippet} onCopy={handleCopy} />
+                )}
               </li>
             ))}
           </ul>
@@ -184,23 +247,7 @@ export default function WhatGoogleSees({ result }: Props) {
                   {item.plain}
                 </p>
                 {item.evidence && expandedEvidence === item.findingId && (
-                  <div className="mt-3 space-y-2">
-                    {item.evidence.map((ev, i) => (
-                      <div key={i} className="rounded-lg border border-border/50 bg-muted/30 p-3">
-                        <p className="text-xs font-semibold text-foreground mb-1">{ev.heuristic}</p>
-                        {ev.detail && (
-                          <p className="text-xs text-muted-foreground leading-relaxed mb-2">{ev.detail}</p>
-                        )}
-                        {ev.snippet && (
-                          <div className="rounded bg-background/60 border border-border/30 px-3 py-2">
-                            <p className="text-[11px] font-mono text-muted-foreground leading-relaxed break-all">
-                              {ev.snippet}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                  <EvidenceBlock evidence={item.evidence} findingId={item.findingId} copiedSnippet={copiedSnippet} onCopy={handleCopy} />
                 )}
               </li>
             ))}

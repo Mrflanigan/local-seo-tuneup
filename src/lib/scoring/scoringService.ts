@@ -126,7 +126,8 @@ function scoreLocalPresence(
     hasPhone ? "Phone number is visible on the page." : "No phone number found on the page.",
     hasPhone
       ? `Your phone number (${ctx.phone}) is prominently displayed, making it easy for local customers to call.`
-      : "We couldn't find a phone number on your page — adding one helps local customers reach you instantly."
+      : "We couldn't find a phone number on your page — adding one helps local customers reach you instantly.",
+    hasPhone ? [{ heuristic: "Phone number detected", snippet: ctx.phone! }] : undefined
   ));
 
   // 2. Business name visible (3 pts)
@@ -135,26 +136,32 @@ function scoreLocalPresence(
     hasName ? "Business name found on the page." : "No clear business name detected.",
     hasName
       ? `Your business name "${ctx.businessName}" is clearly visible on the page.`
-      : "We couldn't identify a clear business name — make sure it's in your H1 or title tag."
+      : "We couldn't identify a clear business name — make sure it's in your H1 or title tag.",
+    hasName ? [{ heuristic: "Business name found", snippet: ctx.businessName! }] : undefined
   ));
 
   // 3. Full address / NAP (5 pts)
   const addressPattern = /\d{1,5}\s\w+\s(?:st|street|ave|avenue|blvd|boulevard|rd|road|dr|drive|ln|lane|ct|court|way|pl|place)\b/i;
   const hasAddress = addressPattern.test(html);
+  const addressMatch = html.match(addressPattern);
   const zipPattern = /\b\d{5}(-\d{4})?\b/;
   const hasZip = zipPattern.test(html);
+  const zipMatch = html.match(zipPattern);
   const napScore = (hasAddress && hasZip && hasPhone) ? 5 : (hasAddress || hasPhone) ? 3 : 0;
+  const napParts = [ctx.businessName, addressMatch?.[0], zipMatch?.[0], ctx.phone].filter(Boolean);
   findings.push(finding("nap", napScore >= 5, napScore, 5,
     napScore >= 5 ? "Full NAP (Name, Address, Phone) present." : "NAP information is incomplete.",
     napScore >= 5
       ? "Your full name, address, and phone number are all visible — this is the foundation of local SEO."
-      : `Your NAP is incomplete (${[!hasName && "name", !hasAddress && "address", !hasPhone && "phone", !hasZip && "ZIP code"].filter(Boolean).join(", ")} missing). Google relies on consistent NAP data to rank local businesses.`
+      : `Your NAP is incomplete (${[!hasName && "name", !hasAddress && "address", !hasPhone && "phone", !hasZip && "ZIP code"].filter(Boolean).join(", ")} missing). Google relies on consistent NAP data to rank local businesses.`,
+    napParts.length > 0 ? [{ heuristic: "NAP string detected", snippet: napParts.join(" · ") }] : undefined
   ));
 
   // 4. LocalBusiness schema (5 pts)
   const jsonLdBlocks = html.match(/<script[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi) || [];
   let hasLocalSchema = false;
   let schemaFields: string[] = [];
+  let localSchemaSnippet: string | undefined;
   for (const block of jsonLdBlocks) {
     const inner = block.replace(/<\/?script[^>]*>/gi, "");
     try {
@@ -167,6 +174,7 @@ function scoreLocalPresence(
         if (obj.telephone) schemaFields.push("telephone");
         if (obj.geo) schemaFields.push("geo");
         if (obj.openingHours || obj.openingHoursSpecification) schemaFields.push("openingHours");
+        try { localSchemaSnippet = JSON.stringify(obj, null, 2).slice(0, 500); } catch {}
       }
     } catch { /* ignore malformed JSON-LD */ }
   }
@@ -175,7 +183,8 @@ function scoreLocalPresence(
     hasLocalSchema ? "LocalBusiness schema markup detected." : "No LocalBusiness schema markup found.",
     hasLocalSchema
       ? `Your LocalBusiness schema includes ${schemaFields.join(", ")} — ${schemaFields.length >= 4 ? "excellent coverage" : "consider adding more fields like geo and openingHours"}.`
-      : "Adding LocalBusiness schema tells Google your name, address, hours, and services in a machine-readable format — a key local SEO signal."
+      : "Adding LocalBusiness schema tells Google your name, address, hours, and services in a machine-readable format — a key local SEO signal.",
+    hasLocalSchema && localSchemaSnippet ? [{ heuristic: "LocalBusiness JSON-LD", snippet: localSchemaSnippet }] : undefined
   ));
 
   // 5. Google Maps embed or directions link (4 pts)
@@ -240,7 +249,8 @@ function scoreOnPageSEO(
     !title ? "Missing title tag." : titleScore >= 4 ? "Title tag is well-optimized." : "Title tag could be improved.",
     !title
       ? "Your page is missing a title tag — this is critical for appearing in Google search results."
-      : `Your title "${truncate(title!, 55)}" is ${titleGoodLength ? "a good length" : (titleLen < 35 ? "too short" : "too long")}${titleHasCity ? ", includes your city" : ""}${titleHasService ? ", mentions your service" : ""}. ${titleScore < 4 ? "Aim for 35-65 chars with your main service and city." : "Nice work!"}`
+      : `Your title "${truncate(title!, 55)}" is ${titleGoodLength ? "a good length" : (titleLen < 35 ? "too short" : "too long")}${titleHasCity ? ", includes your city" : ""}${titleHasService ? ", mentions your service" : ""}. ${titleScore < 4 ? "Aim for 35-65 chars with your main service and city." : "Nice work!"}`,
+    title ? [{ heuristic: "Title tag", snippet: title, detail: `${titleLen} characters` }] : undefined
   ));
 
   // 2. Meta description (5 pts)
@@ -254,7 +264,8 @@ function scoreOnPageSEO(
     !metaDesc ? "Missing meta description." : metaScore >= 4 ? "Meta description is well-written." : "Meta description needs improvement.",
     !metaDesc
       ? "Adding a meta description tells Google and searchers what your page is about — this directly affects click-through rates."
-      : `Your meta description "${truncate(metaDesc!, 65)}" is ${metaGoodLength ? "a good length" : (metaLen < 70 ? "too short" : "too long")}. ${metaScore < 4 ? "Include your service + city for best results." : "Well-crafted for search results!"}`
+      : `Your meta description "${truncate(metaDesc!, 65)}" is ${metaGoodLength ? "a good length" : (metaLen < 70 ? "too short" : "too long")}. ${metaScore < 4 ? "Include your service + city for best results." : "Well-crafted for search results!"}`,
+    metaDesc ? [{ heuristic: "Meta description", snippet: metaDesc, detail: `${metaLen} characters` }] : undefined
   ));
 
   // 3. H1 and heading hierarchy (4 pts)
@@ -268,7 +279,8 @@ function scoreOnPageSEO(
       ? "Your page is missing an H1 heading — add one that describes your primary service and location."
       : h1Count === 1
         ? `Your H1 "${truncate(h1!, 45)}" is clear.${h2Count > 0 ? ` You have ${h2Count} H2 subheadings for good structure.` : " Consider adding H2 subheadings to break up content."}`
-        : `Your page has ${h1Count} H1 tags — Google prefers a single H1 that clearly states your main offering.`
+        : `Your page has ${h1Count} H1 tags — Google prefers a single H1 that clearly states your main offering.`,
+    h1 ? [{ heuristic: "H1 tag", snippet: h1 }] : undefined
   ));
 
   // 4. Keyword usage heuristic (3 pts)
@@ -369,7 +381,8 @@ function scoreTechnicalSEO(
       ? "Your page has a 'noindex' meta tag — this tells Google NOT to show your page in search results. Remove it unless intentional!"
       : hasNofollow
         ? "Your page has a 'nofollow' directive — internal links won't pass SEO value. This is unusual for a public page."
-        : "Your page allows Google to index and follow links — no accidental blocking detected."
+        : "Your page allows Google to index and follow links — no accidental blocking detected.",
+    robotsMeta ? [{ heuristic: "Meta robots tag", snippet: `<meta name="robots" content="${robotsMeta[1]}">` }] : undefined
   ));
 
   // 3. Canonical tag (4 pts)
@@ -384,7 +397,8 @@ function scoreTechnicalSEO(
       ? isSelfReferential
         ? "You have a self-referential canonical tag — this correctly tells Google this is the authoritative version of the page."
         : `Your canonical tag points to "${truncate(canonicalUrl!, 50)}" — make sure this is intentional.`
-      : "Adding a canonical tag tells Google which version of your page to index, avoiding duplicate content penalties."
+      : "Adding a canonical tag tells Google which version of your page to index, avoiding duplicate content penalties.",
+    canonicalUrl ? [{ heuristic: "Canonical URL", snippet: canonicalUrl }] : undefined
   ));
 
   // 4. Mobile viewport (4 pts)
@@ -429,17 +443,26 @@ function scoreTechnicalSEO(
   const robotsExists = ch?.robotsTxt?.exists ?? false;
   const robotsBlocksAll = ch?.robotsTxt?.blocksAll ?? false;
   const rtScore = !ch ? 1 : robotsBlocksAll ? 0 : robotsExists ? 2 : 0;
+  const robotsTxtEvidence: FindingEvidence[] = [];
+  if (ch?.robotsTxt?.content) {
+    robotsTxtEvidence.push({ heuristic: "robots.txt contents", snippet: ch.robotsTxt.content.slice(0, 400) });
+  }
+  if (ch?.robotsTxt?.sitemapDirectives && ch.robotsTxt.sitemapDirectives.length > 0) {
+    robotsTxtEvidence.push({ heuristic: "Sitemap directives in robots.txt", snippet: ch.robotsTxt.sitemapDirectives.join("\n") });
+  }
   findings.push(finding("robots-txt", rtScore >= 1, rtScore, 2,
     !ch ? "robots.txt check not available." : robotsBlocksAll ? "robots.txt is blocking all crawlers!" : robotsExists ? "robots.txt found and looks okay." : "No robots.txt found.",
     !ch ? "We couldn't check your robots.txt in this scan. This file tells Google which pages to crawl."
       : robotsBlocksAll ? "Your robots.txt contains 'Disallow: /' which blocks Google from crawling your entire site. Unless this is intentional, remove that line immediately."
       : robotsExists ? "Your robots.txt is present and isn't blocking important pages — Google can crawl your site normally."
-      : "Your site is missing a robots.txt file. While Google will still crawl your site, adding one gives you control over which pages get indexed. Most website platforms generate one automatically — check your settings."
+      : "Your site is missing a robots.txt file. While Google will still crawl your site, adding one gives you control over which pages get indexed. Most website platforms generate one automatically — check your settings.",
+    robotsTxtEvidence.length > 0 ? robotsTxtEvidence : undefined
   ));
 
   // 8. XML Sitemap (2 pts)
   const sitemapFound = ch?.sitemap?.found ?? false;
   const sitemapSource = ch?.sitemap?.source;
+  const sitemapUrl = ch?.sitemap?.url;
   const sitemapInRobots = sitemapSource === "robots";
   const smScore = !ch ? 1 : sitemapFound && sitemapInRobots ? 2 : sitemapFound ? 1 : 0;
   findings.push(finding("xml-sitemap", smScore >= 1, smScore, 2,
@@ -447,7 +470,8 @@ function scoreTechnicalSEO(
     !ch ? "We couldn't check for an XML sitemap in this scan. A sitemap helps Google discover all your pages."
       : sitemapFound && sitemapInRobots ? "Your XML sitemap exists and is linked from robots.txt — this is the ideal setup for Google to discover all your pages quickly."
       : sitemapFound ? `Your XML sitemap exists at a common location, but isn't referenced in your robots.txt. Add a 'Sitemap:' directive to robots.txt so Google finds it automatically.`
-      : "No XML sitemap was found. A sitemap helps Google discover and index all your pages — especially important if you have service pages, location pages, or blog posts. Most website platforms can generate one automatically."
+      : "No XML sitemap was found. A sitemap helps Google discover and index all your pages — especially important if you have service pages, location pages, or blog posts. Most website platforms can generate one automatically.",
+    sitemapUrl ? [{ heuristic: "Sitemap URL", snippet: sitemapUrl }] : undefined
   ));
 
   const score = findings.reduce((s, f) => s + f.points, 0);

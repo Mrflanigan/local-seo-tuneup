@@ -1,5 +1,7 @@
-import type { ScoringResult, Finding, CategoryResult } from "@/lib/scoring/types";
-import { AlertTriangle, User, PenLine, Code } from "lucide-react";
+import { useState } from "react";
+import type { ScoringResult, Finding } from "@/lib/scoring/types";
+import { AlertTriangle, User, PenLine, Code, Copy, Check } from "lucide-react";
+import { toast } from "sonner";
 
 const IMPACT_ORDER = { High: 0, Medium: 1, Low: 2 } as const;
 const EFFORT_ORDER = { Owner: 0, Content: 1, Developer: 2 } as const;
@@ -16,18 +18,20 @@ const IMPACT_COLORS: Record<string, string> = {
   Low: "text-muted-foreground bg-muted/30 border-border/50",
 };
 
-function getCategoryLabel(categories: CategoryResult[], findingId: string): string {
-  for (const cat of categories) {
-    if (cat.findings.some((f) => f.id === findingId)) return cat.label;
-  }
-  return "";
-}
-
 interface Props {
   result: ScoringResult;
 }
 
 export default function FixTheseFiveFirst({ result }: Props) {
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleCopy = async (text: string, id: string) => {
+    await navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    toast.success("Copied to clipboard");
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
   // Collect all failed findings with impact/effort
   const failed: (Finding & { categoryLabel: string })[] = result.categories
     .flatMap((cat) =>
@@ -64,12 +68,13 @@ export default function FixTheseFiveFirst({ result }: Props) {
         {top5.map((f, i) => {
           const effort = EFFORT_LABEL[f.effort ?? "Developer"];
           const EffortIcon = effort.icon;
+          const hasEvidence = f.evidence && f.evidence.length > 0 && f.evidence.some(e => e.snippet);
           return (
             <li key={f.id} className="flex gap-3">
               <span className="shrink-0 flex items-center justify-center h-7 w-7 rounded-full bg-accent/20 text-accent text-sm font-bold mt-0.5">
                 {i + 1}
               </span>
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2 mb-0.5">
                   <span className="font-semibold text-foreground text-sm">{f.generic}</span>
                   <span className={`inline-flex items-center text-[10px] px-1.5 py-0.5 rounded border font-medium ${IMPACT_COLORS[f.impact ?? "Low"]}`}>
@@ -82,6 +87,31 @@ export default function FixTheseFiveFirst({ result }: Props) {
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">{f.personalized}</p>
                 <span className="text-[10px] text-muted-foreground/60">{f.categoryLabel}</span>
+                {hasEvidence && (
+                  <div className="mt-2">
+                    {f.evidence!.filter(e => e.snippet).map((ev, j) => {
+                      const copyKey = `fix5-${f.id}-${j}`;
+                      return (
+                        <div key={j} className="flex items-start gap-2 mt-1">
+                          <div className="flex-1 rounded bg-background/60 border border-border/30 px-2.5 py-1.5 min-w-0">
+                            <p className="text-[10px] font-mono text-muted-foreground leading-relaxed break-all whitespace-pre-wrap">
+                              {ev.snippet}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => handleCopy(ev.snippet!, copyKey)}
+                            className="shrink-0 p-1 rounded border border-border/50 bg-muted/50 hover:bg-muted transition-colors"
+                            title="Copy to clipboard"
+                          >
+                            {copiedId === copyKey
+                              ? <Check className="h-2.5 w-2.5 text-green-500" />
+                              : <Copy className="h-2.5 w-2.5 text-muted-foreground" />}
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </li>
           );
