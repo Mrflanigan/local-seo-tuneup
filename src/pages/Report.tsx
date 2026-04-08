@@ -360,6 +360,7 @@ export default function Report() {
 
         <ReportFooter />
       </div>
+      <FeedbackWidget url={url} />
     </div>
   );
 }
