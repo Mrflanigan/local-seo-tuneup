@@ -55,6 +55,14 @@ export default function Index() {
               How it works
             </a>
           </div>
+          {/* ══ RESERVED: "Best in Class" ribbon ══ */}
+          <div
+            id="best-in-class-slot"
+            className="text-[10px] text-muted-foreground/30 border border-dashed border-muted-foreground/20 rounded px-3 py-1 select-none"
+            aria-hidden="true"
+          >
+            Best in Class slot
+          </div>
         </div>
       </nav>
 
