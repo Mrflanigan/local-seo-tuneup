@@ -262,11 +262,8 @@ async function fetchCrawlHygiene(normalizedUrl: string) {
       }
     }
 
-    // 4. Fetch Google PageSpeed Insights + crawl hygiene in parallel
-    const [pageSpeed, crawlHygiene] = await Promise.all([
-      fetchPageSpeed(normalizedUrl),
-      fetchCrawlHygiene(normalizedUrl),
-    ]);
+    // 4. Fetch Google PageSpeed Insights
+    const pageSpeed = await fetchPageSpeed(normalizedUrl);
 
     // Attach extra data to result
     if (pageSpeed) (result as any).pageSpeed = pageSpeed;
