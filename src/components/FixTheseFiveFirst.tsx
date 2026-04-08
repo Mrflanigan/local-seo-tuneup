@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { ScoringResult, Finding, CategoryResult } from "@/lib/scoring/types";
+import type { ScoringResult, Finding } from "@/lib/scoring/types";
 import { AlertTriangle, User, PenLine, Code, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
 
