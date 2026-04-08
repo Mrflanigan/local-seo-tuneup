@@ -51,10 +51,7 @@ export default function Index() {
             SEO<span className="text-primary">RiseUp</span>
           </span>
           <div className="flex items-center gap-8">
-            <div className="flex flex-col items-center">
-              <span className="text-sm font-semibold tracking-[0.2em] text-muted-foreground">PAGE 1</span>
-              <img src={blueRibbon} alt="Best in Class award" width={36} height={36} className="mt-1" />
-            </div>
+            <span className="text-sm font-semibold tracking-[0.2em] text-muted-foreground">PAGE 1</span>
             <a href="#how-it-works" className="text-sm text-foreground font-semibold hover:text-primary transition-colors">
               How it works
             </a>
