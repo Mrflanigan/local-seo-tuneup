@@ -110,7 +110,7 @@ const categories = [
     color: "text-purple-400",
     checks: [
       {
-        id: "https", name: "HTTPS & mixed content", pts: 6,
+        id: "https", name: "HTTPS & mixed content", pts: 5,
         what: "We verify HTTPS and scan for HTTP resources loaded on an HTTPS page.",
         why: "Google flags non-HTTPS sites as 'Not Secure' in Chrome. Visitors see the warning and leave. Mixed content (HTTP images on an HTTPS page) can trigger the same warning.",
         fix: "Make sure your site uses HTTPS. If it does, check for images, scripts, or fonts still loading over HTTP and update those URLs.",
@@ -134,7 +134,7 @@ const categories = [
         fix: "Add <meta name='viewport' content='width=device-width, initial-scale=1'> to your page's <head> section.",
       },
       {
-        id: "render-blocking", name: "Render-blocking resources", pts: 3,
+        id: "render-blocking", name: "Render-blocking resources", pts: 2,
         what: "Count of synchronous CSS and JS files in the <head>.",
         why: "Too many blocking scripts slow down the first paint of your page. Visitors on slow connections see a blank screen and leave before your content loads.",
         fix: "Move non-critical CSS and JS to load asynchronously (add 'defer' or 'async' to script tags). Inline critical CSS.",
