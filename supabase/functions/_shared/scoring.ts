@@ -217,8 +217,8 @@ function scoreTechnicalSEO(data: FirecrawlScrapeResult, input: ScanInput): Categ
 
   const isHttps = input.url.startsWith("https");
   const hasMixedContent = isHttps && /(?:src|href)\s*=\s*["']http:\/\//i.test(html);
-  const httpsScore = !isHttps ? 0 : hasMixedContent ? 4 : 6;
-  findings.push(f("https", httpsScore >= 4, httpsScore, 6, !isHttps ? "Site does not use HTTPS." : hasMixedContent ? "HTTPS with mixed content detected." : "Site uses HTTPS.", !isHttps ? "Your site isn't using HTTPS — Google penalizes non-secure sites and browsers show warnings to visitors." : hasMixedContent ? "Your site uses HTTPS but loads some resources over HTTP. Fix mixed content to avoid browser warnings." : "Your site is served over HTTPS — essential for trust and Google ranking."));
+  const httpsScore = !isHttps ? 0 : hasMixedContent ? 3 : 5;
+  findings.push(f("https", httpsScore >= 3, httpsScore, 5, !isHttps ? "Site does not use HTTPS." : hasMixedContent ? "HTTPS with mixed content detected." : "Site uses HTTPS.", !isHttps ? "Your site isn't using HTTPS — Google penalizes non-secure sites and browsers show warnings to visitors." : hasMixedContent ? "Your site uses HTTPS but loads some resources over HTTP. Fix mixed content to avoid browser warnings." : "Your site is served over HTTPS — essential for trust and Google ranking."));
 
   const robotsMeta = html.match(/<meta[^>]*name\s*=\s*["']robots["'][^>]*content\s*=\s*["']([^"']+)["']/i);
   const robotsContent = robotsMeta ? robotsMeta[1].toLowerCase() : "";
@@ -245,8 +245,8 @@ function scoreTechnicalSEO(data: FirecrawlScrapeResult, input: ScanInput): Categ
   const cssInHead = (headContent.match(/<link[^>]*rel\s*=\s*["']stylesheet["'][^>]*>/gi) || []).length;
   const syncJsInHead = (headContent.match(/<script(?![^>]*(?:async|defer))[^>]*src\s*=/gi) || []).length;
   const renderBlockingCount = cssInHead + syncJsInHead;
-  const rbScore = renderBlockingCount <= 3 ? 3 : renderBlockingCount <= 6 ? 2 : 1;
-  findings.push(f("render-blocking", rbScore >= 2, rbScore, 3, rbScore >= 2 ? "Few render-blocking resources." : `${renderBlockingCount} render-blocking resources in <head>.`, rbScore >= 2 ? `Only ${renderBlockingCount} render-blocking resource(s) in your <head> — your page should load quickly.` : `${renderBlockingCount} render-blocking resources in your <head>. Consider deferring scripts and inlining critical CSS for faster load.`));
+  const rbScore = renderBlockingCount <= 3 ? 2 : renderBlockingCount <= 6 ? 1 : 0;
+  findings.push(f("render-blocking", rbScore >= 1, rbScore, 2, rbScore >= 1 ? "Few render-blocking resources." : `${renderBlockingCount} render-blocking resources in <head>.`, rbScore >= 1 ? `Only ${renderBlockingCount} render-blocking resource(s) in your <head> — your page should load quickly.` : `${renderBlockingCount} render-blocking resources in your <head>. Consider deferring scripts and inlining critical CSS for faster load.`));
 
   const inlineScripts = html.match(/<script(?![^>]*src)[^>]*>[\s\S]{500,}<\/script>/gi) || [];
   const thirdPartyScripts = (html.match(/<script[^>]*src\s*=\s*["']https?:\/\/(?!.*(?:googleapis|gstatic|google))[^"']+["'][^>]*>/gi) || []).length;
