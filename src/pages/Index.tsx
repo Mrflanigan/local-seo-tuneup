@@ -60,6 +60,17 @@ export default function Index() {
 
       {/* ═══ HERO — Denali ═══ */}
       <section className="relative min-h-screen flex items-end justify-center overflow-hidden pb-16">
+        {/* ══ Best in Class ribbon — pinned top-right, just below nav ══ */}
+        <a
+          href="/methodology"
+          className="absolute top-20 right-6 z-20 flex items-center gap-2 rounded-full bg-primary/90 backdrop-blur-sm px-4 py-2 shadow-lg hover:bg-primary transition-colors group"
+        >
+          <span className="text-xs font-bold text-primary-foreground tracking-wide">Best in Class</span>
+          <span className="text-[10px] text-primary-foreground/70 group-hover:text-primary-foreground transition-colors">
+            Read the review →
+          </span>
+        </a>
+
         <img src={heroDenali} alt="Summit of Denali, highest peak in North America" width={1920} height={1080} className="absolute inset-0 w-full h-full object-cover" />
 
         {/* ── The G — buried into the bottom-left terrain ── */}
