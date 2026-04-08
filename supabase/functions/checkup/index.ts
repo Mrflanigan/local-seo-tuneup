@@ -109,6 +109,81 @@ async function fetchPageSpeed(normalizedUrl: string) {
   return null;
 }
 
+/**
+ * Fetch robots.txt and detect XML sitemap presence.
+ */
+async function fetchCrawlHygiene(normalizedUrl: string) {
+  const origin = new URL(normalizedUrl).origin;
+  const result = {
+    robotsTxt: { exists: false, blocksAll: false, sitemapDirectives: [] as string[], content: undefined as string | undefined },
+    sitemap: { found: false, url: null as string | null, source: null as "robots" | "common-location" | null },
+  };
+
+  // 1. Fetch robots.txt
+  try {
+    const robotsRes = await fetch(`${origin}/robots.txt`, { redirect: "follow" });
+    if (robotsRes.ok) {
+      const text = await robotsRes.text();
+      // Verify it's actually a robots.txt (not a soft-404 HTML page)
+      if (!text.trim().startsWith("<!") && !text.trim().startsWith("<html")) {
+        result.robotsTxt.exists = true;
+        result.robotsTxt.content = text.slice(0, 2000); // keep first 2KB for reference
+        // Check for Disallow: / under User-agent: *
+        const lines = text.split("\n").map(l => l.trim().toLowerCase());
+        let inWildcardAgent = false;
+        for (const line of lines) {
+          if (line.startsWith("user-agent:")) {
+            inWildcardAgent = line.includes("*");
+          }
+          if (inWildcardAgent && line === "disallow: /") {
+            result.robotsTxt.blocksAll = true;
+          }
+          // Extract Sitemap directives (case-insensitive)
+          if (line.startsWith("sitemap:")) {
+            const sitemapUrl = text.split("\n").find(l => l.trim().toLowerCase().startsWith("sitemap:"));
+            if (sitemapUrl) {
+              const url = sitemapUrl.split(/sitemap:\s*/i)[1]?.trim();
+              if (url) result.robotsTxt.sitemapDirectives.push(url);
+            }
+          }
+        }
+        // Deduplicate
+        result.robotsTxt.sitemapDirectives = [...new Set(result.robotsTxt.sitemapDirectives)];
+      }
+    }
+    console.log(`[checkup] robots.txt: exists=${result.robotsTxt.exists}, blocksAll=${result.robotsTxt.blocksAll}, sitemaps=${result.robotsTxt.sitemapDirectives.length}`);
+  } catch (err) {
+    console.warn("[checkup] robots.txt fetch failed:", err);
+  }
+
+  // 2. Check sitemap — first from robots.txt directives, then common locations
+  const sitemapCandidates = [
+    ...result.robotsTxt.sitemapDirectives,
+    `${origin}/sitemap.xml`,
+    `${origin}/sitemap_index.xml`,
+    `${origin}/sitemap/`,
+  ];
+
+  for (const candidate of sitemapCandidates) {
+    try {
+      const sitemapRes = await fetch(candidate, { method: "HEAD", redirect: "follow" });
+      if (sitemapRes.ok) {
+        const ct = sitemapRes.headers.get("content-type") || "";
+        // Accept XML or text responses (not HTML error pages)
+        if (ct.includes("xml") || ct.includes("text/plain") || !ct.includes("html")) {
+          result.sitemap.found = true;
+          result.sitemap.url = candidate;
+          result.sitemap.source = result.robotsTxt.sitemapDirectives.includes(candidate) ? "robots" : "common-location";
+          break;
+        }
+      }
+    } catch { /* skip */ }
+  }
+
+  console.log(`[checkup] Sitemap: found=${result.sitemap.found}, url=${result.sitemap.url}, source=${result.sitemap.source}`);
+  return result;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -140,11 +215,14 @@ Deno.serve(async (req) => {
 
     const apiKey = Deno.env.get("FIRECRAWL_API_KEY");
 
-    // 1. Scrape with Firecrawl
-    const scraped = await scrapeWithFirecrawl(normalizedUrl);
+    // 1. Scrape with Firecrawl + fetch crawl hygiene in parallel
+    const [scraped, crawlHygiene] = await Promise.all([
+      scrapeWithFirecrawl(normalizedUrl),
+      fetchCrawlHygiene(normalizedUrl),
+    ]);
 
-    // 2. Score
-    const input: ScanInput = { url: normalizedUrl, city, state, businessType: businessType || "local" };
+    // 2. Score (with crawl hygiene data)
+    const input: ScanInput = { url: normalizedUrl, city, state, businessType: businessType || "local", crawlHygiene };
     const result = scoreWebsite(scraped, input);
 
     // 3. Phrase ranking search using shared utilities
@@ -190,6 +268,7 @@ Deno.serve(async (req) => {
     // Attach extra data to result
     if (pageSpeed) (result as any).pageSpeed = pageSpeed;
     if (phraseOptics) (result as any).phraseOptics = phraseOptics;
+    if (crawlHygiene) (result as any).crawlHygiene = crawlHygiene;
 
     console.log(`[checkup] Score: ${result.overallScore} (${result.letterGrade})`);
 

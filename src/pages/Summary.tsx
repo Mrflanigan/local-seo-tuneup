@@ -22,7 +22,7 @@ Scrapes the page HTML/markdown via Firecrawl, then scores:
 
 - Local Presence & GBP (30 pts): Phone, business name, NAP, LocalBusiness schema, Maps embed, reviews, local keywords
 - On-Page SEO (25 pts): Title tag, meta description, H1/headings, keyword usage, URL slug, image alts, internal links
-- Technical SEO (25 pts): HTTPS, meta robots, canonical, mobile viewport, render-blocking, speed proxies
+- Technical SEO (25 pts): HTTPS, meta robots, canonical, mobile viewport, render-blocking, speed proxies, robots.txt, XML sitemap
 - Content & UX (10 pts): Word count, content structure/FAQ, CTAs, contact visibility
 - Google Readiness Extras (10 pts): Extra structured data, no spam, trust indicators
 

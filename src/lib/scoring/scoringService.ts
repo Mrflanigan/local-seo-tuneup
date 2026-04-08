@@ -343,11 +343,11 @@ function scoreTechnicalSEO(
   const findings: Finding[] = [];
   const lowerHtml = html.toLowerCase();
 
-  // 1. HTTPS (6 pts)
+  // 1. HTTPS (5 pts)
   const isHttps = input.url.startsWith("https");
   const hasMixedContent = isHttps && /(?:src|href)\s*=\s*["']http:\/\//i.test(html);
-  const httpsScore = !isHttps ? 0 : hasMixedContent ? 4 : 6;
-  findings.push(finding("https", httpsScore >= 4, httpsScore, 6,
+  const httpsScore = !isHttps ? 0 : hasMixedContent ? 3 : 5;
+  findings.push(finding("https", httpsScore >= 3, httpsScore, 5,
     !isHttps ? "Site does not use HTTPS." : hasMixedContent ? "HTTPS with mixed content detected." : "Site uses HTTPS.",
     !isHttps
       ? "Your site isn't using HTTPS — Google penalizes non-secure sites and browsers show warnings to visitors."
@@ -399,28 +399,54 @@ function scoreTechnicalSEO(
       : "Your site is missing a proper mobile viewport tag. Over 60% of local searches happen on phones — this is a must-fix."
   ));
 
-  // 5. Render-blocking resources (4 pts)
+  // 5. Render-blocking resources (2 pts)
   const cssInHead = (html.match(/<head[\s\S]*?<\/head>/i)?.[0] || "").match(/<link[^>]*rel\s*=\s*["']stylesheet["'][^>]*>/gi) || [];
   const syncJsInHead = (html.match(/<head[\s\S]*?<\/head>/i)?.[0] || "").match(/<script(?![^>]*(?:async|defer))[^>]*src\s*=/gi) || [];
   const renderBlockingCount = cssInHead.length + syncJsInHead.length;
-  const rbScore = renderBlockingCount <= 3 ? 4 : renderBlockingCount <= 6 ? 2 : 1;
-  findings.push(finding("render-blocking", rbScore >= 3, rbScore, 4,
-    rbScore >= 3 ? "Few render-blocking resources." : `${renderBlockingCount} render-blocking resources in <head>.`,
-    rbScore >= 3
+  const rbScore = renderBlockingCount <= 3 ? 2 : renderBlockingCount <= 6 ? 1 : 0;
+  findings.push(finding("render-blocking", rbScore >= 1, rbScore, 2,
+    rbScore >= 1 ? "Few render-blocking resources." : `${renderBlockingCount} render-blocking resources in <head>.`,
+    rbScore >= 1
       ? `Only ${renderBlockingCount} render-blocking resource(s) in your <head> — your page should load quickly.`
       : `${renderBlockingCount} render-blocking resources (${cssInHead.length} CSS, ${syncJsInHead.length} sync JS) in your <head>. Consider deferring scripts and inlining critical CSS for faster load.`
   ));
 
-  // 6. Speed proxies (3 pts)
+  // 6. Speed proxies (2 pts)
   const inlineScripts = html.match(/<script(?![^>]*src)[^>]*>[\s\S]{500,}<\/script>/gi) || [];
   const thirdPartyScripts = (html.match(/<script[^>]*src\s*=\s*["']https?:\/\/(?!.*(?:googleapis|gstatic|google))[^"']+["'][^>]*>/gi) || []).length;
   const largeInline = inlineScripts.length;
-  const speedScore = (largeInline === 0 && thirdPartyScripts <= 5) ? 3 : (largeInline <= 2 && thirdPartyScripts <= 10) ? 2 : 1;
-  findings.push(finding("speed-proxies", speedScore >= 2, speedScore, 3,
-    speedScore >= 2 ? "Page weight looks reasonable." : "Page may be slow to load.",
-    speedScore >= 2
+  const speedScore = (largeInline === 0 && thirdPartyScripts <= 5) ? 2 : (largeInline <= 2 && thirdPartyScripts <= 10) ? 1 : 0;
+  findings.push(finding("speed-proxies", speedScore >= 1, speedScore, 2,
+    speedScore >= 1 ? "Page weight looks reasonable." : "Page may be slow to load.",
+    speedScore >= 1
       ? `Your page has ${largeInline} large inline scripts and ${thirdPartyScripts} third-party scripts — reasonable for fast loading.`
       : `${largeInline} large inline script(s) and ${thirdPartyScripts} third-party scripts may slow your page. Visitors (and Google) penalize slow pages.`
+  ));
+
+  // 7. robots.txt (2 pts)
+  const ch = input.crawlHygiene;
+  const robotsExists = ch?.robotsTxt?.exists ?? false;
+  const robotsBlocksAll = ch?.robotsTxt?.blocksAll ?? false;
+  const rtScore = !ch ? 1 : robotsBlocksAll ? 0 : robotsExists ? 2 : 0;
+  findings.push(finding("robots-txt", rtScore >= 1, rtScore, 2,
+    !ch ? "robots.txt check not available." : robotsBlocksAll ? "robots.txt is blocking all crawlers!" : robotsExists ? "robots.txt found and looks okay." : "No robots.txt found.",
+    !ch ? "We couldn't check your robots.txt in this scan. This file tells Google which pages to crawl."
+      : robotsBlocksAll ? "Your robots.txt contains 'Disallow: /' which blocks Google from crawling your entire site. Unless this is intentional, remove that line immediately."
+      : robotsExists ? "Your robots.txt is present and isn't blocking important pages — Google can crawl your site normally."
+      : "Your site is missing a robots.txt file. While Google will still crawl your site, adding one gives you control over which pages get indexed. Most website platforms generate one automatically — check your settings."
+  ));
+
+  // 8. XML Sitemap (2 pts)
+  const sitemapFound = ch?.sitemap?.found ?? false;
+  const sitemapSource = ch?.sitemap?.source;
+  const sitemapInRobots = sitemapSource === "robots";
+  const smScore = !ch ? 1 : sitemapFound && sitemapInRobots ? 2 : sitemapFound ? 1 : 0;
+  findings.push(finding("xml-sitemap", smScore >= 1, smScore, 2,
+    !ch ? "Sitemap check not available." : sitemapFound && sitemapInRobots ? "XML sitemap found and referenced in robots.txt." : sitemapFound ? "XML sitemap found, but not referenced in robots.txt." : "No XML sitemap found.",
+    !ch ? "We couldn't check for an XML sitemap in this scan. A sitemap helps Google discover all your pages."
+      : sitemapFound && sitemapInRobots ? "Your XML sitemap exists and is linked from robots.txt — this is the ideal setup for Google to discover all your pages quickly."
+      : sitemapFound ? `Your XML sitemap exists at a common location, but isn't referenced in your robots.txt. Add a 'Sitemap:' directive to robots.txt so Google finds it automatically.`
+      : "No XML sitemap was found. A sitemap helps Google discover and index all your pages — especially important if you have service pages, location pages, or blog posts. Most website platforms can generate one automatically."
   ));
 
   const score = findings.reduce((s, f) => s + f.points, 0);
