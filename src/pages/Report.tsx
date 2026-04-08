@@ -18,6 +18,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, ExternalLink, Send, Camera, Trophy } from "lucide-react";
 import { toast } from "sonner";
 import ReportFooter from "@/components/ReportFooter";
+import FeedbackWidget from "@/components/FeedbackWidget";
 
 export default function Report() {
   const location = useLocation();
