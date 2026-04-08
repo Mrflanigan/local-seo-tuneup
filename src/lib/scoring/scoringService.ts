@@ -8,6 +8,7 @@ import type {
   LetterGrade,
   ScanInput,
 } from "./types";
+import { CHECK_METADATA } from "./checkMetadata";
 
 // ── Helpers ──────────────────────────────────────────────
 
@@ -680,6 +681,17 @@ export function scoreWebsite(
     scoreContentUX(data, ctx),
     scoreExtras(data, ctx),
   ];
+
+  // Attach impact/effort metadata to every finding
+  for (const cat of categories) {
+    for (const f of cat.findings) {
+      const meta = CHECK_METADATA[f.id];
+      if (meta) {
+        f.impact = meta.impact;
+        f.effort = meta.effort;
+      }
+    }
+  }
 
   const businessType = input.businessType || "local";
   

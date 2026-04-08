@@ -15,6 +15,9 @@ export interface FindingEvidence {
   detail?: string;
 }
 
+export type ImpactLevel = "High" | "Medium" | "Low";
+export type EffortLevel = "Owner" | "Content" | "Developer";
+
 export interface Finding {
   id: string;
   passed: boolean;
@@ -22,6 +25,8 @@ export interface Finding {
   personalized: string;
   points: number;
   maxPoints: number;
+  impact?: ImpactLevel;
+  effort?: EffortLevel;
   evidence?: FindingEvidence[];
 }
 
