@@ -237,7 +237,7 @@ export default function Methodology() {
         <div className="flex items-center gap-3 mb-6 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3">
           <Award className="h-5 w-5 text-primary shrink-0" />
           <p className="text-sm text-muted-foreground">
-            <span className="font-bold text-foreground">Independently reviewed by GPT‑5 &amp; Gemini</span>{" "}
+             <span className="font-bold text-foreground">Independently reviewed by ChatGPT &amp; Gemini</span>{" "}
             — rated <span className="font-semibold text-accent">9.4/10</span> for SMBs and <span className="font-semibold text-accent">8.6/10</span> for experienced SEOs as a 60‑second local snapshot.
           </p>
         </div>

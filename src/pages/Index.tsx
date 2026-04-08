@@ -67,7 +67,7 @@ export default function Index() {
           <div className="leading-tight">
             <span className="block text-sm font-bold text-foreground/90">Best in Class</span>
             <a href="/methodology" className="mt-1 block whitespace-nowrap text-[11px] text-foreground/60 transition-colors hover:text-foreground">
-              Read GPT‑5 &amp; Gemini's 2026 review →
+               Read ChatGPT &amp; Gemini's 2026 review →
             </a>
           </div>
         </div>
