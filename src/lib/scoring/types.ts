@@ -106,10 +106,25 @@ export interface FirecrawlScrapeResult {
   links?: string[];
 }
 
+export interface CrawlHygieneData {
+  robotsTxt: {
+    exists: boolean;
+    blocksAll: boolean;
+    sitemapDirectives: string[];
+    content?: string;
+  };
+  sitemap: {
+    found: boolean;
+    url: string | null;
+    source: "robots" | "common-location" | null;
+  };
+}
+
 export interface ScanInput {
   url: string;
   city?: string;
   state?: string;
   businessType?: BusinessType;
   searchPhrases?: string[];
+  crawlHygiene?: CrawlHygieneData;
 }
