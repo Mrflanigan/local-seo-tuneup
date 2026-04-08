@@ -67,7 +67,7 @@ export default function Index() {
         >
           <span className="text-xs font-bold text-primary-foreground tracking-wide">Best in Class</span>
           <span className="text-[10px] text-primary-foreground/70 group-hover:text-primary-foreground transition-colors">
-            Read the review →
+            Read GPT‑5 &amp; Gemini's 2026 review →
           </span>
         </a>
 
