@@ -119,7 +119,72 @@ Priority roadmap (high impact, low lift first)
 
 Bottom line
 - You addressed the biggest trust gaps: methodology opacity, provenance, and overpromise. The product now fits its positioning very well and earns the higher score for SMBs and agency pre-sales workflows.
-- To break past ~9/10 for SMBs and ~7.5 for SEOs, you'll need minimal geo/SERP context, a bit more technical depth, mini-crawl coverage, and shareable outputs.`,
+  - To break past ~9/10 for SMBs and ~7.5 for SEOs, you'll need minimal geo/SERP context, a bit more technical depth, mini-crawl coverage, and shareable outputs.`,
+  },
+  {
+    date: "2026-04-08",
+    score: "9.1/10",
+    scoreExperienced: "7.8/10",
+    title: "Third Review — Consolidated Summary",
+    content: `Updated scores
+- SMBs/local service owners & agency pre-sales: 9.1/10 (up from 7.5 → 8.6 → 9.1)
+- Experienced SEOs: 7.8/10 (up from 6.0 → 6.9 → 7.8)
+
+Why the score jumped
+- Methodology / Scoring Transparency page with category weights, checks, and points.
+- "Our Lane" positioning and "Best for / Not for" guidance on reports.
+- Every check now has "Why this matters" and "How to fix" in plain language.
+- Evidence-backed spam checks: heuristics + snippets + "red flag, not verdict" language.
+- Speed and zero friction (60 seconds, no signup) kept as non-negotiable.
+
+Standing vs other instant audit tools (per GPT comparison)
+- SEO Osmosis scores highest overall (8.4/10 pre-launch, then 9.1/10 on updated review), ahead of:
+  SEOptimer, Seobility, Woorank, SEO Site Checkup, Ubersuggest.
+
+Our strengths vs the field
+- Clarity and honesty (Our Lane + Best for / Not for).
+- Transparency (why/fix for each check, methodology deep links).
+- Local relevance (Local category, spam detection closer to real SMB concerns).
+- Competitive context (top-3 competitor scan + gap view).
+- Frictionless first scan (60s, no signup, modern UI).
+
+What GPT says is still missing / holding us back (impact-ordered, within our lane)
+
+1. No GBP signal yet for a local-first product.
+   Need at least a GBP pulse: detect LocalBusiness schema + GBP/Maps link; if absent, coach the owner to create/link it.
+
+2. No geo/SERP context.
+   Need at least a basic city selector and copy that frames findings as general fixes, with explicit "rankings vary by city."
+
+3. Crawl and indexability blind spots.
+   Need canonical/redirect sanity for 4 entry URLs, robots.txt presence, XML sitemap presence + linkage, homepage meta robots/canonical/title/H1 checks.
+
+4. No mini-crawl → miss template/sitewide issues.
+   Need a tiny crawl (home + ~4 key internal pages) to catch duplicate titles/H1s, NAP consistency, internal links, LocalBusiness schema coverage.
+
+5. Performance/mobile basics missing.
+   Need a quick CrUX/PSI pulse (LCP/CLS/INP) with simple labels like "Likely fine / Might be costing you calls."
+
+6. Heuristic quality & false positives.
+   Tune spam detection: ignore brand/core service phrases, focus on density spikes in contiguous blocks, add "Looks legit? Dismiss" control and not re-flag on rerun.
+
+7. No citation sniff at all.
+   Light brand+phone footprint check on a few majors (Yelp, Facebook, BBB, Angi) with "found/not found/mismatch" only.
+
+8. Trust hygiene.
+   Ship a privacy/data-retention page and show "we store X for Y days" in the report footer with timestamp + tool version.
+
+9. Agency workflow gaps.
+   Need PDF export with evidence snippets and shareable links so agencies can drop reports into decks.
+
+Constraints / guardrails (do NOT break these)
+- p95 runtime must stay under ~60 seconds, even after mini-crawl and CrUX.
+- Keep no-signup first scan.
+- Maintain Our Lane and Best for / Not for positioning — no drifting into "full SEO suite."
+- All copy must stay plain-language, owner-friendly.
+
+North star
+- Become undeniably 9.5+/10 for SMB/local service owners and small agencies as a fast, honest, local-first snapshot + action plan, not as an all-in-one enterprise SEO platform.`,
   },
 ];
 
