@@ -66,7 +66,7 @@ export default function Index() {
           <img src={blueRibbon} alt="Best in Class award" width={44} height={44} className="shrink-0" />
           <div className="leading-tight">
             <span className="block text-sm font-bold text-foreground/90">Best in Class</span>
-            <a href="/methodology" className="mt-1 block whitespace-nowrap text-[11px] text-foreground/60 transition-colors hover:text-foreground">
+            <a href="/reviews" className="mt-1 block whitespace-nowrap text-[11px] text-foreground/60 transition-colors hover:text-foreground">
                Read ChatGPT &amp; Gemini's 2026 review →
             </a>
           </div>
