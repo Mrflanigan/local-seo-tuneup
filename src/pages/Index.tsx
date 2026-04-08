@@ -63,7 +63,7 @@ export default function Index() {
       <section className="relative min-h-screen flex items-end justify-center overflow-hidden pb-16">
         {/* ══ Best in Class — ribbon + text floating on hero ══ */}
         <div className="absolute top-20 right-6 z-20 flex items-center gap-2 text-right">
-          <img src={blueRibbon} alt="Best in Class award" width={28} height={28} className="-mr-1" />
+          <img src={blueRibbon} alt="Best in Class award" width={40} height={40} className="shrink-0" />
           <div>
             <span className="text-sm font-bold text-foreground/90">Best in Class</span><br />
             <a href="/methodology" className="text-[11px] text-foreground/60 hover:text-foreground transition-colors">
