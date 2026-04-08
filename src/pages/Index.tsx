@@ -146,16 +146,13 @@ export default function Index() {
           </span>
         </div>
 
-        <p className="absolute top-28 right-6 z-10 text-lg sm:text-xl text-foreground/80 leading-relaxed text-right max-w-md" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
-            Find out why you're not on page 1 — and how to fix it.
-        </p>
-
-
-
         {/* Headline pinned top-left */}
         <h1 className="absolute top-24 left-6 z-10 text-4xl sm:text-6xl font-bold tracking-tight leading-[1.1]" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
           Rise to the Top.
         </h1>
+        <p className="absolute top-[10.5rem] sm:top-44 left-6 z-10 text-lg sm:text-xl text-foreground/80 leading-relaxed max-w-md" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
+            Find out why you're not on page 1 — and how to fix it.
+        </p>
 
 
         <div className="absolute z-10 w-full px-6 left-0 right-0 flex items-end justify-between gap-6" style={{ maxWidth: "900px", margin: "0 auto", bottom: "18%" }}>
