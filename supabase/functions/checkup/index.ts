@@ -378,6 +378,7 @@ Deno.serve(async (req) => {
     if (pageSpeed) (result as any).pageSpeed = pageSpeed;
     if (phraseOptics) (result as any).phraseOptics = phraseOptics;
     if (crawlHygiene) (result as any).crawlHygiene = crawlHygiene;
+    if (redirectChain) (result as any).redirectChain = redirectChain;
 
     console.log(`[checkup] Score: ${result.overallScore} (${result.letterGrade})`);
 

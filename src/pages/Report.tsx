@@ -5,6 +5,8 @@ import { saveLead, saveSnapshot } from "@/lib/api/checkup";
 import { selectWinPhrases, buildPathToPageOnePlan, getPotentialLabel } from "@/lib/phrase-optics-utils";
 import ScoreRing from "@/components/ScoreRing";
 import WhatGoogleSees from "@/components/WhatGoogleSees";
+import RedirectSanityCard from "@/components/RedirectSanityCard";
+import SchemaCompletenessMeter from "@/components/SchemaCompletenessMeter";
 import YearAgoProjection from "@/components/YearAgoProjection";
 import CompetitorComparison from "@/components/CompetitorComparison";
 import CTABanner from "@/components/CTABanner";
@@ -291,6 +293,18 @@ export default function Report() {
           <div className="mt-8">
             <PageSpeedInsights data={result.pageSpeed} />
           </div>
+        )}
+
+        {/* Redirect & Canonical Sanity */}
+        {result.redirectChain && (
+          <div className="mt-8">
+            <RedirectSanityCard data={result.redirectChain} />
+          </div>
+        )}
+
+        {/* LocalBusiness Schema Completeness */}
+        {result.schemaCompleteness && (
+          <SchemaCompletenessMeter data={result.schemaCompleteness} />
         )}
 
         {/* Personalized impact projection */}
