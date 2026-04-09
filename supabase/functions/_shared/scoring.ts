@@ -207,8 +207,17 @@ function scoreOnPageSEO(data: FirecrawlScrapeResult, ctx: SiteContext, input: Sc
   const intLinkScore = (hasContactLink ? 2 : 0) + (internalLinks >= 3 ? 1 : 0);
   findings.push(f("internal-links", intLinkScore >= 2, Math.min(intLinkScore, 3), 3, intLinkScore >= 2 ? "Good internal linking structure." : "Internal linking could be improved.", hasContactLink ? `You link to a contact/booking page, and have ${internalLinks} internal links — this helps both users and Google navigate your site.` : "Add links to your contact page, service pages, and booking page to help visitors (and Google) navigate your site."));
 
+  // 8. Entity consistency — business name in title + H1 (2 pts)
+  const bizName = ctx.businessName;
+  const nameInTitle = bizName && ctx.pageTitle ? ctx.pageTitle.toLowerCase().includes(bizName.toLowerCase()) : false;
+  const nameInH1 = bizName && ctx.h1Text ? ctx.h1Text.toLowerCase().includes(bizName.toLowerCase()) : false;
+  const entityScore = !bizName ? 0 : (nameInTitle ? 1 : 0) + (nameInH1 ? 1 : 0);
+  findings.push(f("entity-consistency", entityScore >= 2, entityScore, 2,
+    !bizName ? "Could not verify entity consistency." : entityScore >= 2 ? "Business name appears in both title and H1." : entityScore === 1 ? "Business name appears in title or H1, but not both." : "Business name missing from both title and H1.",
+    !bizName ? "We couldn't detect your business name, so we couldn't check entity consistency." : entityScore >= 2 ? `Your business name "${bizName}" appears in both your title tag and H1 heading — this tells Google exactly who you are.` : entityScore === 1 ? `Your business name "${bizName}" appears in your ${nameInTitle ? "title tag" : "H1"} but not your ${nameInTitle ? "H1" : "title tag"}. Adding it to both reinforces your identity to Google.` : `Your business name "${bizName}" doesn't appear in your title tag or H1 heading. Adding your name to both is a quick, high-impact fix.`));
+
   const score = findings.reduce((s, fi) => s + fi.points, 0);
-  return { id: "on-page-seo", label: "On-Page SEO", icon: "Search", score, maxScore: 25, findings };
+  return { id: "on-page-seo", label: "On-Page SEO", icon: "Search", score, maxScore: 27, findings };
 }
 
 function scoreTechnicalSEO(data: FirecrawlScrapeResult, input: ScanInput): CategoryResult {

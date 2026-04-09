@@ -56,6 +56,7 @@ function getBuzzword(id: string): string | null {
     "url-slug": "SEO-Friendly URL Slug Structure",
     "img-alts": "Image Alt Attribute Accessibility",
     "internal-links": "Internal Link Architecture",
+    "entity-consistency": "Entity Name Consistency (Title + H1)",
     // Technical SEO
     "https": "SSL/TLS Certificate (HTTPS)",
     "meta-robots": "robots Meta Directives",
@@ -63,6 +64,7 @@ function getBuzzword(id: string): string | null {
     "viewport": "Responsive Viewport Meta Tag",
     "render-blocking": "Render-Blocking Resource Optimization",
     "speed-proxies": "Page Weight & Third-Party Script Load",
+    "redirect-chain": "HTTPS Redirect Chain & Canonical Sanity",
     // Content & UX
     "word-count": "Content Depth & Word Count",
     "content-structure": "Semantic Heading Hierarchy (H2/H3)",
