@@ -67,6 +67,29 @@ export interface PhraseOpticsData {
   phraseResults?: import("@/types/phrase-optics").PhraseResult[];
 }
 
+export interface RedirectChainHop {
+  url: string;
+  status: number;
+}
+
+export interface RedirectChainData {
+  chains: { variant: string; hops: RedirectChainHop[]; finalUrl: string; finalStatus: number }[];
+  canonicalUrl: string | null;
+  canonicalMatchesFinal: boolean;
+  maxHops: number;
+}
+
+export interface SchemaCompletenessData {
+  foundFields: string[];
+  missingRequired: string[];
+  missingRecommended: string[];
+  totalRequired: number;
+  totalRecommended: number;
+  completenessPercent: number;
+  existingSchema: Record<string, unknown> | null;
+  pasteReadyJsonLd: string;
+}
+
 export interface ScoringResult {
   overallScore: number;
   rawScore: number;
@@ -78,6 +101,8 @@ export interface ScoringResult {
   personalizedSummary: string;
   pageSpeed?: PageSpeedData;
   phraseOptics?: PhraseOpticsData;
+  redirectChain?: RedirectChainData;
+  schemaCompleteness?: SchemaCompletenessData;
 }
 
 export interface PageSpeedData {
