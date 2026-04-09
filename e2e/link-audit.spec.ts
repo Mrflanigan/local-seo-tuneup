@@ -54,23 +54,22 @@ test.describe("Homepage links go where they claim", () => {
     expect(page.url()).toContain("/get-started");
   });
 
-  test("'Read ChatGPT & Gemini's 2026 review' link goes to a page with actual reviews", async ({ page }) => {
+  test("'Read ChatGPT & Gemini's 2026 review' link goes to /reviews with actual review content", async ({ page }) => {
     await page.goto("/", { waitUntil: "networkidle" });
     const reviewLink = page.locator("a", { hasText: /chatgpt.*review/i }).first();
     await expect(reviewLink).toBeVisible();
 
     const href = await reviewLink.getAttribute("href");
-    expect(href).toBeTruthy();
+    expect(href).toBe("/reviews");
 
     await reviewLink.click();
-    await page.waitForLoadState("networkidle");
+    await page.waitForURL("**/reviews");
 
-    // The destination page MUST contain actual review content —
-    // not just a scoring methodology. Check for review-specific signals.
     const body = await page.locator("body").textContent();
     const hasReviewSignals =
       /review/i.test(body || "") &&
-      (/score.*\/\s*10/i.test(body || "") || /rating/i.test(body || "") || /chatgpt/i.test(body || ""));
+      /9\.4\/10/i.test(body || "") &&
+      /unedited/i.test(body || "");
 
     expect(hasReviewSignals).toBe(true);
   });
