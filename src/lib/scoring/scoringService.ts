@@ -731,6 +731,62 @@ export function scoreWebsite(
     scoreExtras(data, ctx),
   ];
 
+  // Build schema completeness data from local-schema finding
+  let schemaCompleteness: import("./types").SchemaCompletenessData | undefined;
+  const localSchemaFinding = categories.find(c => c.id === "local-presence")?.findings.find(f => f.id === "local-schema");
+  if (localSchemaFinding) {
+    const { html } = data;
+    const jsonLdBlocks = html.match(/<script[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi) || [];
+    const requiredFields = ["@type", "name", "address", "telephone", "url"];
+    const recommendedFields = ["geo", "openingHoursSpecification", "priceRange", "image", "sameAs", "description", "areaServed", "email", "aggregateRating", "review"];
+    let existingSchema: Record<string, unknown> | null = null;
+
+    for (const block of jsonLdBlocks) {
+      const inner = block.replace(/<\/?script[^>]*>/gi, "");
+      try {
+        const parsed = JSON.parse(inner);
+        const obj = Array.isArray(parsed) ? parsed[0] : parsed;
+        if (obj?.["@type"] && /LocalBusiness|Store|Restaurant|ProfessionalService|HomeAndConstructionBusiness|Plumber|Electrician|HVACBusiness|RoofingContractor|LocksmithService/i.test(obj["@type"])) {
+          existingSchema = obj;
+          break;
+        }
+      } catch { /* ignore */ }
+    }
+
+    if (existingSchema) {
+      const foundFields = [...requiredFields, ...recommendedFields].filter(f => existingSchema![f] != null);
+      const missingRequired = requiredFields.filter(f => existingSchema![f] == null);
+      const missingRecommended = recommendedFields.filter(f => existingSchema![f] == null);
+      const total = requiredFields.length + recommendedFields.length;
+      const completenessPercent = Math.round((foundFields.length / total) * 100);
+
+      // Generate paste-ready JSON-LD
+      const pasteReady: Record<string, unknown> = { "@context": "https://schema.org", ...existingSchema };
+      for (const field of missingRequired) {
+        if (field === "address") pasteReady[field] = { "@type": "PostalAddress", streetAddress: "YOUR_STREET", addressLocality: ctx.locations[0]?.split(",")[0]?.trim() || "YOUR_CITY", addressRegion: "YOUR_STATE", postalCode: "YOUR_ZIP" };
+        else if (field !== "@type") pasteReady[field] = `YOUR_${field.toUpperCase()}`;
+      }
+      for (const field of missingRecommended) {
+        if (field === "geo") pasteReady[field] = { "@type": "GeoCoordinates", latitude: "YOUR_LAT", longitude: "YOUR_LNG" };
+        else if (field === "openingHoursSpecification") pasteReady[field] = [{ "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "17:00" }];
+        else if (field === "sameAs") pasteReady[field] = ["YOUR_FACEBOOK_URL", "YOUR_INSTAGRAM_URL"];
+        else if (field === "aggregateRating") pasteReady[field] = { "@type": "AggregateRating", ratingValue: "YOUR_RATING", reviewCount: "YOUR_REVIEW_COUNT" };
+        else pasteReady[field] = `YOUR_${field.toUpperCase()}`;
+      }
+
+      schemaCompleteness = {
+        foundFields,
+        missingRequired,
+        missingRecommended,
+        totalRequired: requiredFields.length,
+        totalRecommended: recommendedFields.length,
+        completenessPercent,
+        existingSchema,
+        pasteReadyJsonLd: JSON.stringify(pasteReady, null, 2),
+      };
+    }
+  }
+
   // Attach impact/effort metadata to every finding
   for (const cat of categories) {
     for (const f of cat.findings) {
@@ -775,17 +831,18 @@ export function scoreWebsite(
     const letterGrade = grade(Math.min(overallScore, 100));
     const personalizedSummary = generatePersonalizedSummary(ctx, categories, overallScore);
     
-    return {
-      overallScore,
-      rawScore,
-      applicableMax,
-      businessType,
-      letterGrade,
-      categories,
-      siteContext: ctx,
-      personalizedSummary,
-    };
-  }
+  return {
+    overallScore,
+    rawScore,
+    applicableMax,
+    businessType,
+    letterGrade,
+    categories,
+    siteContext: ctx,
+    personalizedSummary,
+    schemaCompleteness,
+  };
+}
   
   // Local business: straight score out of 100
   const applicableMax = 100;
