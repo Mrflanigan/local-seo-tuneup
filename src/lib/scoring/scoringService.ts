@@ -831,18 +831,18 @@ export function scoreWebsite(
     const letterGrade = grade(Math.min(overallScore, 100));
     const personalizedSummary = generatePersonalizedSummary(ctx, categories, overallScore);
     
-  return {
-    overallScore,
-    rawScore,
-    applicableMax,
-    businessType,
-    letterGrade,
-    categories,
-    siteContext: ctx,
-    personalizedSummary,
-    schemaCompleteness,
-  };
-}
+    return {
+      overallScore,
+      rawScore,
+      applicableMax,
+      businessType,
+      letterGrade,
+      categories,
+      siteContext: ctx,
+      personalizedSummary,
+      schemaCompleteness,
+    };
+  }
   
   // Local business: straight score out of 100
   const applicableMax = 100;
@@ -859,5 +859,6 @@ export function scoreWebsite(
     categories,
     siteContext: ctx,
     personalizedSummary,
+    schemaCompleteness,
   };
 }
