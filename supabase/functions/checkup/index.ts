@@ -110,8 +110,81 @@ async function fetchPageSpeed(normalizedUrl: string) {
 }
 
 /**
- * Fetch robots.txt and detect XML sitemap presence.
+ * Follow redirect chain for a URL variant manually.
  */
+async function followRedirects(startUrl: string, maxRedirects = 10): Promise<{ url: string; status: number }[]> {
+  const hops: { url: string; status: number }[] = [];
+  let currentUrl = startUrl;
+  
+  for (let i = 0; i < maxRedirects; i++) {
+    try {
+      const res = await fetch(currentUrl, { method: "GET", redirect: "manual", headers: { "User-Agent": "SEO-Osmosis-Bot/1.0" } });
+      hops.push({ url: currentUrl, status: res.status });
+      
+      if (res.status >= 300 && res.status < 400) {
+        const location = res.headers.get("location");
+        if (!location) break;
+        // Handle relative URLs
+        currentUrl = location.startsWith("http") ? location : new URL(location, currentUrl).href;
+      } else {
+        break;
+      }
+    } catch {
+      hops.push({ url: currentUrl, status: 0 });
+      break;
+    }
+  }
+  return hops;
+}
+
+/**
+ * Test redirect chains for the 4 URL variants and extract canonical.
+ */
+async function fetchRedirectChain(normalizedUrl: string, html: string) {
+  const parsed = new URL(normalizedUrl);
+  const hostname = parsed.hostname.replace(/^www\./, "");
+  const path = parsed.pathname + parsed.search;
+  
+  const variants = [
+    `http://${hostname}${path}`,
+    `https://${hostname}${path}`,
+    `http://www.${hostname}${path}`,
+    `https://www.${hostname}${path}`,
+  ];
+  
+  // Follow redirects for each variant in parallel
+  const results = await Promise.all(
+    variants.map(async (variant) => {
+      const hops = await followRedirects(variant);
+      const lastHop = hops[hops.length - 1];
+      return {
+        variant,
+        hops,
+        finalUrl: lastHop?.url || variant,
+        finalStatus: lastHop?.status || 0,
+      };
+    })
+  );
+  
+  // Extract canonical from HTML
+  const canonicalMatch = html.match(/<link[^>]*rel\s*=\s*["']canonical["'][^>]*href\s*=\s*["']([^"']+)["']/i);
+  const canonicalUrl = canonicalMatch ? canonicalMatch[1] : null;
+  
+  const maxHops = Math.max(...results.map(r => r.hops.length));
+  const primaryFinal = results.find(r => r.variant.startsWith("https://") && !r.variant.includes("www."))?.finalUrl || results[0]?.finalUrl || "";
+  const canonicalMatchesFinal = canonicalUrl ? primaryFinal.replace(/\/$/, "") === canonicalUrl.replace(/\/$/, "") : false;
+  
+  console.log(`[checkup] Redirect chain: maxHops=${maxHops}, canonical=${canonicalUrl}, matches=${canonicalMatchesFinal}`);
+  
+  return {
+    chains: results,
+    canonicalUrl,
+    canonicalMatchesFinal,
+    maxHops,
+  };
+}
+
+
 async function fetchCrawlHygiene(normalizedUrl: string) {
   const origin = new URL(normalizedUrl).origin;
   const result = {
@@ -225,10 +298,41 @@ Deno.serve(async (req) => {
     const input: ScanInput = { url: normalizedUrl, city, state, businessType: businessType || "local", crawlHygiene };
     const result = scoreWebsite(scraped, input);
 
-    // 3. Phrase ranking search using shared utilities
-    let phraseOptics = null;
-    const phrases: string[] = Array.isArray(searchPhrases) ? searchPhrases.filter((p: unknown) => typeof p === "string" && (p as string).trim()) : [];
-    if (phrases.length > 0 && apiKey) {
+    // 2b. Fetch redirect chain (uses scraped HTML for canonical extraction)
+    let redirectChain = null;
+    try {
+      redirectChain = await fetchRedirectChain(normalizedUrl, scraped.html || "");
+    } catch (err) {
+      console.warn("[checkup] Redirect chain fetch failed:", err);
+    }
+
+    // Score redirect chain as a finding
+    if (redirectChain) {
+      const techCat = result.categories.find((c: any) => c.id === "technical-seo");
+      if (techCat) {
+        const maxHops = redirectChain.maxHops;
+        const allResolve200 = redirectChain.chains.every((c: any) => c.finalStatus === 200);
+        const rcScore = (maxHops <= 2 && allResolve200 && redirectChain.canonicalMatchesFinal) ? 3
+          : (maxHops <= 3 && allResolve200) ? 2
+          : (allResolve200) ? 1 : 0;
+        techCat.findings.push({
+          id: "redirect-chain",
+          passed: rcScore >= 2,
+          points: rcScore,
+          maxPoints: 3,
+          generic: rcScore >= 2 ? "Clean redirect chain." : "Redirect chain issues detected.",
+          personalized: rcScore >= 2
+            ? `Your site resolves cleanly in ${maxHops} hop${maxHops !== 1 ? "s" : ""} with a matching canonical URL — no wasted redirects.`
+            : maxHops > 2
+              ? `Your site takes ${maxHops} redirects to reach the final page. Each redirect adds load time and dilutes SEO value. Aim for 2 hops or fewer.`
+              : !redirectChain.canonicalMatchesFinal
+                ? "Your canonical tag doesn't match your final resolved URL. This sends mixed signals to Google about which version to index."
+                : "Your redirect chain could be cleaner for better performance.",
+        });
+        techCat.score += rcScore;
+        techCat.maxScore = 28;
+      }
+    }
       try {
         const targetDomain = new URL(normalizedUrl).hostname;
         console.log(`[checkup] Searching ${phrases.length} phrases for domain: ${targetDomain}`);
