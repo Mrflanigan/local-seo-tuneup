@@ -333,6 +333,11 @@ Deno.serve(async (req) => {
         techCat.maxScore = 28;
       }
     }
+
+    // 3. Phrase ranking search using shared utilities
+    let phraseOptics = null;
+    const phrases: string[] = Array.isArray(searchPhrases) ? searchPhrases.filter((p: unknown) => typeof p === "string" && (p as string).trim()) : [];
+    if (phrases.length > 0 && apiKey) {
       try {
         const targetDomain = new URL(normalizedUrl).hostname;
         console.log(`[checkup] Searching ${phrases.length} phrases for domain: ${targetDomain}`);
