@@ -21,7 +21,8 @@ export default function Reviews() {
             <Award className="h-5 w-5 text-primary shrink-0 mt-0.5" />
             <p className="text-sm text-muted-foreground leading-relaxed">
               We asked chat.GPT‑5.1 to independently review SEO Osmosis based only on what it could see and infer,
-              before and after key improvements. Formatting aside, every word below is exactly as written by chat.GPT‑5.1.
+              before and after key improvements. Formatting aside,{" "}
+              <strong className="text-foreground">every word below is exactly as written by chat.GPT‑5.1.</strong>
             </p>
           </div>
         </div>
