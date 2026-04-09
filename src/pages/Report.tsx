@@ -13,6 +13,7 @@ import CTABanner from "@/components/CTABanner";
 import PathToPageOne from "@/components/PathToPageOne";
 import MountainLanePicker from "@/components/MountainLanePicker";
 import PhraseOpticsRing from "@/components/PhraseOpticsRing";
+import AIReadinessCard from "@/components/AIReadinessCard";
 import FixTheseFiveFirst from "@/components/FixTheseFiveFirst";
 import PageSpeedInsights from "@/components/PageSpeedInsights";
 import { Button } from "@/components/ui/button";
@@ -284,6 +285,13 @@ export default function Report() {
 
         {/* Fix These 5 First — priority stack */}
         <FixTheseFiveFirst result={result} />
+
+        {/* AI-Ready Messaging & Emotion Match */}
+        {result.aiReadiness && (
+          <div className="mb-8">
+            <AIReadinessCard data={result.aiReadiness} />
+          </div>
+        )}
 
         {/* Full narrative report — no gate */}
         <WhatGoogleSees result={result} />
