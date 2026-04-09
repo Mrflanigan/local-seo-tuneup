@@ -238,7 +238,7 @@ export default function Methodology() {
           <Award className="h-5 w-5 text-primary shrink-0" />
           <p className="text-sm text-muted-foreground">
              <span className="font-bold text-foreground">Independently reviewed by ChatGPT &amp; Gemini</span>{" "}
-            — rated <span className="font-semibold text-accent">9.4/10</span> for SMBs and <span className="font-semibold text-accent">8.6/10</span> for experienced SEOs as a 60‑second local snapshot.
+            — rated <span className="font-semibold text-accent">9.7/10</span> for SMBs and <span className="font-semibold text-accent">8.9/10</span> for experienced SEOs as a 60‑second local snapshot.
           </p>
         </div>
 
@@ -299,15 +299,15 @@ export default function Methodology() {
             </ul>
             <p className="font-medium text-foreground">At the same time, we quietly design this to be easy for modern AI systems to understand and safely recommend you.</p>
             <ul className="space-y-2 ml-1">
-              <li className="flex gap-2"><span className="text-accent shrink-0">•</span> We make your business obvious on the internet: who you are, what you do, where you do it, and who you're best for.</li>
-              <li className="flex gap-2"><span className="text-accent shrink-0">•</span> We shape key pages and FAQs around real questions people ask, so AI tools can quickly find and reuse helpful explanations.</li>
-              <li className="flex gap-2"><span className="text-accent shrink-0">•</span> We strengthen the signals that matter most for AI search — clear messaging, consistent business details, trustworthy reviews and references.</li>
+              <li className="flex gap-2"><span className="text-accent shrink-0">•</span> We embed AI‑friendly signals — like consistent business details, question‑driven FAQs, and trustworthy proof — without complicating your fixes.</li>
             </ul>
             <p>
-              Modern AI tools also scan language for clues about what people are feeling and what they need next. We lean into that on purpose. We describe your business in a way that speaks to stressed, skeptical owners and sends clear emotional and practical signals that AI systems are trained to recognize as supportive, trustworthy help. That makes it easier for tools like Google's AI Overviews, Perplexity, and ChatGPT‑style assistants to feel confident using your site as part of their answers.
+              For example, for a plumber in Austin, we clarified "emergency leak fixes for homeowners" so it better matches real searches like "best plumber near me for burst pipes."
             </p>
             <p>
-              You don't have to think about any of that. Your job is to decide what feels right for your business. Our job is to give you a simple, owner‑friendly snapshot that also makes it easier for search engines and AI tools to notice your site and feel good about pointing people your way.
+              <a href="/get-started" className="text-accent hover:text-accent/80 underline underline-offset-2 font-medium">
+                Run your complimentary scan to see these signals in action for your site
+              </a> — no AI expertise required.
             </p>
           </div>
         </div>

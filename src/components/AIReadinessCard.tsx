@@ -43,9 +43,15 @@ export default function AIReadinessCard({ data }: Props) {
         </span>
       </div>
 
+      <p className="text-xs italic text-muted-foreground/70 mb-3">
+        This is an early AI‑readiness lens based on your existing scan data. It's directional, not a definitive grade.
+      </p>
+
       <p className="text-sm text-muted-foreground leading-relaxed mb-5 max-w-lg">
         Modern search and AI tools do more than read keywords. They try to understand what people are feeling and
         what help they need next, then surface content that feels clear, trustworthy, and supportive.
+        We also look for clear "service in [city]" style phrases in your headings and FAQs, so your site better
+        matches the way real people ask AI tools for local help.
       </p>
 
       {/* Checks */}
