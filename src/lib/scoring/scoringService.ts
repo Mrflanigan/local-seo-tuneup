@@ -9,6 +9,7 @@ import type {
   ScanInput,
 } from "./types";
 import { CHECK_METADATA } from "./checkMetadata";
+import { scoreAiReadiness } from "./aiReadiness";
 
 // ── Helpers ──────────────────────────────────────────────
 
@@ -841,6 +842,7 @@ export function scoreWebsite(
       siteContext: ctx,
       personalizedSummary,
       schemaCompleteness,
+      aiReadiness: scoreAiReadiness(data, ctx),
     };
   }
   
@@ -860,5 +862,6 @@ export function scoreWebsite(
     siteContext: ctx,
     personalizedSummary,
     schemaCompleteness,
+    aiReadiness: scoreAiReadiness(data, ctx),
   };
 }
