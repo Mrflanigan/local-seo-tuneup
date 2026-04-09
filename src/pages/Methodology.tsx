@@ -285,6 +285,33 @@ export default function Methodology() {
           </p>
         </div>
 
+        <div className="rounded-xl border border-accent/20 bg-accent/5 p-4 sm:p-5 mb-8">
+          <h2 className="text-base font-semibold text-foreground mb-3">Built for Real Owners — and for AI to Understand</h2>
+          <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
+            <p>
+              Most local owners who land here are busy, skeptical, and a little tired of SEO talk. You don't want another buzzword‑heavy pitch. You want someone to show you what's actually going on and what's fixable in the next few months.
+            </p>
+            <p>That's exactly how we design this report.</p>
+            <ul className="space-y-2 ml-1">
+              <li className="flex gap-2"><span className="text-accent shrink-0">•</span> We write and structure everything for real business owners first. Plain language, clear labels, no scare tactics, no jargon.</li>
+              <li className="flex gap-2"><span className="text-accent shrink-0">•</span> We focus on the handful of issues that actually move the needle, not a laundry list of "101 errors" you can't do anything about.</li>
+              <li className="flex gap-2"><span className="text-accent shrink-0">•</span> For every problem we flag, we show you what it means in real life and what a reasonable fix looks like.</li>
+            </ul>
+            <p className="font-medium text-foreground">At the same time, we quietly design this to be easy for modern AI systems to understand and safely recommend you.</p>
+            <ul className="space-y-2 ml-1">
+              <li className="flex gap-2"><span className="text-accent shrink-0">•</span> We make your business obvious on the internet: who you are, what you do, where you do it, and who you're best for.</li>
+              <li className="flex gap-2"><span className="text-accent shrink-0">•</span> We shape key pages and FAQs around real questions people ask, so AI tools can quickly find and reuse helpful explanations.</li>
+              <li className="flex gap-2"><span className="text-accent shrink-0">•</span> We strengthen the signals that matter most for AI search — clear messaging, consistent business details, trustworthy reviews and references.</li>
+            </ul>
+            <p>
+              Modern AI tools also scan language for clues about what people are feeling and what they need next. We lean into that on purpose. We describe your business in a way that speaks to stressed, skeptical owners and sends clear emotional and practical signals that AI systems are trained to recognize as supportive, trustworthy help. That makes it easier for tools like Google's AI Overviews, Perplexity, and ChatGPT‑style assistants to feel confident using your site as part of their answers.
+            </p>
+            <p>
+              You don't have to think about any of that. Your job is to decide what feels right for your business. Our job is to give you a simple, owner‑friendly snapshot that also makes it easier for search engines and AI tools to notice your site and feel good about pointing people your way.
+            </p>
+          </div>
+        </div>
+
         <div className="rounded-xl border border-border bg-card p-4 sm:p-5 mb-8">
           <h2 className="text-base font-semibold text-foreground mb-3">How to use this snapshot</h2>
           <div className="grid sm:grid-cols-2 gap-4">
