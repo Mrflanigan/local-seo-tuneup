@@ -90,6 +90,22 @@ export interface SchemaCompletenessData {
   pasteReadyJsonLd: string;
 }
 
+export interface AiReadinessCheck {
+  id: string;
+  label: string;
+  passed: boolean;
+  score: number;
+  maxScore: number;
+  detail: string;
+  fix: string;
+}
+
+export interface AiReadinessData {
+  overallScore: number;        // 0-100
+  checks: AiReadinessCheck[];
+  topFixes: string[];
+}
+
 export interface ScoringResult {
   overallScore: number;
   rawScore: number;
@@ -103,6 +119,7 @@ export interface ScoringResult {
   phraseOptics?: PhraseOpticsData;
   redirectChain?: RedirectChainData;
   schemaCompleteness?: SchemaCompletenessData;
+  aiReadiness?: AiReadinessData;
 }
 
 export interface PageSpeedData {
