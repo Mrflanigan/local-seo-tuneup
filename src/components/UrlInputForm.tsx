@@ -40,7 +40,8 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
     let cleanUrl = url.trim();
     if (!cleanUrl) return;
     if (!cleanUrl.startsWith("http")) cleanUrl = "https://" + cleanUrl;
-    onSubmit(cleanUrl, city.trim() || undefined, "local" as BusinessType, undefined, name || undefined, description.trim() || undefined);
+    const inferredType: BusinessType = city.trim() ? "local" : "online";
+    onSubmit(cleanUrl, city.trim() || undefined, inferredType, undefined, name || undefined, description.trim() || undefined);
   };
 
   return (
