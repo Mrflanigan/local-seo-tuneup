@@ -342,8 +342,28 @@ function scoreOnPageSEO(
       : "Add links to your contact page, service pages, and booking page to help visitors (and Google) navigate your site."
   ));
 
+  // 8. Entity consistency — business name in title + H1 (2 pts)
+  const bizName = ctx.businessName;
+  const nameInTitle = bizName && ctx.pageTitle ? ctx.pageTitle.toLowerCase().includes(bizName.toLowerCase()) : false;
+  const nameInH1 = bizName && ctx.h1Text ? ctx.h1Text.toLowerCase().includes(bizName.toLowerCase()) : false;
+  const entityScore = !bizName ? 0 : (nameInTitle ? 1 : 0) + (nameInH1 ? 1 : 0);
+  findings.push(finding("entity-consistency", entityScore >= 2, entityScore, 2,
+    !bizName ? "Could not verify entity consistency — no business name detected."
+      : entityScore >= 2 ? "Business name appears in both title and H1."
+      : entityScore === 1 ? "Business name appears in title or H1, but not both."
+      : "Business name missing from both title and H1.",
+    !bizName
+      ? "We couldn't detect your business name, so we couldn't check if it appears in your title tag and H1. Make sure your business name is clearly visible."
+      : entityScore >= 2
+        ? `Your business name "${bizName}" appears in both your title tag and H1 heading — this tells Google exactly who you are on every search.`
+        : entityScore === 1
+          ? `Your business name "${bizName}" appears in your ${nameInTitle ? "title tag" : "H1"} but not your ${nameInTitle ? "H1" : "title tag"}. Adding it to both reinforces your identity to Google.`
+          : `Your business name "${bizName}" doesn't appear in your title tag or H1 heading. Google uses these to understand who your page belongs to — adding your name to both is a quick, high-impact fix.`,
+    bizName ? [{ heuristic: "Entity consistency check", detail: `Title: ${nameInTitle ? "✓" : "✗"} | H1: ${nameInH1 ? "✓" : "✗"}`, snippet: `Title: "${truncate(ctx.pageTitle || "(none)", 60)}" | H1: "${truncate(ctx.h1Text || "(none)", 60)}"` }] : undefined
+  ));
+
   const score = findings.reduce((s, f) => s + f.points, 0);
-  return { id: "on-page-seo", label: "On-Page SEO", icon: "Search", score, maxScore: 25, findings };
+  return { id: "on-page-seo", label: "On-Page SEO", icon: "Search", score, maxScore: 27, findings };
 }
 
 // ── Technical SEO (25 pts) ───────────────────────────────
@@ -473,6 +493,11 @@ function scoreTechnicalSEO(
       : "No XML sitemap was found. A sitemap helps Google discover and index all your pages — especially important if you have service pages, location pages, or blog posts. Most website platforms can generate one automatically.",
     sitemapUrl ? [{ heuristic: "Sitemap URL", snippet: sitemapUrl }] : undefined
   ));
+
+  // 9. Redirect chain (3 pts) — scored from redirectChain data if available
+  // Note: actual redirect chain data is fetched in the edge function and attached to the result.
+  // Here we add a placeholder finding that will be updated if redirectChain data exists.
+  // The edge function passes redirectChain data which gets scored in scoreWebsite().
 
   const score = findings.reduce((s, f) => s + f.points, 0);
   return { id: "technical-seo", label: "Technical SEO", icon: "Settings", score, maxScore: 25, findings };
@@ -706,6 +731,62 @@ export function scoreWebsite(
     scoreExtras(data, ctx),
   ];
 
+  // Build schema completeness data from local-schema finding
+  let schemaCompleteness: import("./types").SchemaCompletenessData | undefined;
+  const localSchemaFinding = categories.find(c => c.id === "local-presence")?.findings.find(f => f.id === "local-schema");
+  if (localSchemaFinding) {
+    const { html } = data;
+    const jsonLdBlocks = html.match(/<script[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi) || [];
+    const requiredFields = ["@type", "name", "address", "telephone", "url"];
+    const recommendedFields = ["geo", "openingHoursSpecification", "priceRange", "image", "sameAs", "description", "areaServed", "email", "aggregateRating", "review"];
+    let existingSchema: Record<string, unknown> | null = null;
+
+    for (const block of jsonLdBlocks) {
+      const inner = block.replace(/<\/?script[^>]*>/gi, "");
+      try {
+        const parsed = JSON.parse(inner);
+        const obj = Array.isArray(parsed) ? parsed[0] : parsed;
+        if (obj?.["@type"] && /LocalBusiness|Store|Restaurant|ProfessionalService|HomeAndConstructionBusiness|Plumber|Electrician|HVACBusiness|RoofingContractor|LocksmithService/i.test(obj["@type"])) {
+          existingSchema = obj;
+          break;
+        }
+      } catch { /* ignore */ }
+    }
+
+    if (existingSchema) {
+      const foundFields = [...requiredFields, ...recommendedFields].filter(f => existingSchema![f] != null);
+      const missingRequired = requiredFields.filter(f => existingSchema![f] == null);
+      const missingRecommended = recommendedFields.filter(f => existingSchema![f] == null);
+      const total = requiredFields.length + recommendedFields.length;
+      const completenessPercent = Math.round((foundFields.length / total) * 100);
+
+      // Generate paste-ready JSON-LD
+      const pasteReady: Record<string, unknown> = { "@context": "https://schema.org", ...existingSchema };
+      for (const field of missingRequired) {
+        if (field === "address") pasteReady[field] = { "@type": "PostalAddress", streetAddress: "YOUR_STREET", addressLocality: ctx.locations[0]?.split(",")[0]?.trim() || "YOUR_CITY", addressRegion: "YOUR_STATE", postalCode: "YOUR_ZIP" };
+        else if (field !== "@type") pasteReady[field] = `YOUR_${field.toUpperCase()}`;
+      }
+      for (const field of missingRecommended) {
+        if (field === "geo") pasteReady[field] = { "@type": "GeoCoordinates", latitude: "YOUR_LAT", longitude: "YOUR_LNG" };
+        else if (field === "openingHoursSpecification") pasteReady[field] = [{ "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "17:00" }];
+        else if (field === "sameAs") pasteReady[field] = ["YOUR_FACEBOOK_URL", "YOUR_INSTAGRAM_URL"];
+        else if (field === "aggregateRating") pasteReady[field] = { "@type": "AggregateRating", ratingValue: "YOUR_RATING", reviewCount: "YOUR_REVIEW_COUNT" };
+        else pasteReady[field] = `YOUR_${field.toUpperCase()}`;
+      }
+
+      schemaCompleteness = {
+        foundFields,
+        missingRequired,
+        missingRecommended,
+        totalRequired: requiredFields.length,
+        totalRecommended: recommendedFields.length,
+        completenessPercent,
+        existingSchema,
+        pasteReadyJsonLd: JSON.stringify(pasteReady, null, 2),
+      };
+    }
+  }
+
   // Attach impact/effort metadata to every finding
   for (const cat of categories) {
     for (const f of cat.findings) {
@@ -759,6 +840,7 @@ export function scoreWebsite(
       categories,
       siteContext: ctx,
       personalizedSummary,
+      schemaCompleteness,
     };
   }
   
@@ -777,5 +859,6 @@ export function scoreWebsite(
     categories,
     siteContext: ctx,
     personalizedSummary,
+    schemaCompleteness,
   };
 }

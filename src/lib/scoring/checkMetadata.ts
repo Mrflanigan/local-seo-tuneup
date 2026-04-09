@@ -23,6 +23,7 @@ export const CHECK_METADATA: Record<string, { impact: ImpactLevel; effort: Effor
   "url-slug":         { impact: "Low",    effort: "Developer" },
   "img-alts":         { impact: "Medium", effort: "Content" },
   "internal-links":   { impact: "Medium", effort: "Content" },
+  "entity-consistency":{ impact: "High",   effort: "Content" },
 
   // Technical SEO
   "https":            { impact: "High",   effort: "Developer" },
@@ -33,6 +34,7 @@ export const CHECK_METADATA: Record<string, { impact: ImpactLevel; effort: Effor
   "speed-proxies":    { impact: "Low",    effort: "Developer" },
   "robots-txt":       { impact: "Medium", effort: "Developer" },
   "xml-sitemap":      { impact: "Medium", effort: "Developer" },
+  "redirect-chain":   { impact: "High",   effort: "Developer" },
 
   // Content & UX
   "word-count":       { impact: "Medium", effort: "Content" },
