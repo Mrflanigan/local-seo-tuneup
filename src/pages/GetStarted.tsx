@@ -65,6 +65,25 @@ export default function GetStarted() {
     startScan(url, city, businessType, searchPhrases, businessName, description);
   };
 
+  // Check for previous scan results
+  const hasLastScan = (() => {
+    try {
+      const raw = localStorage.getItem("lastScan");
+      if (!raw) return false;
+      const parsed = JSON.parse(raw);
+      return !!parsed?.result;
+    } catch { return false; }
+  })();
+
+  const goToLastReport = () => {
+    try {
+      const raw = localStorage.getItem("lastScan");
+      if (!raw) return;
+      const { result, url, city, businessType, searchPhrases, businessName, keywordVolumes } = JSON.parse(raw);
+      navigate("/report", { state: { result, url, city, businessType, searchPhrases, businessName, keywordVolumes } });
+    } catch { /* ignore */ }
+  };
+
   if (scan.loading) {
     return <ScanningView url={scan.url} keywords={scan.keywords} rankPage={scan.rankPage} city={scan.city} businessName={scan.businessName} />;
   }
