@@ -374,11 +374,79 @@ Deno.serve(async (req) => {
     // 4. Fetch Google PageSpeed Insights
     const pageSpeed = await fetchPageSpeed(normalizedUrl);
 
+    // 5. Brand Visibility — 3 discovery searches
+    let brandVisibility = null;
+    if (apiKey) {
+      try {
+        const targetDomain = new URL(normalizedUrl).hostname;
+        const normalizedTarget = targetDomain.replace(/^www\./, "").toLowerCase();
+        const domainName = normalizedTarget.replace(/\.(com|net|org|co|io|biz|us|info).*$/, "");
+        const businessName = result.siteContext?.businessName || null;
+
+        // Helper: run a search and find if our domain appears
+        async function brandSearch(query: string): Promise<{
+          query: string; found: boolean; position: number | null;
+          totalResults: number; topResult?: { title: string; url: string };
+        }> {
+          const resp = await fetch("https://api.firecrawl.dev/v1/search", {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ query, limit: 20 }),
+          });
+          if (!resp.ok) return { query, found: false, position: null, totalResults: 0 };
+          const d = await resp.json();
+          const results = d.data || [];
+          let position: number | null = null;
+          for (let i = 0; i < results.length; i++) {
+            const rUrl = (results[i].url || "").replace(/^(https?:\/\/)?(www\.)?/, "").replace(/\/$/, "").toLowerCase();
+            if (rUrl.startsWith(normalizedTarget)) { position = i + 1; break; }
+          }
+          return {
+            query,
+            found: position !== null,
+            position,
+            totalResults: results.length,
+            topResult: results[0] ? { title: results[0].title || "", url: results[0].url || "" } : undefined,
+          };
+        }
+
+        // Run searches in parallel — only use user-provided city, never scraped data
+        const searchCity = city || null; // STRICT: only from user input
+        const [indexed, domainSearch, brandNameSearch] = await Promise.all([
+          brandSearch(`site:${normalizedTarget}`),
+          brandSearch(normalizedTarget),
+          (businessName && searchCity)
+            ? brandSearch(`${businessName} ${searchCity}`)
+            : Promise.resolve(null),
+        ]);
+
+        // Build summary
+        let summary = "";
+        if (!indexed.found) {
+          summary = "Your site may not be indexed by Google — this is the #1 issue to fix.";
+        } else if (!domainSearch.found) {
+          summary = "Google knows your site exists but doesn't rank you for your own domain name.";
+        } else if (brandNameSearch && !brandNameSearch.found) {
+          summary = `You rank for your domain but not for "${businessName} ${searchCity}" — brand recognition gap.`;
+        } else if (brandNameSearch?.found && (brandNameSearch.position || 99) <= 3) {
+          summary = "Google can find you, recognizes your brand, and ranks you for your name — solid foundation.";
+        } else {
+          summary = "Google can find your site and you're showing up for your domain name.";
+        }
+
+        brandVisibility = { indexed, domainSearch, brandNameSearch, summary };
+        console.log(`[checkup] Brand visibility: indexed=${indexed.found}, domain=${domainSearch.found}@${domainSearch.position}, brand=${brandNameSearch?.found}@${brandNameSearch?.position}`);
+      } catch (bvErr) {
+        console.warn("[checkup] Brand visibility search failed:", bvErr);
+      }
+    }
+
     // Attach extra data to result
     if (pageSpeed) (result as any).pageSpeed = pageSpeed;
     if (phraseOptics) (result as any).phraseOptics = phraseOptics;
     if (crawlHygiene) (result as any).crawlHygiene = crawlHygiene;
     if (redirectChain) (result as any).redirectChain = redirectChain;
+    if (brandVisibility) (result as any).brandVisibility = brandVisibility;
 
     console.log(`[checkup] Score: ${result.overallScore} (${result.letterGrade})`);
 
