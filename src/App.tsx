@@ -14,6 +14,7 @@ import Methodology from "./pages/Methodology.tsx";
 import Reviews from "./pages/Reviews.tsx";
 import Privacy from "./pages/Privacy.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import { ScanProvider } from "./contexts/ScanContext.tsx";
 const queryClient = new QueryClient({});
 
 const App = () => (
@@ -21,20 +22,22 @@ const App = () => (
     <TooltipProvider>
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/report" element={<Report />} />
-          <Route path="/case-study" element={<CaseStudy />} />
-          <Route path="/osmosis" element={<Osmosis />} />
-          <Route path="/get-started" element={<GetStarted />} />
-          <Route path="/payment-success" element={<PaymentSuccess />} />
-          <Route path="/summary" element={<Summary />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/methodology" element={<Methodology />} />
-          <Route path="/reviews" element={<Reviews />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <ScanProvider>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/report" element={<Report />} />
+            <Route path="/case-study" element={<CaseStudy />} />
+            <Route path="/osmosis" element={<Osmosis />} />
+            <Route path="/get-started" element={<GetStarted />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/summary" element={<Summary />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/methodology" element={<Methodology />} />
+            <Route path="/reviews" element={<Reviews />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </ScanProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
