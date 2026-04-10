@@ -380,7 +380,7 @@ Deno.serve(async (req) => {
       try {
         const targetDomain = new URL(normalizedUrl).hostname;
         const normalizedTarget = targetDomain.replace(/^www\./, "").toLowerCase();
-        const domainName = normalizedTarget.replace(/\.(com|net|org|co|io|biz|us|info).*$/, "");
+        // domainName available for future use
         const businessName = result.siteContext?.businessName || null;
 
         // Helper: run a search and find if our domain appears
