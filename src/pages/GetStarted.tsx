@@ -142,12 +142,27 @@ export default function GetStarted() {
             {!limitBlocked && (
               <>
                 <UrlInputForm onSubmit={handleSubmit} loading={scan.loading} />
-                <p
-                  className="text-sm text-white/40 mt-6"
-                  style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
-                >
-                  Complimentary: up to 3 scans a day per location. No login.
-                </p>
+                <div className="flex items-center gap-4 mt-6">
+                  <p
+                    className="text-sm text-white/40"
+                    style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
+                  >
+                    Complimentary: up to 3 scans a day per location. No login.
+                  </p>
+                  {hasLastScan && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={goToLastReport}
+                      className="shrink-0 border-white/20 text-white/70 hover:text-white hover:border-white/40 bg-white/5"
+                    >
+                      View last results →
+                    </Button>
+                  )}
+                </div>
+              </>
+            )}
               </>
             )}
           </div>
