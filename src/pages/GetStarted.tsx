@@ -4,13 +4,10 @@ import { useNavigate } from "react-router-dom";
 import UrlInputForm from "@/components/UrlInputForm";
 import ScanningView from "@/components/ScanningView";
 import { Button } from "@/components/ui/button";
-import { runCheckup } from "@/lib/api/checkup";
 import { supabase } from "@/integrations/supabase/client";
-import type { ScoringResult, BusinessType } from "@/lib/scoring/types";
-import { toast } from "sonner";
+import type { BusinessType } from "@/lib/scoring/types";
+import { useScan } from "@/contexts/ScanContext";
 import peakBg from "@/assets/getstarted-peak.jpg";
-
-type KeywordVolume = { keyword: string; monthlySearches: number; competition: string | null; cpc: number | null };
 
 interface RateLimitStatus {
   allowed: boolean;
@@ -29,36 +26,19 @@ async function checkScanLimit(): Promise<RateLimitStatus> {
     if (error) throw error;
     return data as RateLimitStatus;
   } catch {
-    // Fail open — don't block real users on errors
     return { allowed: true, scanCount: 0, remaining: 3, needsContext: false };
-  }
-}
-
-async function incrementScanCount(): Promise<void> {
-  try {
-    await supabase.functions.invoke("check-scan-limit", {
-      body: { action: "increment" },
-    });
-  } catch {
-    // Non-critical
   }
 }
 
 export default function GetStarted() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [scanUrl, setScanUrl] = useState("");
-  const [scanKeywords, setScanKeywords] = useState<KeywordVolume[] | null>(null);
-  const [scanRankPage, setScanRankPage] = useState<number | null>(null);
-  const [scanCity, setScanCity] = useState<string | undefined>();
-  const [scanBusinessName, setScanBusinessName] = useState<string | undefined>();
+  const { scan, startScan } = useScan();
 
   // Rate limiting state
   const [rateLimitStatus, setRateLimitStatus] = useState<RateLimitStatus | null>(null);
   const [limitBlocked, setLimitBlocked] = useState(false);
   const [limitMessage, setLimitMessage] = useState("");
 
-  // Check rate limit on mount
   useEffect(() => {
     checkScanLimit().then((status) => {
       setRateLimitStatus(status);
@@ -72,8 +52,7 @@ export default function GetStarted() {
     });
   }, []);
 
-  const handleSubmit = async (url: string, city?: string, businessType?: BusinessType, _searchPhrases?: string[], businessName?: string, description?: string) => {
-    // Re-check limit right before scanning
+  const handleSubmit = async (url: string, city?: string, businessType?: BusinessType, searchPhrases?: string[], businessName?: string, description?: string) => {
     const freshStatus = await checkScanLimit();
     if (!freshStatus.allowed) {
       setLimitBlocked(true);
@@ -83,60 +62,12 @@ export default function GetStarted() {
       );
       return;
     }
-
-    setLoading(true);
-    setScanUrl(url);
-    setScanKeywords(null);
-    setScanRankPage(null);
-    setScanCity(city);
-    setScanBusinessName(businessName);
-
-    try {
-      // Increment scan count
-      await incrementScanCount();
-
-      // Step 1: If we have a description, generate real search phrases
-      let searchPhrases: string[] | undefined = _searchPhrases;
-      let keywordVolumes: KeywordVolume[] | null = null;
-      if (description) {
-        try {
-          const { data, error } = await supabase.functions.invoke('generate-phrases', {
-            body: { description, city, businessName },
-          });
-          if (!error && data?.success && data.phrases?.length > 0) {
-            searchPhrases = data.phrases;
-            keywordVolumes = data.volumes || null;
-            if (keywordVolumes) {
-              setScanKeywords(keywordVolumes);
-            }
-          }
-        } catch (e) {
-          console.warn('Phrase generation failed, continuing without:', e);
-        }
-      }
-
-      // Step 2: Run the checkup
-      const result: ScoringResult = await runCheckup({ url, city, businessType, searchPhrases });
-      const bestRank = result.phraseOptics?.rankings
-        ?.filter((r) => r.page !== null)
-        ?.sort((a, b) => (a.page ?? 99) - (b.page ?? 99))[0];
-      if (bestRank?.page) {
-        setScanRankPage(bestRank.page);
-      }
-      try {
-        localStorage.setItem("lastScan", JSON.stringify({ result, url, city, businessType, searchPhrases, businessName, description, keywordVolumes, ts: Date.now() }));
-      } catch { /* storage full */ }
-      await new Promise((r) => setTimeout(r, 3000));
-      navigate("/report", { state: { result, url, city, businessType, searchPhrases, businessName, keywordVolumes } });
-    } catch (err) {
-      toast.error("Something went wrong scanning that site. Please try again.");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+    startScan(url, city, businessType, searchPhrases, businessName, description);
   };
 
-  if (loading) return <ScanningView url={scanUrl} keywords={scanKeywords} rankPage={scanRankPage} city={scanCity} businessName={scanBusinessName} />;
+  if (scan.loading) {
+    return <ScanningView url={scan.url} keywords={scan.keywords} rankPage={scan.rankPage} city={scan.city} businessName={scan.businessName} />;
+  }
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -177,7 +108,6 @@ export default function GetStarted() {
               Tell us what you do — we'll find the search terms that matter and show you where you stand.
             </p>
 
-            {/* Rate limit block message */}
             {limitBlocked && (
               <div className="rounded-xl border border-accent/30 bg-accent/10 p-5 mb-6">
                 <div className="flex items-start gap-3">
@@ -192,7 +122,7 @@ export default function GetStarted() {
 
             {!limitBlocked && (
               <>
-                <UrlInputForm onSubmit={handleSubmit} loading={loading} />
+                <UrlInputForm onSubmit={handleSubmit} loading={scan.loading} />
                 <p
                   className="text-sm text-white/40 mt-6"
                   style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
