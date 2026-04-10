@@ -106,6 +106,21 @@ export interface AiReadinessData {
   topFixes: string[];
 }
 
+export interface BrandVisibilitySearch {
+  query: string;
+  found: boolean;
+  position: number | null;  // null = not in results
+  totalResults: number;
+  topResult?: { title: string; url: string };
+}
+
+export interface BrandVisibilityData {
+  indexed: BrandVisibilitySearch;        // site:domain.com
+  domainSearch: BrandVisibilitySearch;    // domain.com
+  brandNameSearch: BrandVisibilitySearch | null; // "business name city" (null if no business name)
+  summary: string;                        // human-readable 1-liner
+}
+
 export interface ScoringResult {
   overallScore: number;
   rawScore: number;
@@ -120,6 +135,7 @@ export interface ScoringResult {
   redirectChain?: RedirectChainData;
   schemaCompleteness?: SchemaCompletenessData;
   aiReadiness?: AiReadinessData;
+  brandVisibility?: BrandVisibilityData;
 }
 
 export interface PageSpeedData {
