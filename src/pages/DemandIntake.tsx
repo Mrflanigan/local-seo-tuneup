@@ -79,7 +79,7 @@ export default function DemandIntake() {
         {/* Intro paragraph — full width */}
         <div className="mb-12">
           <p className="text-lg sm:text-xl text-white/80 leading-relaxed max-w-none">
-            We're going to start by <span className="text-white font-semibold">forgetting you have a website.</span> For us, doesn't matter yet.
+            We're going to start by <span className="text-white font-semibold">forgetting you have a website.</span> For us, it doesn't matter.
           </p>
           <p className="text-lg sm:text-xl text-white/70 leading-relaxed mt-4 max-w-none">
             Our first priority is to understand your business: what you actually do best and who you do it for.
