@@ -79,7 +79,7 @@ export default function DemandPreview() {
             Back
           </Button>
           <div className="text-base font-semibold tracking-[0.2em] text-white/40">
-            STEP 2 OF 2
+            PAGE 3
           </div>
         </div>
 
