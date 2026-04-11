@@ -171,12 +171,12 @@ export default function Index() {
           {/* CTA — shifted left */}
           <div className="text-left">
             <Button
-              onClick={() => navigate("/get-started")}
+              onClick={() => navigate("/demand-intake")}
               size="lg"
               className="h-16 px-12 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic"
               style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
             >
-               Run My Complimentary SEO Checkup
+               Let's Get Started
             </Button>
             <p className="text-xs text-muted-foreground/70 mt-3" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
               No signup · Complimentary instant audit · Real data from your site
@@ -304,12 +304,12 @@ export default function Index() {
           <h2 className="text-3xl sm:text-5xl font-bold mb-5">Ready to Rise?</h2>
           <p className="text-lg text-muted-foreground mb-10 max-w-lg mx-auto">30 seconds. No signup. See exactly what's keeping you off page one — and what to do about it.</p>
           <Button
-            onClick={() => navigate("/get-started")}
+            onClick={() => navigate("/demand-intake")}
             size="lg"
             className="h-16 px-12 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic"
             style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
           >
-            Run My Complimentary SEO Checkup
+            Let's Get Started
           </Button>
         </div>
         <LandmarkCaption name={landmarks[3].name} detail={landmarks[3].detail} />
