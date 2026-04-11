@@ -163,7 +163,7 @@ export default function Index() {
           Rise to the Top.
         </h1>
         <p className="absolute top-[10.5rem] sm:top-44 left-6 z-10 text-lg sm:text-xl text-foreground/80 leading-relaxed max-w-md" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
-            We find the demand already searching for you — then connect it to your site.
+            See what Google actually knows about your business — and what it's missing.
         </p>
 
 
@@ -179,7 +179,7 @@ export default function Index() {
                Let's Get Started
             </Button>
             <p className="text-xs text-muted-foreground/70 mt-3" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
-              No signup · Complimentary · Demand‑first SEO
+              No signup · Complimentary · Takes 30 seconds
             </p>
           </div>
         </div>
