@@ -82,6 +82,9 @@ export default function DemandIntake() {
             We're going to start by <span className="text-white font-semibold">forgetting you have a website.</span> For us it, doesn't matter yet!
           </p>
           <p className="text-lg sm:text-xl text-white/70 leading-relaxed mt-4 max-w-none">
+            Unlike others… We do two scans. The first is based on your business. Not your website.
+          </p>
+          <p className="text-lg sm:text-xl text-white/70 leading-relaxed mt-4 max-w-none">
             Our first priority is to understand your business: What you do best and who you do it for.
             Then we deploy one of the world's best keyword research companies to see how many people are searching
             for what you do, and what words they're using to find you.
