@@ -167,14 +167,14 @@ export default function GetStarted() {
               >
                 We're going to start by forgetting you have a website. It doesn't matter yet.
               </p>
-              <p className="text-base text-white/70 leading-relaxed">
+              <p className="text-base text-white/90 leading-relaxed drop-shadow" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.6)" }}>
                 Our first priority is to understand your business: what you actually do best and who you do it for.
                 Then we deploy one of the world's best search‑word companies to see how many people are searching
                 for what you do, and what words they're using to find you.
               </p>
-              <p className="text-sm text-white/50 leading-relaxed">
+              <p className="text-sm text-white/80 leading-relaxed drop-shadow" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
                 Once we understand your business and how people search for you, it's just a question of:
-                <span className="italic text-white/70"> "Does your site clearly connect you to those searches, or not?"</span>
+                <span className="italic text-white"> "Does your site clearly connect you to those searches, or not?"</span>
               </p>
             </div>
 
