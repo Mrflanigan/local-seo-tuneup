@@ -7,11 +7,6 @@ import { useScan } from "@/contexts/ScanContext";
 import ScanningView from "@/components/ScanningView";
 import type { BusinessType } from "@/lib/scoring/types";
 import peakBg from "@/assets/getstarted-peak.jpg";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useScan } from "@/contexts/ScanContext";
-import type { BusinessType } from "@/lib/scoring/types";
-import peakBg from "@/assets/getstarted-peak.jpg";
 
 interface DemandState {
   description: string;
