@@ -4,6 +4,12 @@ import { ArrowLeft, TrendingUp, Globe, MapPin, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useScan } from "@/contexts/ScanContext";
+import ScanningView from "@/components/ScanningView";
+import type { BusinessType } from "@/lib/scoring/types";
+import peakBg from "@/assets/getstarted-peak.jpg";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useScan } from "@/contexts/ScanContext";
 import type { BusinessType } from "@/lib/scoring/types";
 import peakBg from "@/assets/getstarted-peak.jpg";
 
@@ -51,8 +57,6 @@ export default function DemandPreview() {
 
   // If scanning, show the scanning view
   if (scan.loading) {
-    // ScanContext handles navigation to /report when done
-    const ScanningView = require("@/components/ScanningView").default;
     return <ScanningView url={scan.url} keywords={scan.keywords} rankPage={scan.rankPage} city={scan.city} businessName={scan.businessName} />;
   }
 
