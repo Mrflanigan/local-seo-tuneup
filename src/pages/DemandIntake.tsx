@@ -72,7 +72,7 @@ export default function DemandIntake() {
             Back
           </Button>
           <div className="text-base font-semibold tracking-[0.2em] text-white/40">
-            STEP 1 OF 2
+            PAGE 2
           </div>
         </div>
 
