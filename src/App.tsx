@@ -13,6 +13,8 @@ import Admin from "./pages/Admin.tsx";
 import Methodology from "./pages/Methodology.tsx";
 import Reviews from "./pages/Reviews.tsx";
 import Privacy from "./pages/Privacy.tsx";
+import DemandIntake from "./pages/DemandIntake.tsx";
+import DemandPreview from "./pages/DemandPreview.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import { ScanProvider } from "./contexts/ScanContext.tsx";
 const queryClient = new QueryClient({});
@@ -35,6 +37,8 @@ const App = () => (
             <Route path="/methodology" element={<Methodology />} />
             <Route path="/reviews" element={<Reviews />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/demand-intake" element={<DemandIntake />} />
+            <Route path="/demand-preview" element={<DemandPreview />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </ScanProvider>
