@@ -77,7 +77,7 @@ export default function DemandIntake() {
         </div>
 
         {/* Intro paragraph — full width */}
-        <div className="mt-auto pt-32 mb-8">
+        <div className="mt-auto pt-48 mb-8">
           <p className="text-lg sm:text-xl text-white/80 leading-relaxed max-w-none">
             We're going to start by <span className="text-white font-semibold">forgetting you have a website.</span> For us it, doesn't matter yet!
           </p>
