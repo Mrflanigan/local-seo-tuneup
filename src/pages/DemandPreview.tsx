@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { ArrowLeft, TrendingUp, Globe, MapPin, Building2 } from "lucide-react";
+import { ArrowLeft, TrendingUp, Globe, MapPin, Building2, Users, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useScan } from "@/contexts/ScanContext";
@@ -64,7 +64,7 @@ export default function DemandPreview() {
         width={1920}
         height={1080}
       />
-      <div className="absolute inset-0 bg-black/50" />
+      <div className="absolute inset-0 bg-black/55" />
 
       <div className="relative z-10 flex min-h-screen w-full flex-col px-8 sm:px-16 py-6">
         {/* Top bar */}
@@ -83,107 +83,105 @@ export default function DemandPreview() {
           </div>
         </div>
 
-        {/* Demand summary — full width */}
-        <div className="mb-10">
-          <h1
-            className="text-3xl sm:text-4xl font-bold text-white mb-6"
-            style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
-          >
-            Here's what we found.
-          </h1>
+        {/* Demand results — volume-only, no phrases */}
+        <div className="mt-auto pt-24 mb-6 space-y-6">
 
-          {serviceCount > 0 && (
-            <div className="space-y-4 mb-8">
-              <p className="text-lg text-white/80">
-                From what you told us, we see <span className="text-white font-bold">{serviceCount} main service{serviceCount !== 1 ? "s" : ""}</span>:
+          {/* The big reveal — demand volume */}
+          {totalVolume !== null && totalVolume > 0 ? (
+            <>
+              <p className="text-xl sm:text-2xl text-white/80 leading-relaxed">
+                Based on what you told us…
               </p>
 
-              <div className="flex flex-wrap gap-2">
-                {state.phrases.map((phrase) => {
-                  const vol = state.volumes?.find((v) => v.keyword === phrase);
-                  return (
-                    <div
-                      key={phrase}
-                      className="rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-sm text-white/90 flex items-center gap-2"
-                    >
-                      <span>{phrase}</span>
-                      {vol && (
-                        <span className="text-primary text-xs font-semibold flex items-center gap-1">
-                          <TrendingUp className="h-3 w-3" />
-                          {vol.monthlySearches.toLocaleString()}/mo
-                        </span>
-                      )}
-                    </div>
-                  );
-                })}
+              <div className="flex items-baseline gap-4 flex-wrap">
+                <span className="text-5xl sm:text-7xl font-bold text-primary tracking-tight">
+                  {totalVolume.toLocaleString()}
+                </span>
+                <span className="text-2xl sm:text-3xl text-white/70 font-light">
+                  searches / month
+                </span>
               </div>
 
-              {totalVolume !== null && totalVolume > 0 && (
-                <p className="text-lg text-white/70">
-                  In your general area, we're seeing approximately{" "}
-                  <span className="text-white font-bold">{totalVolume.toLocaleString()} searches/month</span>{" "}
-                  across these services.
-                </p>
-              )}
-
-              <p className="text-lg text-white/80 mt-2">
-                Next, we'll look at your website and see how well it connects you to this demand.
+              <p className="text-lg sm:text-xl text-white/70 leading-relaxed">
+                That's how many people are actively looking for what you do — every single month.
+                {serviceCount > 0 && (
+                  <span className="text-white/50"> Across {serviceCount} service area{serviceCount !== 1 ? "s" : ""} we identified from your description.</span>
+                )}
               </p>
-            </div>
-          )}
 
-          {serviceCount === 0 && (
-            <p className="text-lg text-white/70 mb-8">
-              We couldn't extract specific phrases yet — but that's okay. Enter your site below and we'll analyze it against your description.
-            </p>
+              <div className="flex items-center gap-2 text-white/50 text-sm">
+                <Users className="h-4 w-4" />
+                <span>Real search data from one of the world's largest keyword research platforms</span>
+              </div>
+
+              <div className="h-px bg-white/10 my-2" />
+
+              <p className="text-lg sm:text-xl text-white/80 leading-relaxed">
+                The demand is already there. Now let's see if your website is connecting you to it — or leaving those customers for someone else.
+              </p>
+            </>
+          ) : serviceCount > 0 ? (
+            <>
+              <p className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
+                We heard you.
+              </p>
+              <p className="text-lg text-white/70 leading-relaxed">
+                We identified {serviceCount} service area{serviceCount !== 1 ? "s" : ""} from your description.
+                Now let's check if your website is positioned to capture that demand.
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
+                We heard you.
+              </p>
+              <p className="text-lg text-white/70 leading-relaxed">
+                Now let's look at your website and see how well it connects you to the people searching for what you do.
+              </p>
+            </>
           )}
         </div>
 
         {/* Site input — full width */}
-        <form onSubmit={handleScan} className="w-full space-y-4">
+        <form onSubmit={handleScan} className="w-full space-y-4 mb-6">
+          <p className="text-lg font-semibold text-white tracking-tight">
+            Now — your website.
+          </p>
+
           {/* URL */}
-          <div className="space-y-1 text-left">
-            <p className="text-sm text-white/70">Your website</p>
-            <div className="relative">
-              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
-              <Input
-                type="text"
-                placeholder="yourdomain.com"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                className="pl-10 h-14 text-lg bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-primary"
-                disabled={scan.loading}
-              />
-            </div>
+          <div className="relative">
+            <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
+            <Input
+              type="text"
+              placeholder="yourdomain.com"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              className="pl-10 h-14 text-lg bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
+              disabled={scan.loading}
+            />
           </div>
 
-          {/* City */}
-          <div className="space-y-1 text-left">
-            <p className="text-sm text-white/70">Primary service area (city or ZIP)</p>
+          {/* City + Business name side by side */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
               <Input
                 type="text"
-                placeholder="e.g. Seattle, WA"
+                placeholder="City or ZIP"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="pl-10 h-12 text-sm bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-primary"
+                className="pl-10 h-12 text-sm bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
                 disabled={scan.loading}
               />
             </div>
-          </div>
-
-          {/* Business name (optional) */}
-          <div className="space-y-1 text-left">
-            <p className="text-sm text-white/70">Business name (optional)</p>
             <div className="relative">
               <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
               <Input
                 type="text"
-                placeholder="e.g. Acme Remodeling"
+                placeholder="Business name (optional)"
                 value={businessName}
                 onChange={(e) => setBusinessName(e.target.value)}
-                className="pl-10 h-12 text-sm bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-primary"
+                className="pl-10 h-12 text-sm bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
                 disabled={scan.loading}
               />
             </div>
@@ -192,17 +190,23 @@ export default function DemandPreview() {
           <Button
             type="submit"
             disabled={scan.loading || !url.trim()}
-            className="h-14 px-10 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic"
+            className="h-14 px-10 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/30 disabled:opacity-100 disabled:bg-primary disabled:text-primary-foreground tracking-tight"
             size="lg"
-            style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
           >
-            Scan my website against this demand
+            {scan.loading ? (
+              <span className="flex items-center gap-3">
+                <Search className="h-5 w-5 animate-pulse" />
+                Scanning…
+              </span>
+            ) : (
+              "Scan My Site Against This Demand"
+            )}
           </Button>
         </form>
 
         {/* Footer */}
-        <div className="mt-auto pt-8 pb-4 text-right">
-          <p className="text-[11px] tracking-widest text-white/50 uppercase">
+        <div className="pb-4 text-right">
+          <p className="text-[11px] tracking-widest text-white/40 uppercase">
             Burj Khalifa · Dubai · 2,717 ft · Tallest structure ever built
           </p>
         </div>
