@@ -104,20 +104,15 @@ export default function DemandIntake() {
 
         {/* Input area — full width */}
         <form onSubmit={handleSubmit} className="w-full space-y-4 mb-6">
-          <div className="space-y-1.5 text-left">
-            <label className="text-lg sm:text-xl font-semibold text-white block tracking-tight">
-              In your own words, what do you do best, and who do you do it for?
-            </label>
-            <p className="text-sm text-white/40">
-              Example: "We remodel bathrooms and kitchens for homeowners in north Seattle."
-            </p>
-          </div>
+          <label className="text-lg sm:text-xl font-semibold text-white block tracking-tight mb-2">
+            In your own words, what do you do best, and who do you do it for?
+          </label>
 
           <Textarea
-            placeholder="Tell us about your business..."
+            placeholder="e.g. We remodel bathrooms and kitchens for homeowners in north Seattle."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="min-h-[100px] text-base sm:text-lg resize-none bg-white/5 border-white/15 text-white placeholder:text-white/60 focus:border-primary rounded-xl"
+            className="min-h-[100px] text-base sm:text-lg resize-none bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
             disabled={loading}
             spellCheck={true}
             autoCorrect="on"
