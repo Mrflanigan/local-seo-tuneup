@@ -167,14 +167,14 @@ export default function GetStarted() {
               >
                 We're going to start by forgetting you have a website. It doesn't matter yet.
               </p>
-              <p className="text-base text-white/70 leading-relaxed">
+              <p className="text-base text-white/90 leading-relaxed drop-shadow" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.6)" }}>
                 Our first priority is to understand your business: what you actually do best and who you do it for.
                 Then we deploy one of the world's best search‑word companies to see how many people are searching
                 for what you do, and what words they're using to find you.
               </p>
-              <p className="text-sm text-white/50 leading-relaxed">
+              <p className="text-sm text-white/80 leading-relaxed drop-shadow" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
                 Once we understand your business and how people search for you, it's just a question of:
-                <span className="italic text-white/70"> "Does your site clearly connect you to those searches, or not?"</span>
+                <span className="italic text-white"> "Does your site clearly connect you to those searches, or not?"</span>
               </p>
             </div>
 
@@ -192,10 +192,10 @@ export default function GetStarted() {
 
             {!limitBlocked && (
               <div className="space-y-4">
-                <div className="space-y-2">
+              <div className="space-y-2">
                   <label
-                    className="text-sm font-semibold text-white"
-                    style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
+                    className="text-base font-bold text-white drop-shadow-md"
+                    style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif", textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}
                   >
                     In your own words, what do you actually do best, and who do you do it for?
                   </label>
@@ -203,13 +203,13 @@ export default function GetStarted() {
                     placeholder='Example: "We remodel bathrooms and kitchens for homeowners in north Seattle."'
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="min-h-[120px] text-base text-foreground placeholder:text-foreground/50 resize-none bg-white/10 border-white/20 backdrop-blur-sm focus:border-primary"
+                    className="min-h-[120px] text-base text-white placeholder:text-white/50 resize-none bg-black/40 border-white/30 backdrop-blur-sm focus:border-primary"
                     disabled={loading}
                     spellCheck={true}
                     autoCorrect="on"
                     autoCapitalize="sentences"
                   />
-                  <p className="text-xs text-white/40">
+                  <p className="text-xs text-white/70 drop-shadow" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
                     Don't overthink it — just describe what you do like you'd tell a neighbor.
                   </p>
                 </div>
@@ -218,7 +218,7 @@ export default function GetStarted() {
                   type="button"
                   onClick={handleFindDemand}
                   disabled={loading || description.trim().length < 10}
-                  className="h-14 px-10 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic disabled:opacity-50"
+                  className="h-14 px-10 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic disabled:opacity-50 shadow-lg"
                   size="lg"
                   style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
                 >
@@ -234,8 +234,8 @@ export default function GetStarted() {
 
                 <div className="flex items-center gap-4 mt-4">
                   <p
-                    className="text-sm text-white/40"
-                    style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
+                    className="text-sm text-white/70 drop-shadow"
+                    style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif", textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}
                   >
                     Complimentary: up to 3 scans a day per location. No login.
                   </p>
