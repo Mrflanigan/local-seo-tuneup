@@ -80,7 +80,7 @@ export default function DemandIntake() {
         <div className="mt-auto pt-48 mb-6 space-y-6">
           {/* Lead differentiator — bold, stands out */}
           <p className="text-2xl sm:text-3xl font-semibold text-white tracking-tight leading-snug">
-            Unlike others — we do two scans.
+            We're not just an SEO Audit — We Do Two Scans.
             <br />
             <span className="text-primary">The first is based on your business. Not your website.</span>
           </p>
