@@ -122,7 +122,7 @@ export default function DemandIntake() {
           <Button
             type="submit"
             disabled={loading || description.trim().length < 10}
-            className="h-14 px-10 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic"
+            className="h-14 px-10 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic shadow-lg shadow-primary/30"
             size="lg"
             style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
           >
