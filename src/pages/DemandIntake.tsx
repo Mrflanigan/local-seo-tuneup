@@ -76,37 +76,39 @@ export default function DemandIntake() {
           </div>
         </div>
 
-        {/* Intro paragraph — full width */}
-        <div className="mt-auto pt-48 mb-8">
-          <p className="text-lg sm:text-xl text-white/80 leading-relaxed max-w-none">
-            We're going to start by <span className="text-white font-semibold">forgetting you have a website.</span> For us it, doesn't matter yet!
-          </p>
-          <p className="text-lg sm:text-xl text-white/70 leading-relaxed mt-4 max-w-none">
-            Unlike others… We do two scans. The first is based on your business. Not your website.
-          </p>
-          <p className="text-lg sm:text-xl text-white/70 leading-relaxed mt-4 max-w-none">
-            Our first priority is to understand your business: What you do best and who you do it for.
-            Then we deploy one of the world's best keyword research companies to see how many people are searching
-            for what you do, and what words they're using to find you.
-          </p>
-          <p className="text-lg sm:text-xl text-white/70 leading-relaxed mt-4 max-w-none">
-            Once we understand your business and how people search for you, it's just a question of:
+        {/* Content — pushed to lower portion */}
+        <div className="mt-auto pt-48 mb-6 space-y-6">
+          {/* Lead differentiator — bold, stands out */}
+          <p className="text-2xl sm:text-3xl font-semibold text-white tracking-tight leading-snug">
+            Unlike others — we do two scans.
             <br />
-            <span className="text-white font-semibold italic">
-              "Does your site clearly connect you to those searches, or not?"
-            </span>
+            <span className="text-primary">The first is based on your business. Not your website.</span>
           </p>
+
+          {/* Supporting copy — lighter, conversational */}
+          <div className="space-y-3 text-base sm:text-lg text-white/70 leading-relaxed">
+            <p>
+              We start by <span className="text-white font-medium">forgetting you have a website.</span> For us, it doesn't matter yet.
+            </p>
+            <p>
+              Our first priority is to understand your business: What you do best and who you do it for.
+              Then we deploy one of the world's best keyword research companies to find how many people
+              are already searching for what you do — and what words they use.
+            </p>
+            <p>
+              Once we understand your business and how people search for you, it's just a question of:
+              <span className="text-white font-medium italic ml-1">"Does your site clearly connect you to those searches, or not?"</span>
+            </p>
+          </div>
         </div>
 
         {/* Input area — full width */}
-        <form onSubmit={handleSubmit} className="w-full space-y-4">
-          <div className="space-y-2 text-left">
-            <label className="text-xl sm:text-2xl font-bold text-white block"
-              style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
-            >
+        <form onSubmit={handleSubmit} className="w-full space-y-4 mb-6">
+          <div className="space-y-1.5 text-left">
+            <label className="text-lg sm:text-xl font-semibold text-white block tracking-tight">
               In your own words, what do you do best, and who do you do it for?
             </label>
-            <p className="text-sm text-white/50">
+            <p className="text-sm text-white/40">
               Example: "We remodel bathrooms and kitchens for homeowners in north Seattle."
             </p>
           </div>
@@ -115,7 +117,7 @@ export default function DemandIntake() {
             placeholder="Tell us about your business..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="min-h-[120px] text-lg text-foreground placeholder:text-foreground/50 resize-none bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-primary"
+            className="min-h-[100px] text-base sm:text-lg resize-none bg-white/8 border-white/15 text-white placeholder:text-white/30 focus:border-primary rounded-xl"
             disabled={loading}
             spellCheck={true}
             autoCorrect="on"
@@ -125,9 +127,8 @@ export default function DemandIntake() {
           <Button
             type="submit"
             disabled={loading || description.trim().length < 10}
-            className="h-14 px-10 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic shadow-lg shadow-primary/30 disabled:opacity-100 disabled:bg-primary disabled:text-primary-foreground"
+            className="h-14 px-10 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/30 disabled:opacity-100 disabled:bg-primary disabled:text-primary-foreground tracking-tight"
             size="lg"
-            style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
           >
             {loading ? (
               <span className="flex items-center gap-3">
@@ -141,8 +142,8 @@ export default function DemandIntake() {
         </form>
 
         {/* Footer */}
-        <div className="mt-auto pt-8 pb-4 text-right">
-          <p className="text-[11px] tracking-widest text-white/50 uppercase">
+        <div className="pb-4 text-right">
+          <p className="text-[11px] tracking-widest text-white/40 uppercase">
             Burj Khalifa · Dubai · 2,717 ft · Tallest structure ever built
           </p>
         </div>
