@@ -88,7 +88,7 @@ export default function DemandIntake() {
           {/* Supporting copy — lighter, conversational */}
           <div className="space-y-3 text-base sm:text-lg text-white/70 leading-relaxed">
             <p>
-              We start by <span className="text-white font-medium">forgetting you have a website.</span> For us, it doesn't matter yet.
+              We… <span className="text-white font-medium">start by forgetting you have a website.</span> For us, it doesn't matter yet.
             </p>
             <p>
               Our first priority is to understand your business: What you do best and who you do it for.
