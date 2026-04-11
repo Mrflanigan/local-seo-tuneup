@@ -1,12 +1,9 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, AlertCircle } from "lucide-react";
+import { ArrowLeft, AlertCircle, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import UrlInputForm from "@/components/UrlInputForm";
-import ScanningView from "@/components/ScanningView";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
-import type { BusinessType } from "@/lib/scoring/types";
-import { useScan } from "@/contexts/ScanContext";
 import peakBg from "@/assets/getstarted-peak.jpg";
 
 interface RateLimitStatus {
@@ -32,9 +29,10 @@ async function checkScanLimit(): Promise<RateLimitStatus> {
 
 export default function GetStarted() {
   const navigate = useNavigate();
-  const { scan, startScan } = useScan();
-
-  // Rate limiting state
+  const [description, setDescription] = useState(() => {
+    try { return localStorage.getItem("seo-description") || ""; } catch { return ""; }
+  });
+  const [loading, setLoading] = useState(false);
   const [rateLimitStatus, setRateLimitStatus] = useState<RateLimitStatus | null>(null);
   const [limitBlocked, setLimitBlocked] = useState(false);
   const [limitMessage, setLimitMessage] = useState("");
@@ -52,17 +50,66 @@ export default function GetStarted() {
     });
   }, []);
 
-  const handleSubmit = async (url: string, city?: string, businessType?: BusinessType, searchPhrases?: string[], businessName?: string, description?: string) => {
+  // Persist description
+  useEffect(() => {
+    try { localStorage.setItem("seo-description", description); } catch {}
+  }, [description]);
+
+  const handleFindDemand = async () => {
+    const trimmed = description.trim();
+    if (!trimmed || trimmed.length < 10) return;
+
+    // Re-check rate limit
     const freshStatus = await checkScanLimit();
     if (!freshStatus.allowed) {
       setLimitBlocked(true);
       setLimitMessage(
         freshStatus.message ||
-          "You've used your complimentary scans from this connection today. If you're an agency or need more, reach out and we'll set you up properly instead of hacking around it."
+          "You've used your complimentary scans from this connection today."
       );
       return;
     }
-    startScan(url, city, businessType, searchPhrases, businessName, description);
+
+    setLoading(true);
+
+    try {
+      // Increment scan count
+      try {
+        await supabase.functions.invoke("check-scan-limit", { body: { action: "increment" } });
+      } catch { /* non-critical */ }
+
+      // Call generate-phrases with just the description
+      const { data, error } = await supabase.functions.invoke("generate-phrases", {
+        body: { description: trimmed },
+      });
+
+      if (error) throw error;
+
+      const phrases = data?.phrases || [];
+      const volumes = data?.volumes || null;
+
+      // Store demand results and navigate to demand preview
+      const demandResult = {
+        description: trimmed,
+        phrases,
+        volumes,
+        ts: Date.now(),
+      };
+
+      try {
+        localStorage.setItem("demandResult", JSON.stringify(demandResult));
+      } catch {}
+
+      navigate("/demand-preview", { state: demandResult });
+    } catch (err) {
+      console.error("Demand lookup failed:", err);
+      // Even if volume lookup fails, navigate with seed phrases
+      navigate("/demand-preview", {
+        state: { description: trimmed, phrases: [], volumes: null, ts: Date.now() },
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Check for previous scan results
@@ -70,8 +117,7 @@ export default function GetStarted() {
     try {
       const raw = localStorage.getItem("lastScan");
       if (!raw) return false;
-      const parsed = JSON.parse(raw);
-      return !!parsed?.result;
+      return !!JSON.parse(raw)?.result;
     } catch { return false; }
   })();
 
@@ -81,12 +127,8 @@ export default function GetStarted() {
       if (!raw) return;
       const { result, url, city, businessType, searchPhrases, businessName, keywordVolumes } = JSON.parse(raw);
       navigate("/report", { state: { result, url, city, businessType, searchPhrases, businessName, keywordVolumes } });
-    } catch { /* ignore */ }
+    } catch {}
   };
-
-  if (scan.loading) {
-    return <ScanningView url={scan.url} keywords={scan.keywords} rankPage={scan.rankPage} city={scan.city} businessName={scan.businessName} />;
-  }
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -111,21 +153,30 @@ export default function GetStarted() {
             Back
           </Button>
           <div className="text-base font-semibold tracking-[0.2em] text-white/40">
-            PAGE 2
+            STEP 1 OF 2
           </div>
         </div>
 
         <div className="flex flex-1 items-center justify-center">
-          <div className="w-full">
-            <h1
-              className="text-4xl sm:text-5xl font-bold tracking-tight mb-4 text-white"
-              style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
-            >
-              Enter your website to run your complimentary Google checkup.
-            </h1>
-            <p className="text-lg text-white/70 mb-10">
-              Tell us what you do — we'll find the search terms that matter and show you where you stand.
-            </p>
+          <div className="w-full max-w-2xl">
+            {/* Intro paragraph */}
+            <div className="mb-10 space-y-4">
+              <p
+                className="text-xl sm:text-2xl font-semibold text-white leading-relaxed"
+                style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
+              >
+                We're going to start by forgetting you have a website. It doesn't matter yet.
+              </p>
+              <p className="text-base text-white/70 leading-relaxed">
+                Our first priority is to understand your business: what you actually do best and who you do it for.
+                Then we deploy one of the world's best search‑word companies to see how many people are searching
+                for what you do, and what words they're using to find you.
+              </p>
+              <p className="text-sm text-white/50 leading-relaxed">
+                Once we understand your business and how people search for you, it's just a question of:
+                <span className="italic text-white/70"> "Does your site clearly connect you to those searches, or not?"</span>
+              </p>
+            </div>
 
             {limitBlocked && (
               <div className="rounded-xl border border-accent/30 bg-accent/10 p-5 mb-6">
@@ -140,9 +191,48 @@ export default function GetStarted() {
             )}
 
             {!limitBlocked && (
-              <>
-                <UrlInputForm onSubmit={handleSubmit} loading={scan.loading} />
-                <div className="flex items-center gap-4 mt-6">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label
+                    className="text-sm font-semibold text-white"
+                    style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
+                  >
+                    In your own words, what do you actually do best, and who do you do it for?
+                  </label>
+                  <Textarea
+                    placeholder='Example: "We remodel bathrooms and kitchens for homeowners in north Seattle."'
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="min-h-[120px] text-base text-foreground placeholder:text-foreground/50 resize-none bg-white/10 border-white/20 backdrop-blur-sm focus:border-primary"
+                    disabled={loading}
+                    spellCheck={true}
+                    autoCorrect="on"
+                    autoCapitalize="sentences"
+                  />
+                  <p className="text-xs text-white/40">
+                    Don't overthink it — just describe what you do like you'd tell a neighbor.
+                  </p>
+                </div>
+
+                <Button
+                  type="button"
+                  onClick={handleFindDemand}
+                  disabled={loading || description.trim().length < 10}
+                  className="h-14 px-10 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic disabled:opacity-50"
+                  size="lg"
+                  style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Finding the demand…
+                    </>
+                  ) : (
+                    "Find the demand"
+                  )}
+                </Button>
+
+                <div className="flex items-center gap-4 mt-4">
                   <p
                     className="text-sm text-white/40"
                     style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
@@ -161,7 +251,7 @@ export default function GetStarted() {
                     </Button>
                   )}
                 </div>
-              </>
+              </div>
             )}
           </div>
         </div>
