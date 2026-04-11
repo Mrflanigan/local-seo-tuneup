@@ -82,7 +82,7 @@ export default function DemandIntake() {
             We're going to start by <span className="text-white font-semibold">forgetting you have a website.</span> For us it, doesn't matter yet!
           </p>
           <p className="text-lg sm:text-xl text-white/70 leading-relaxed mt-4 max-w-none">
-            Our first priority is to understand your business: what you actually do best and who you do it for.
+            Our first priority is to understand your business: what you do best and who you do it for.
             Then we deploy one of the world's best search‑word companies to see how many people are searching
             for what you do, and what words they're using to find you.
           </p>
