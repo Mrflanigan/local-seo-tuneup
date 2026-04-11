@@ -83,7 +83,7 @@ export default function DemandIntake() {
           </p>
           <p className="text-lg sm:text-xl text-white/70 leading-relaxed mt-4 max-w-none">
             Our first priority is to understand your business: What you do best and who you do it for.
-            Then we deploy one of the world's best search‑word companies to see how many people are searching
+            Then we deploy one of the world's best keyword research companies to see how many people are searching
             for what you do, and what words they're using to find you.
           </p>
           <p className="text-lg sm:text-xl text-white/70 leading-relaxed mt-4 max-w-none">
