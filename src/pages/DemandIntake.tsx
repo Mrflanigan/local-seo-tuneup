@@ -101,7 +101,7 @@ export default function DemandIntake() {
             <label className="text-xl sm:text-2xl font-bold text-white block"
               style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
             >
-              In your own words, what do you actually do best, and who do you do it for?
+              In your own words, what do you do best, and who do you do it for?
             </label>
             <p className="text-sm text-white/50">
               Example: "We remodel bathrooms and kitchens for homeowners in north Seattle."
