@@ -117,7 +117,7 @@ export default function DemandIntake() {
             placeholder="Tell us about your business..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="min-h-[100px] text-base sm:text-lg resize-none bg-white/8 border-white/15 text-white placeholder:text-white/30 focus:border-primary rounded-xl"
+            className="min-h-[100px] text-base sm:text-lg resize-none bg-white/5 border-white/15 text-white placeholder:text-white/30 focus:border-primary rounded-xl"
             disabled={loading}
             spellCheck={true}
             autoCorrect="on"
