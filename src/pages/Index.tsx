@@ -163,7 +163,7 @@ export default function Index() {
           Rise to the Top.
         </h1>
         <p className="absolute top-[10.5rem] sm:top-44 left-6 z-10 text-lg sm:text-xl text-foreground/80 leading-relaxed max-w-md" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
-            Find out why you're not on page 1 — and how to fix it.
+            We find the demand already searching for you — then connect it to your site.
         </p>
 
 
@@ -176,10 +176,10 @@ export default function Index() {
               className="h-16 px-12 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 italic"
               style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}
             >
-               Run My Complimentary SEO Checkup
+               Let's Get Started
             </Button>
             <p className="text-xs text-muted-foreground/70 mt-3" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
-              No signup · Complimentary instant audit · Real data from your site
+              No signup · Complimentary · Demand‑first SEO
             </p>
           </div>
         </div>

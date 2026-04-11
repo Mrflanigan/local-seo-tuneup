@@ -7,6 +7,7 @@ import Report from "./pages/Report.tsx";
 import CaseStudy from "./pages/CaseStudy.tsx";
 import Osmosis from "./pages/Osmosis.tsx";
 import GetStarted from "./pages/GetStarted.tsx";
+import DemandPreview from "./pages/DemandPreview.tsx";
 import PaymentSuccess from "./pages/PaymentSuccess.tsx";
 import Summary from "./pages/Summary.tsx";
 import Admin from "./pages/Admin.tsx";
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/case-study" element={<CaseStudy />} />
             <Route path="/osmosis" element={<Osmosis />} />
             <Route path="/get-started" element={<GetStarted />} />
+            <Route path="/demand-preview" element={<DemandPreview />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/summary" element={<Summary />} />
             <Route path="/admin" element={<Admin />} />
