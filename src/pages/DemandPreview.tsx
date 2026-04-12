@@ -35,12 +35,12 @@ export default function DemandPreview() {
 
   const handleScan = (e?: React.FormEvent) => {
     e?.preventDefault();
-    const cleaned = cleanUrl(url);
-    if (!cleaned) return;
+    const normalizedUrl = cleanUrl(url);
+    if (!normalizedUrl) return;
     const inferredType: BusinessType = state.city ? "local" : "online";
 
     startScan(
-      cleanUrl,
+      normalizedUrl,
       state.city || undefined,
       inferredType,
       state.phrases.length > 0 ? state.phrases : undefined,

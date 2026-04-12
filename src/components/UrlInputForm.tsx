@@ -38,11 +38,10 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
-    const cleaned = cleanUrl(url);
-    if (!cleaned) return;
-    const cleanUrl = cleaned;
+    const normalizedUrl = cleanUrl(url);
+    if (!normalizedUrl) return;
     const inferredType: BusinessType = city.trim() ? "local" : "online";
-    onSubmit(cleanUrl, city.trim() || undefined, inferredType, undefined, name || undefined, description.trim() || undefined);
+    onSubmit(normalizedUrl, city.trim() || undefined, inferredType, undefined, name || undefined, description.trim() || undefined);
   };
 
   return (
