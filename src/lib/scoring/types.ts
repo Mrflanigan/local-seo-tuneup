@@ -1,3 +1,10 @@
+export interface KeywordVolume {
+  keyword: string;
+  monthlySearches: number;
+  competition: string | null;
+  cpc: number | null;
+}
+
 export interface SiteContext {
   businessName: string | null;
   services: string[];
