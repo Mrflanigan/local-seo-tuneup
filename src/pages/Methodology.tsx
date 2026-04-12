@@ -305,7 +305,7 @@ export default function Methodology() {
               For example, for a plumber in Austin, we clarified "emergency leak fixes for homeowners" so it better matches real searches like "best plumber near me for burst pipes."
             </p>
             <p>
-              <a href="/get-started" className="text-accent hover:text-accent/80 underline underline-offset-2 font-medium">
+              <a href="/demand-intake" className="text-accent hover:text-accent/80 underline underline-offset-2 font-medium">
                 Run your complimentary scan to see these signals in action for your site
               </a> — no AI expertise required.
             </p>
@@ -382,7 +382,7 @@ export default function Methodology() {
         <div className="mt-8 text-center">
           <p className="text-xs text-muted-foreground">
             Questions about our methodology? We're always improving.{" "}
-            <button onClick={() => navigate("/get-started")} className="text-primary hover:underline">
+            <button onClick={() => navigate("/demand-intake")} className="text-primary hover:underline">
               Run a complimentary scan
             </button>{" "}
             to see your score.

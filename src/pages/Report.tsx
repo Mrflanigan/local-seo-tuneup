@@ -94,7 +94,7 @@ export default function Report() {
       <div className="mx-auto max-w-3xl px-4 py-8 sm:py-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/get-started")}>
+          <Button variant="ghost" size="sm" onClick={() => navigate("/demand-intake")}>
             <ArrowLeft className="mr-1 h-4 w-4" /> Back
           </Button>
           <div className="text-sm font-semibold tracking-[0.2em] text-muted-foreground">
