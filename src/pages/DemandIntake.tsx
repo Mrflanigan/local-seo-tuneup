@@ -118,17 +118,22 @@ export default function DemandIntake() {
             autoCapitalize="sentences"
           />
 
-          {/* Location — part of "who are you" */}
-          <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
-            <Input
-              type="text"
-              placeholder="Where are you based? City, state, or ZIP"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              className="pl-10 h-12 text-base bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
-              disabled={loading}
-            />
+          {/* Location — prominent, not optional */}
+          <div>
+            <label className="text-base font-semibold text-primary block mb-2 tracking-tight">
+              Where do your customers come from?
+            </label>
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/70" />
+              <Input
+                type="text"
+                placeholder="City, state, or ZIP code"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="pl-10 h-14 text-base bg-white/10 border-primary/40 text-white placeholder:text-white/50 focus:border-primary focus:bg-white/15 rounded-xl"
+                disabled={loading}
+              />
+            </div>
           </div>
 
           <Button
