@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { cleanUrl } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -37,7 +38,7 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
-    const cleaned = (await import("@/lib/utils")).cleanUrl(url);
+    const cleaned = cleanUrl(url);
     if (!cleaned) return;
     const cleanUrl = cleaned;
     const inferredType: BusinessType = city.trim() ? "local" : "online";

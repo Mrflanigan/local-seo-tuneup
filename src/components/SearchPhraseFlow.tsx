@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { cleanUrl } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin, ArrowRight, Check, RotateCcw, Globe } from "lucide-react";
@@ -243,7 +244,7 @@ function ManualUrlInput({ onSubmit, loading }: { onSubmit: (url: string) => void
   const [url, setUrl] = useState("");
 
   const handleSubmit = () => {
-    const cleaned = (await import("@/lib/utils")).cleanUrl(url);
+    const cleaned = cleanUrl(url);
     if (!cleaned) return;
     onSubmit(cleaned);
   };
