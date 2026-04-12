@@ -34,9 +34,9 @@ export default function DemandPreview() {
 
   const handleScan = (e?: React.FormEvent) => {
     e?.preventDefault();
-    let cleanUrl = url.trim();
-    if (!cleanUrl) return;
-    if (!cleanUrl.startsWith("http")) cleanUrl = "https://" + cleanUrl;
+    const cleaned = (await import("@/lib/utils")).cleanUrl(url);
+    if (!cleaned) return;
+    const cleanUrl = cleaned;
     const inferredType: BusinessType = state.city ? "local" : "online";
 
     startScan(

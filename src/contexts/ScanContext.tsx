@@ -2,10 +2,9 @@ import { createContext, useContext, useState, useCallback, useRef, type ReactNod
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { runCheckup } from "@/lib/api/checkup";
-import type { ScoringResult, BusinessType } from "@/lib/scoring/types";
+import type { ScoringResult, BusinessType, KeywordVolume } from "@/lib/scoring/types";
 import { toast } from "sonner";
-
-type KeywordVolume = { keyword: string; monthlySearches: number; competition: string | null; cpc: number | null };
+import { saveLastScan } from "@/lib/utils";
 
 interface ScanState {
   loading: boolean;
@@ -93,12 +92,7 @@ export function ScanProvider({ children }: { children: ReactNode }) {
           setScan((s) => ({ ...s, rankPage: bestRank.page }));
         }
 
-        try {
-          localStorage.setItem(
-            "lastScan",
-            JSON.stringify({ result, url, city, businessType, searchPhrases, businessName, description, keywordVolumes, ts: Date.now() }),
-          );
-        } catch { /* storage full */ }
+        saveLastScan({ result, url, city, businessType, searchPhrases, businessName, description, keywordVolumes });
 
         await new Promise((r) => setTimeout(r, 3000));
 

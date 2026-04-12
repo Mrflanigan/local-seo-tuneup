@@ -243,10 +243,9 @@ function ManualUrlInput({ onSubmit, loading }: { onSubmit: (url: string) => void
   const [url, setUrl] = useState("");
 
   const handleSubmit = () => {
-    let cleanUrl = url.trim();
-    if (!cleanUrl) return;
-    if (!cleanUrl.startsWith("http")) cleanUrl = "https://" + cleanUrl;
-    onSubmit(cleanUrl);
+    const cleaned = (await import("@/lib/utils")).cleanUrl(url);
+    if (!cleaned) return;
+    onSubmit(cleaned);
   };
 
   return (

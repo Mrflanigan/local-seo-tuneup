@@ -37,9 +37,9 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
-    let cleanUrl = url.trim();
-    if (!cleanUrl) return;
-    if (!cleanUrl.startsWith("http")) cleanUrl = "https://" + cleanUrl;
+    const cleaned = (await import("@/lib/utils")).cleanUrl(url);
+    if (!cleaned) return;
+    const cleanUrl = cleaned;
     const inferredType: BusinessType = city.trim() ? "local" : "online";
     onSubmit(cleanUrl, city.trim() || undefined, inferredType, undefined, name || undefined, description.trim() || undefined);
   };
