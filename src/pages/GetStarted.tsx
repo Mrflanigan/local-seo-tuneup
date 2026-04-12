@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { loadLastScan } from "@/lib/utils";
 import { ArrowLeft, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import UrlInputForm from "@/components/UrlInputForm";
@@ -65,23 +66,12 @@ export default function GetStarted() {
     startScan(url, city, businessType, searchPhrases, businessName, description);
   };
 
-  // Check for previous scan results
-  const hasLastScan = (() => {
-    try {
-      const raw = localStorage.getItem("lastScan");
-      if (!raw) return false;
-      const parsed = JSON.parse(raw);
-      return !!parsed?.result;
-    } catch { return false; }
-  })();
+  const hasLastScan = !!loadLastScan();
 
   const goToLastReport = () => {
-    try {
-      const raw = localStorage.getItem("lastScan");
-      if (!raw) return;
-      const { result, url, city, businessType, searchPhrases, businessName, keywordVolumes } = JSON.parse(raw);
-      navigate("/report", { state: { result, url, city, businessType, searchPhrases, businessName, keywordVolumes } });
-    } catch { /* ignore */ }
+    const last = loadLastScan();
+    if (!last) return;
+    navigate("/report", { state: last });
   };
 
   if (scan.loading) {
