@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { ArrowLeft, TrendingUp, Globe, MapPin, Building2, Users, Search } from "lucide-react";
+import { ArrowLeft, TrendingUp, Globe, Building2, Users, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useScan } from "@/contexts/ScanContext";
@@ -10,6 +10,7 @@ import peakBg from "@/assets/getstarted-peak.jpg";
 
 interface DemandState {
   description: string;
+  city: string;
   phrases: string[];
   volumes: { keyword: string; monthlySearches: number; competition: string | null; cpc: number | null }[] | null;
 }
@@ -19,10 +20,9 @@ export default function DemandPreview() {
   const location = useLocation();
   const { scan, startScan } = useScan();
 
-  const state = (location.state as DemandState) || { description: "", phrases: [], volumes: null };
+  const state = (location.state as DemandState) || { description: "", city: "", phrases: [], volumes: null };
 
   const [url, setUrl] = useState("");
-  const [city, setCity] = useState("");
   const [businessName, setBusinessName] = useState("");
 
   // Compute total monthly volume
@@ -37,12 +37,11 @@ export default function DemandPreview() {
     let cleanUrl = url.trim();
     if (!cleanUrl) return;
     if (!cleanUrl.startsWith("http")) cleanUrl = "https://" + cleanUrl;
-
-    const inferredType: BusinessType = city.trim() ? "local" : "online";
+    const inferredType: BusinessType = state.city ? "local" : "online";
 
     startScan(
       cleanUrl,
-      city.trim() || undefined,
+      state.city || undefined,
       inferredType,
       state.phrases.length > 0 ? state.phrases : undefined,
       businessName.trim() || undefined,
@@ -162,19 +161,7 @@ export default function DemandPreview() {
           </div>
 
           {/* City + Business name side by side */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
-              <Input
-                type="text"
-                placeholder="City or ZIP"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                className="pl-10 h-12 text-sm bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
-                disabled={scan.loading}
-              />
-            </div>
-            <div className="relative">
+          <div className="relative">
               <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
               <Input
                 type="text"
@@ -184,7 +171,6 @@ export default function DemandPreview() {
                 className="pl-10 h-12 text-sm bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
                 disabled={scan.loading}
               />
-            </div>
           </div>
 
           <Button

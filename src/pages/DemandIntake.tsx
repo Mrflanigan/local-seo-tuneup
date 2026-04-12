@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft, Search, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import peakBg from "@/assets/getstarted-peak.jpg";
 
 export default function DemandIntake() {
   const navigate = useNavigate();
   const [description, setDescription] = useState("");
+  const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e?: React.FormEvent) => {
@@ -18,27 +20,26 @@ export default function DemandIntake() {
 
     setLoading(true);
     try {
-      // Scan 1: demand-only — no URL, no city yet
       const { data, error } = await supabase.functions.invoke("generate-phrases", {
-        body: { description: desc },
+        body: { description: desc, city: city.trim() || undefined },
       });
 
       if (error) throw error;
 
-      // Navigate to demand preview with results
       navigate("/demand-preview", {
         state: {
           description: desc,
+          city: city.trim() || "",
           phrases: data?.phrases || [],
           volumes: data?.volumes || null,
         },
       });
     } catch (err) {
       console.error("Demand lookup failed:", err);
-      // Still navigate with whatever we got
       navigate("/demand-preview", {
         state: {
           description: desc,
+          city: city.trim() || "",
           phrases: [],
           volumes: null,
         },
@@ -78,14 +79,12 @@ export default function DemandIntake() {
 
         {/* Content — pushed to lower portion */}
         <div className="mt-auto pt-48 mb-6 space-y-6">
-          {/* Lead differentiator — bold, stands out */}
           <p className="text-2xl sm:text-3xl font-semibold text-white tracking-tight leading-snug">
             We're not just an SEO Audit — We Do Two Scans.
             <br />
             <span className="text-primary">The first is based on your business. Not your website.</span>
           </p>
 
-          {/* Supporting copy — lighter, conversational */}
           <div className="space-y-3 text-base sm:text-lg text-white/70 leading-relaxed">
             <p>
               We… <span className="text-white font-medium">start by forgetting you have a website.</span> If you're looking at this globally, it doesn't matter — yet.
@@ -118,6 +117,19 @@ export default function DemandIntake() {
             autoCorrect="on"
             autoCapitalize="sentences"
           />
+
+          {/* Location — part of "who are you" */}
+          <div className="relative">
+            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
+            <Input
+              type="text"
+              placeholder="Where are you based? City, state, or ZIP"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="pl-10 h-12 text-base bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
+              disabled={loading}
+            />
+          </div>
 
           <Button
             type="submit"
