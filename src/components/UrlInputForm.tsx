@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { cleanUrl } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -37,11 +38,10 @@ export default function UrlInputForm({ onSubmit, loading, hideBusinessType }: Ur
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
-    let cleanUrl = url.trim();
-    if (!cleanUrl) return;
-    if (!cleanUrl.startsWith("http")) cleanUrl = "https://" + cleanUrl;
+    const normalizedUrl = cleanUrl(url);
+    if (!normalizedUrl) return;
     const inferredType: BusinessType = city.trim() ? "local" : "online";
-    onSubmit(cleanUrl, city.trim() || undefined, inferredType, undefined, name || undefined, description.trim() || undefined);
+    onSubmit(normalizedUrl, city.trim() || undefined, inferredType, undefined, name || undefined, description.trim() || undefined);
   };
 
   return (

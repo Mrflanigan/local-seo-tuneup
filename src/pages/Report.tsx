@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { loadLastScan } from "@/lib/utils";
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import type { ScoringResult } from "@/lib/scoring/types";
 import { saveLead, saveSnapshot } from "@/lib/api/checkup";
@@ -45,13 +46,8 @@ export default function Report() {
   // Fall back to localStorage if navigated here without state (e.g. page reload)
   const restored = useMemo(() => {
     if (state) return state;
-    try {
-      const raw = localStorage.getItem("lastScan");
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed?.result && parsed?.url) return parsed as typeof state;
-      }
-    } catch { /* corrupt data */ }
+    const last = loadLastScan();
+    if (last) return last as typeof state;
     return null;
   }, [state]);
 

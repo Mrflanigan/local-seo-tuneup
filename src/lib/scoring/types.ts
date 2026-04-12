@@ -1,3 +1,10 @@
+export interface KeywordVolume {
+  keyword: string;
+  monthlySearches: number;
+  competition: string | null;
+  cpc: number | null;
+}
+
 export interface SiteContext {
   businessName: string | null;
   services: string[];
@@ -49,6 +56,13 @@ export interface CategoryResult {
 export type LetterGrade = "A" | "B" | "C" | "D" | "F";
 
 export type BusinessType = "local" | "online";
+
+export interface KeywordVolume {
+  keyword: string;
+  monthlySearches: number;
+  competition: string | null;
+  cpc: number | null;
+}
 
 export interface PhraseRanking {
   phrase: string;

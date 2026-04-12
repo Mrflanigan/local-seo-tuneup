@@ -1,12 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { Loader2, TrendingUp, Search, Shield, X, Check, MapPin } from "lucide-react";
-
-interface KeywordVolume {
-  keyword: string;
-  monthlySearches: number;
-  competition: string | null;
-  cpc: number | null;
-}
+import type { KeywordVolume } from "@/lib/scoring/types";
 
 const baseMessages = [
   "SEO Osmosis™ is absorbing your site data…",

@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { cleanUrl } from "@/lib/utils";
 import { useState } from "react";
 import { ArrowLeft, TrendingUp, Globe, Building2, Users, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -34,13 +35,12 @@ export default function DemandPreview() {
 
   const handleScan = (e?: React.FormEvent) => {
     e?.preventDefault();
-    let cleanUrl = url.trim();
-    if (!cleanUrl) return;
-    if (!cleanUrl.startsWith("http")) cleanUrl = "https://" + cleanUrl;
+    const normalizedUrl = cleanUrl(url);
+    if (!normalizedUrl) return;
     const inferredType: BusinessType = state.city ? "local" : "online";
 
     startScan(
-      cleanUrl,
+      normalizedUrl,
       state.city || undefined,
       inferredType,
       state.phrases.length > 0 ? state.phrases : undefined,
