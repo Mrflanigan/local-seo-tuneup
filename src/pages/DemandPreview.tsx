@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { ArrowLeft, TrendingUp, Globe, MapPin, Building2, Users, Search } from "lucide-react";
+import { ArrowLeft, TrendingUp, Globe, Building2, Users, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useScan } from "@/contexts/ScanContext";
