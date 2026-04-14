@@ -95,6 +95,7 @@ const categories = [
 export default function Osmosis() {
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Osmosis — Demand-First Local SEO That Grows With You" description="SEO that starts with what your customers are already searching for, then makes your business visible to that demand." path="/osmosis" />
       {/* Nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/60 backdrop-blur-xl border-b border-border/30">
         <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">

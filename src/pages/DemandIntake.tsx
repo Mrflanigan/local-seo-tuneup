@@ -64,6 +64,7 @@ export default function DemandIntake() {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
+      <SEOHead title="Find Your Customers — Discover Local Search Demand" description="Tell us what you do and where. We'll show you exactly what your customers are searching for and how much demand exists." path="/demand-intake" />
       <img
         src={peakBg}
         alt=""

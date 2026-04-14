@@ -8,6 +8,7 @@ export default function Reviews() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Independent Reviews — What Experts Say About Our SEO Checkup" description="Read independent AI-powered reviews of our local SEO audit tool, scoring methodology, and report quality." path="/reviews" />
       <div className="mx-auto max-w-3xl px-4 py-8 sm:py-12">
         <Button variant="ghost" size="sm" onClick={() => window.history.length > 1 ? navigate(-1) : navigate("/")} className="mb-6">
           <ArrowLeft className="mr-1 h-4 w-4" /> Back
