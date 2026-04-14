@@ -1,6 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import Report from "./pages/Report.tsx";
@@ -21,29 +23,31 @@ const queryClient = new QueryClient({});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Sonner />
-      <BrowserRouter>
-        <ScanProvider>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/report" element={<Report />} />
-            <Route path="/case-study" element={<CaseStudy />} />
-            <Route path="/osmosis" element={<Osmosis />} />
-            <Route path="/get-started" element={<GetStarted />} />
-            <Route path="/payment-success" element={<PaymentSuccess />} />
-            <Route path="/summary" element={<Summary />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/methodology" element={<Methodology />} />
-            <Route path="/reviews" element={<Reviews />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/demand-intake" element={<DemandIntake />} />
-            <Route path="/demand-preview" element={<DemandPreview />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </ScanProvider>
-      </BrowserRouter>
-    </TooltipProvider>
+    <HelmetProvider>
+      <TooltipProvider>
+        <Sonner />
+        <BrowserRouter>
+          <ScanProvider>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/report" element={<Report />} />
+              <Route path="/case-study" element={<CaseStudy />} />
+              <Route path="/osmosis" element={<Osmosis />} />
+              <Route path="/get-started" element={<GetStarted />} />
+              <Route path="/payment-success" element={<PaymentSuccess />} />
+              <Route path="/summary" element={<Summary />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/methodology" element={<Methodology />} />
+              <Route path="/reviews" element={<Reviews />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/demand-intake" element={<DemandIntake />} />
+              <Route path="/demand-preview" element={<DemandPreview />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </ScanProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </HelmetProvider>
   </QueryClientProvider>
 );
 
