@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Shield } from "lucide-react";
 
@@ -7,6 +8,7 @@ export default function Privacy() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Privacy Policy — SEO Rise Up" description="How we handle your data when you use our complimentary local SEO checkup tool." path="/privacy" />
       <div className="mx-auto max-w-2xl px-4 py-8 sm:py-12">
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-6">
           <ArrowLeft className="mr-1 h-4 w-4" /> Back

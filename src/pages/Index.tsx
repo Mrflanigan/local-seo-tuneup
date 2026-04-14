@@ -1,4 +1,5 @@
 import { useState } from "react";
+import SEOHead from "@/components/SEOHead";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import blueRibbon from "@/assets/blue-ribbon.png";
@@ -44,6 +45,7 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Complimentary Local SEO Checkup — See What Google Really Thinks" description="Instant audit of your site's local SEO health. See exactly what Google sees and get a personalized fix-it plan." path="/" />
       {/* Nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/60 backdrop-blur-xl border-b border-border/30">
         <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">

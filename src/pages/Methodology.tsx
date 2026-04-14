@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import SEOHead from "@/components/SEOHead";
 import { ArrowLeft, MapPin, Search, Settings, FileText, Award } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -229,6 +230,7 @@ export default function Methodology() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Scoring Methodology — How We Grade Your Local SEO" description="Transparent breakdown of our 100-point scoring system across 5 categories: Local Presence, Technical SEO, Content, Brand Visibility, and AI Readiness." path="/methodology" />
       <div className="mx-auto max-w-3xl px-4 py-8 sm:py-12">
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-6">
           <ArrowLeft className="mr-1 h-4 w-4" /> Back
