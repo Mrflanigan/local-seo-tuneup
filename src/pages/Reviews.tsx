@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import SEOHead from "@/components/SEOHead";
 import { ArrowLeft, Award } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
