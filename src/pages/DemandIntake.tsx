@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, MapPin } from "lucide-react";
+import { ArrowLeft, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -9,39 +9,51 @@ import peakBg from "@/assets/getstarted-peak.jpg";
 
 export default function DemandIntake() {
   const navigate = useNavigate();
-  const [description, setDescription] = useState("");
-  const [city, setCity] = useState("");
+  const [whatYouDo, setWhatYouDo] = useState("");
+  const [whoYouServe, setWhoYouServe] = useState("");
+  const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const canSubmit = whatYouDo.trim().length >= 10 && location.trim().length >= 2;
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    const desc = description.trim();
-    if (!desc || desc.length < 10) return;
+    if (!canSubmit) return;
 
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("generate-phrases", {
-        body: { description: desc, city: city.trim() || undefined },
+        body: {
+          description: whatYouDo.trim(),
+          whoYouServe: whoYouServe.trim() || undefined,
+          city: location.trim(),
+        },
       });
 
       if (error) throw error;
 
       navigate("/demand-preview", {
         state: {
-          description: desc,
-          city: city.trim() || "",
+          description: whatYouDo.trim(),
+          whoYouServe: whoYouServe.trim() || "",
+          city: location.trim(),
           phrases: data?.phrases || [],
           volumes: data?.volumes || null,
+          intentBuckets: data?.intentBuckets || null,
+          totalDemand: data?.totalDemand || null,
         },
       });
     } catch (err) {
       console.error("Demand lookup failed:", err);
       navigate("/demand-preview", {
         state: {
-          description: desc,
-          city: city.trim() || "",
+          description: whatYouDo.trim(),
+          whoYouServe: whoYouServe.trim() || "",
+          city: location.trim(),
           phrases: [],
           volumes: null,
+          intentBuckets: null,
+          totalDemand: null,
         },
       });
     } finally {
@@ -73,26 +85,26 @@ export default function DemandIntake() {
             Back
           </Button>
           <div className="text-base font-semibold tracking-[0.2em] text-white/40">
-            PAGE 2
+            STEP 1
           </div>
         </div>
 
-        {/* Content — pushed to lower portion */}
+        {/* Content */}
         <div className="mt-auto pt-48 mb-6 space-y-6">
           <p className="text-2xl sm:text-3xl font-semibold text-white tracking-tight leading-snug">
-            We're not just an SEO Audit — We Do Two Scans.
+            We're not just an SEO Audit — We Do Two Things.
             <br />
-            <span className="text-primary">The first is based on your business. Not your website.</span>
+            <span className="text-primary">First, we find the people already looking for you.</span>
           </p>
 
           <div className="space-y-3 text-base sm:text-lg text-white/70 leading-relaxed">
             <p>
-              We… <span className="text-white font-medium">start by forgetting you have a website.</span> If you're looking at this globally, it doesn't matter — yet.
+              We… <span className="text-white font-medium">start by forgetting you have a website.</span>
             </p>
             <p>
-              Our first priority is to understand your business: What you do best and who you do it for.
-              Then we deploy one of the world's best keyword research companies to find how many people
-              are already searching for what you do — and what words they use.
+              Our first priority is to understand your business: What you do best, who you do it for,
+              and where. Then we deploy one of the world's best keyword research platforms to find how
+              many people are already searching for exactly what you do — in your area.
             </p>
             <p>
               Once we understand your business and how people search for you, it's just a question of:
@@ -101,35 +113,53 @@ export default function DemandIntake() {
           </div>
         </div>
 
-        {/* Input area — full width */}
+        {/* Form */}
         <form onSubmit={handleSubmit} className="w-full space-y-4 mb-6">
-          <label className="text-lg sm:text-xl font-semibold text-white block tracking-tight mb-2">
-            In your own words, what do you do best, and who do you do it for?
-          </label>
+          {/* What do you do best? */}
+          <div>
+            <label className="text-lg sm:text-xl font-semibold text-white block tracking-tight mb-2">
+              What do you do best?
+            </label>
+            <Textarea
+              placeholder="e.g. We fix roof leaks and handle full roof replacements for homeowners."
+              value={whatYouDo}
+              onChange={(e) => setWhatYouDo(e.target.value)}
+              className="min-h-[100px] text-base sm:text-lg resize-none bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
+              disabled={loading}
+              spellCheck={true}
+              autoCorrect="on"
+              autoCapitalize="sentences"
+            />
+          </div>
 
-          <Textarea
-            placeholder="e.g. We remodel bathrooms and kitchens for homeowners in north Seattle."
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="min-h-[100px] text-base sm:text-lg resize-none bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
-            disabled={loading}
-            spellCheck={true}
-            autoCorrect="on"
-            autoCapitalize="sentences"
-          />
+          {/* Who do you do it for? (optional) */}
+          <div>
+            <label className="text-base font-semibold text-white/80 block mb-2 tracking-tight">
+              Who do you do it for?{" "}
+              <span className="text-white/40 font-normal text-sm">(optional)</span>
+            </label>
+            <Input
+              type="text"
+              placeholder="e.g. Homeowners, small businesses, property managers"
+              value={whoYouServe}
+              onChange={(e) => setWhoYouServe(e.target.value)}
+              className="h-12 text-base bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
+              disabled={loading}
+            />
+          </div>
 
-          {/* Location — prominent, not optional */}
+          {/* Where do you serve? (required) */}
           <div>
             <label className="text-base font-semibold text-primary block mb-2 tracking-tight">
-              Where do your customers come from?
+              Where do you serve people?
             </label>
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/70" />
               <Input
                 type="text"
-                placeholder="City, state, or ZIP code"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
+                placeholder="City, state, or area"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
                 className="pl-10 h-14 text-base bg-white/10 border-primary/40 text-white placeholder:text-white/50 focus:border-primary focus:bg-white/15 rounded-xl"
                 disabled={loading}
               />
@@ -138,13 +168,13 @@ export default function DemandIntake() {
 
           <Button
             type="submit"
-            disabled={loading || description.trim().length < 10}
+            disabled={loading || !canSubmit}
             className="h-14 px-10 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/30 disabled:opacity-100 disabled:bg-primary disabled:text-primary-foreground tracking-tight"
             size="lg"
           >
             {loading ? (
               <span className="flex items-center gap-3">
-                <Search className="h-5 w-5 animate-pulse" />
+                <span className="h-5 w-5 animate-pulse">🔍</span>
                 Finding the demand…
               </span>
             ) : (
