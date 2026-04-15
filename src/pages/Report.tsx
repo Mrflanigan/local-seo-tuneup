@@ -17,6 +17,7 @@ import PhraseOpticsRing from "@/components/PhraseOpticsRing";
 import AIReadinessCard from "@/components/AIReadinessCard";
 import FixTheseFiveFirst from "@/components/FixTheseFiveFirst";
 import BrandVisibilityCard from "@/components/BrandVisibilityCard";
+import BacklinkCard from "@/components/BacklinkCard";
 import PageSpeedInsights from "@/components/PageSpeedInsights";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -287,6 +288,13 @@ export default function Report() {
         {result.brandVisibility && (
           <div className="mb-8">
             <BrandVisibilityCard data={result.brandVisibility} />
+          </div>
+        )}
+
+        {/* Backlink Profile */}
+        {result.backlinkSummary && (
+          <div className="mb-8">
+            <BacklinkCard data={result.backlinkSummary} />
           </div>
         )}
 
