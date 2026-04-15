@@ -135,8 +135,41 @@ export default function DemandPreview() {
                 typing when they need a business like yours.
               </p>
 
-              {/* Phrase list */}
-              {topPhrases.length > 0 && (
+              {/* Intent buckets with difficulty */}
+              {state.intentBuckets && state.intentBuckets.length > 0 ? (
+                <div className="space-y-4">
+                  {state.intentBuckets.slice(0, 4).map((bucket) => {
+                    const diff = state.bucketDifficulty?.[bucket.id];
+                    return (
+                      <div key={bucket.id} className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-semibold text-white/70 uppercase tracking-wider">
+                            {bucket.name}
+                          </span>
+                          {diff && (
+                            <span
+                              className="text-xs font-bold px-2 py-0.5 rounded-full"
+                              style={{ backgroundColor: `${diff.color}20`, color: diff.color }}
+                            >
+                              {diff.level} · DR {diff.avgCompetitorRank}
+                            </span>
+                          )}
+                        </div>
+                        {bucket.keywords.slice(0, 3).map((kw, i) => (
+                          <div key={i} className="flex items-center justify-between py-1.5 border-b border-white/10">
+                            <span className="text-base text-white font-medium">
+                              "{kw.keyword}"
+                            </span>
+                            <span className="text-primary font-bold text-base whitespace-nowrap ml-4">
+                              {kw.search_volume.toLocaleString()} <span className="text-white/50 font-normal text-sm">/ mo</span>
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : topPhrases.length > 0 ? (
                 <div className="space-y-2">
                   {topPhrases.map((p, i) => (
                     <div key={i} className="flex items-center justify-between py-2 border-b border-white/10">
@@ -149,7 +182,7 @@ export default function DemandPreview() {
                     </div>
                   ))}
                 </div>
-              )}
+              ) : null}
 
               {/* Jaw-drop number */}
               <div className="py-4 space-y-2">
