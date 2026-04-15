@@ -17,6 +17,7 @@ import PhraseOpticsRing from "@/components/PhraseOpticsRing";
 import AIReadinessCard from "@/components/AIReadinessCard";
 import FixTheseFiveFirst from "@/components/FixTheseFiveFirst";
 import BrandVisibilityCard from "@/components/BrandVisibilityCard";
+import BacklinkCard from "@/components/BacklinkCard";
 import PageSpeedInsights from "@/components/PageSpeedInsights";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -271,7 +272,7 @@ export default function Report() {
         <div className="rounded-lg border border-border/50 bg-card/40 p-4 mb-8 text-center">
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-lg mx-auto">
             This report is a snapshot, not a full MRI. It's built for local service businesses that need a fast, honest read on their search readiness.
-            We don't try to replace your backlink tools, rank trackers, or SERP analysis platforms. If we ever go after those, we'll do it with the same goal: be best‑in‑class at what we choose to do, not everything.
+            We check what matters most — your site health, search visibility, backlink profile, and how Google sees you — so you know exactly where you stand.
           </p>
         </div>
 
@@ -287,6 +288,13 @@ export default function Report() {
         {result.brandVisibility && (
           <div className="mb-8">
             <BrandVisibilityCard data={result.brandVisibility} />
+          </div>
+        )}
+
+        {/* Backlink Profile */}
+        {result.backlinkSummary && (
+          <div className="mb-8">
+            <BacklinkCard data={result.backlinkSummary} />
           </div>
         )}
 

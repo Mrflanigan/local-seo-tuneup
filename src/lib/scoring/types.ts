@@ -135,6 +135,17 @@ export interface BrandVisibilityData {
   summary: string;                        // human-readable 1-liner
 }
 
+export interface BacklinkSummaryData {
+  target: string;
+  totalBacklinks: number;
+  referringDomains: number;
+  domainRank: number;
+  brokenBacklinks: number;
+  referringIps: number;
+  followLinks: number;
+  nofollowLinks: number;
+}
+
 export interface ScoringResult {
   overallScore: number;
   rawScore: number;
@@ -150,6 +161,7 @@ export interface ScoringResult {
   schemaCompleteness?: SchemaCompletenessData;
   aiReadiness?: AiReadinessData;
   brandVisibility?: BrandVisibilityData;
+  backlinkSummary?: BacklinkSummaryData;
 }
 
 export interface PageSpeedData {

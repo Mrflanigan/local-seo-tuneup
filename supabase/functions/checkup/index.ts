@@ -441,12 +441,49 @@ Deno.serve(async (req) => {
       }
     }
 
+    // 6. Backlink summary from DataForSEO
+    let backlinkSummary = null;
+    const dfsCreds = Deno.env.get('DATAFORSEO_CREDENTIALS');
+    if (dfsCreds) {
+      try {
+        const targetDomain = new URL(normalizedUrl).hostname.replace(/^www\./, '');
+        const blResp = await fetch('https://api.dataforseo.com/v3/backlinks/summary/live', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Basic ${dfsCreds}`,
+          },
+          body: JSON.stringify([{ target: targetDomain, internal_list_limit: 0, backlinks_status_type: 'live' }]),
+        });
+        if (blResp.ok) {
+          const blData = await blResp.json();
+          const blResult = blData?.tasks?.[0]?.result?.[0];
+          if (blResult) {
+            backlinkSummary = {
+              target: targetDomain,
+              totalBacklinks: blResult.backlinks || 0,
+              referringDomains: blResult.referring_domains || 0,
+              domainRank: blResult.rank || 0,
+              brokenBacklinks: blResult.broken_backlinks || 0,
+              referringIps: blResult.referring_ips || 0,
+              followLinks: (blResult.backlinks || 0) - (blResult.backlinks_nofollow || 0),
+              nofollowLinks: blResult.backlinks_nofollow || 0,
+            };
+            console.log(`[checkup] Backlinks: ${backlinkSummary.referringDomains} referring domains, rank=${backlinkSummary.domainRank}`);
+          }
+        }
+      } catch (blErr) {
+        console.warn('[checkup] Backlink summary failed:', blErr);
+      }
+    }
+
     // Attach extra data to result
     if (pageSpeed) (result as any).pageSpeed = pageSpeed;
     if (phraseOptics) (result as any).phraseOptics = phraseOptics;
     if (crawlHygiene) (result as any).crawlHygiene = crawlHygiene;
     if (redirectChain) (result as any).redirectChain = redirectChain;
     if (brandVisibility) (result as any).brandVisibility = brandVisibility;
+    if (backlinkSummary) (result as any).backlinkSummary = backlinkSummary;
 
     console.log(`[checkup] Score: ${result.overallScore} (${result.letterGrade})`);
 
