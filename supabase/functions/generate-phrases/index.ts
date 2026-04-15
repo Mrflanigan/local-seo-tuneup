@@ -143,6 +143,87 @@ Return format:
   }
 }
 
+// ── Fetch domain ranks for top SERP competitors to estimate difficulty ──
+async function fetchCompetitorRanks(
+  domains: string[],
+  creds: string
+): Promise<Map<string, number>> {
+  const rankMap = new Map<string, number>();
+  if (domains.length === 0) return rankMap;
+
+  // Batch up to 10 domains in parallel
+  const uniqueDomains = [...new Set(domains)].slice(0, 10);
+  
+  try {
+    // DataForSEO allows multiple targets in one request via separate task items
+    const tasks = uniqueDomains.map(d => ({ target: d, internal_list_limit: 0, backlinks_status_type: 'live' }));
+    const resp = await fetch('https://api.dataforseo.com/v3/backlinks/summary/live', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${creds}`,
+      },
+      body: JSON.stringify(tasks),
+    });
+
+    if (resp.ok) {
+      const data = await resp.json();
+      const results = data?.tasks || [];
+      for (const task of results) {
+        const r = task?.result?.[0];
+        if (r?.target && typeof r.rank === 'number') {
+          rankMap.set(r.target.replace(/^www\./, '').toLowerCase(), r.rank);
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('Competitor rank lookup failed:', e);
+  }
+
+  return rankMap;
+}
+
+function getDifficultyLabel(avgRank: number): { level: string; color: string } {
+  if (avgRank >= 60) return { level: 'Very Hard', color: '#ef4444' };
+  if (avgRank >= 40) return { level: 'Hard', color: '#f97316' };
+  if (avgRank >= 20) return { level: 'Moderate', color: '#eab308' };
+  if (avgRank >= 5) return { level: 'Achievable', color: '#22c55e' };
+  return { level: 'Low Competition', color: '#3b82f6' };
+}
+
+// ── Use Firecrawl search to find top competitors for a phrase ──
+async function findTopCompetitorDomains(phrase: string, city: string): Promise<string[]> {
+  const firecrawlKey = Deno.env.get('FIRECRAWL_API_KEY');
+  if (!firecrawlKey) return [];
+
+  const searchQuery = city ? `${phrase} ${city}` : phrase;
+  try {
+    const resp = await fetch('https://api.firecrawl.dev/v1/search', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${firecrawlKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query: searchQuery, limit: 5 }),
+    });
+
+    if (!resp.ok) return [];
+    const data = await resp.json();
+    const results = data.data || [];
+    
+    return results
+      .map((r: any) => {
+        try {
+          return new URL(r.url).hostname.replace(/^www\./, '').toLowerCase();
+        } catch { return null; }
+      })
+      .filter(Boolean)
+      .slice(0, 3);
+  } catch {
+    return [];
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -295,6 +376,37 @@ Example output: ["lawn care service", "moss removal", "landscaping company", "ya
     const totalDemand = intentBuckets.reduce((s, b) => s + b.total_search_volume, 0);
     console.log(`Intent buckets: ${intentBuckets.length}, total demand: ${totalDemand}/mo`);
 
+    // ── Step 4: Estimate difficulty per bucket using competitor domain ranks ──
+    let bucketDifficulty: Record<string, { avgCompetitorRank: number; level: string; color: string; topCompetitors: string[] }> = {};
+    try {
+      // For top 3 buckets, search the top canonical phrase and get competitor domain ranks
+      const topBuckets = intentBuckets.slice(0, 3);
+      const competitorSearches = await Promise.all(
+        topBuckets.map(b => findTopCompetitorDomains(b.canonical_phrases[0] || b.keywords[0]?.keyword || '', city || ''))
+      );
+
+      // Collect all unique competitor domains
+      const allDomains = competitorSearches.flat();
+      const rankMap = allDomains.length > 0 ? await fetchCompetitorRanks(allDomains, creds) : new Map();
+
+      for (let i = 0; i < topBuckets.length; i++) {
+        const bucket = topBuckets[i];
+        const competitors = competitorSearches[i];
+        const ranks = competitors.map(d => rankMap.get(d) || 0).filter(r => r > 0);
+        const avgRank = ranks.length > 0 ? Math.round(ranks.reduce((s, r) => s + r, 0) / ranks.length) : 0;
+        const difficulty = getDifficultyLabel(avgRank);
+        bucketDifficulty[bucket.id] = {
+          avgCompetitorRank: avgRank,
+          level: difficulty.level,
+          color: difficulty.color,
+          topCompetitors: competitors,
+        };
+      }
+      console.log(`Difficulty assessed for ${Object.keys(bucketDifficulty).length} buckets`);
+    } catch (diffErr) {
+      console.warn('Difficulty assessment failed (non-fatal):', diffErr);
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -306,6 +418,7 @@ Example output: ["lawn care service", "moss removal", "landscaping company", "ya
           cpc: k.cpc,
         })),
         intentBuckets,
+        bucketDifficulty,
         locationCode,
         totalDemand,
       }),
