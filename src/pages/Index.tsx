@@ -168,7 +168,7 @@ export default function Index() {
             Find out why you're not on page 1 — and how to fix it.
         </p>
         <p className="absolute top-[55%] left-[55%] z-10 text-sm sm:text-base text-foreground/70 leading-relaxed italic" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
-            <span className="text-primary font-bold not-italic">Osmosis™</span> — SEO Reimagined
+            <span className="text-primary font-bold not-italic">Osmosis™</span> — SEO Plus
         </p>
 
 
