@@ -41,7 +41,7 @@ export default function DemandPreview() {
   const { scan, startScan } = useScan();
 
   const state = (location.state as DemandState) || {
-    description: "", city: "", phrases: [], volumes: null, intentBuckets: null, totalDemand: null,
+    description: "", city: "", phrases: [], volumes: null, intentBuckets: null, bucketDifficulty: null, totalDemand: null,
   };
 
   const [url, setUrl] = useState("");
