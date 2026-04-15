@@ -17,6 +17,13 @@ interface IntentBucket {
   canonical_phrases: string[];
 }
 
+interface BucketDifficultyInfo {
+  avgCompetitorRank: number;
+  level: string;
+  color: string;
+  topCompetitors: string[];
+}
+
 interface DemandState {
   description: string;
   whoYouServe?: string;
@@ -24,6 +31,7 @@ interface DemandState {
   phrases: string[];
   volumes: { keyword: string; monthlySearches: number; competition: string | null; cpc: number | null }[] | null;
   intentBuckets: IntentBucket[] | null;
+  bucketDifficulty: Record<string, BucketDifficultyInfo> | null;
   totalDemand: number | null;
 }
 

@@ -41,6 +41,7 @@ export default function DemandIntake() {
           phrases: data?.phrases || [],
           volumes: data?.volumes || null,
           intentBuckets: data?.intentBuckets || null,
+          bucketDifficulty: data?.bucketDifficulty || null,
           totalDemand: data?.totalDemand || null,
         },
       });
