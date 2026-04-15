@@ -130,7 +130,7 @@ export default function Index() {
               transformOrigin: "left center",
             }}
           >
-            SEO<span style={{ fontStyle: "italic", fontSize: "0.45em", verticalAlign: "middle", marginLeft: "-0.05em" }}>+</span>
+            SEO<span style={{ fontStyle: "italic", fontSize: "0.4em", verticalAlign: "super", marginLeft: "-0.05em", display: "inline-block", transform: "rotate(-12deg)" }}>+</span>
           </span>
         </div>
 
