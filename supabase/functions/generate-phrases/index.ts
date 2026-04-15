@@ -376,6 +376,37 @@ Example output: ["lawn care service", "moss removal", "landscaping company", "ya
     const totalDemand = intentBuckets.reduce((s, b) => s + b.total_search_volume, 0);
     console.log(`Intent buckets: ${intentBuckets.length}, total demand: ${totalDemand}/mo`);
 
+    // ── Step 4: Estimate difficulty per bucket using competitor domain ranks ──
+    let bucketDifficulty: Record<string, { avgCompetitorRank: number; level: string; color: string; topCompetitors: string[] }> = {};
+    try {
+      // For top 3 buckets, search the top canonical phrase and get competitor domain ranks
+      const topBuckets = intentBuckets.slice(0, 3);
+      const competitorSearches = await Promise.all(
+        topBuckets.map(b => findTopCompetitorDomains(b.canonical_phrases[0] || b.keywords[0]?.keyword || '', city || ''))
+      );
+
+      // Collect all unique competitor domains
+      const allDomains = competitorSearches.flat();
+      const rankMap = allDomains.length > 0 ? await fetchCompetitorRanks(allDomains, creds) : new Map();
+
+      for (let i = 0; i < topBuckets.length; i++) {
+        const bucket = topBuckets[i];
+        const competitors = competitorSearches[i];
+        const ranks = competitors.map(d => rankMap.get(d) || 0).filter(r => r > 0);
+        const avgRank = ranks.length > 0 ? Math.round(ranks.reduce((s, r) => s + r, 0) / ranks.length) : 0;
+        const difficulty = getDifficultyLabel(avgRank);
+        bucketDifficulty[bucket.id] = {
+          avgCompetitorRank: avgRank,
+          level: difficulty.level,
+          color: difficulty.color,
+          topCompetitors: competitors,
+        };
+      }
+      console.log(`Difficulty assessed for ${Object.keys(bucketDifficulty).length} buckets`);
+    } catch (diffErr) {
+      console.warn('Difficulty assessment failed (non-fatal):', diffErr);
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -387,6 +418,7 @@ Example output: ["lawn care service", "moss removal", "landscaping company", "ya
           cpc: k.cpc,
         })),
         intentBuckets,
+        bucketDifficulty,
         locationCode,
         totalDemand,
       }),
