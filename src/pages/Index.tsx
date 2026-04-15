@@ -168,7 +168,7 @@ export default function Index() {
             Find out why you're not on page 1 — and how to fix it.
         </p>
         <p className="absolute top-[14rem] sm:top-[15rem] left-6 z-10 text-sm sm:text-base text-foreground/70 leading-relaxed max-w-lg italic" style={{ fontFamily: "'Bookman Old Style', 'URW Bookman', 'Bookman', serif" }}>
-            Only <span className="text-primary font-bold not-italic">Osmosis™</span> prioritizes your future customers' need for you — and we own it.
+            Only <span className="text-primary font-bold not-italic">Osmosis™</span> prioritizes your future customers' need for you, first.
         </p>
 
 
