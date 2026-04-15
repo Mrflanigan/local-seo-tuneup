@@ -143,6 +143,87 @@ Return format:
   }
 }
 
+// ── Fetch domain ranks for top SERP competitors to estimate difficulty ──
+async function fetchCompetitorRanks(
+  domains: string[],
+  creds: string
+): Promise<Map<string, number>> {
+  const rankMap = new Map<string, number>();
+  if (domains.length === 0) return rankMap;
+
+  // Batch up to 10 domains in parallel
+  const uniqueDomains = [...new Set(domains)].slice(0, 10);
+  
+  try {
+    // DataForSEO allows multiple targets in one request via separate task items
+    const tasks = uniqueDomains.map(d => ({ target: d, internal_list_limit: 0, backlinks_status_type: 'live' }));
+    const resp = await fetch('https://api.dataforseo.com/v3/backlinks/summary/live', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${creds}`,
+      },
+      body: JSON.stringify(tasks),
+    });
+
+    if (resp.ok) {
+      const data = await resp.json();
+      const results = data?.tasks || [];
+      for (const task of results) {
+        const r = task?.result?.[0];
+        if (r?.target && typeof r.rank === 'number') {
+          rankMap.set(r.target.replace(/^www\./, '').toLowerCase(), r.rank);
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('Competitor rank lookup failed:', e);
+  }
+
+  return rankMap;
+}
+
+function getDifficultyLabel(avgRank: number): { level: string; color: string } {
+  if (avgRank >= 60) return { level: 'Very Hard', color: '#ef4444' };
+  if (avgRank >= 40) return { level: 'Hard', color: '#f97316' };
+  if (avgRank >= 20) return { level: 'Moderate', color: '#eab308' };
+  if (avgRank >= 5) return { level: 'Achievable', color: '#22c55e' };
+  return { level: 'Low Competition', color: '#3b82f6' };
+}
+
+// ── Use Firecrawl search to find top competitors for a phrase ──
+async function findTopCompetitorDomains(phrase: string, city: string): Promise<string[]> {
+  const firecrawlKey = Deno.env.get('FIRECRAWL_API_KEY');
+  if (!firecrawlKey) return [];
+
+  const searchQuery = city ? `${phrase} ${city}` : phrase;
+  try {
+    const resp = await fetch('https://api.firecrawl.dev/v1/search', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${firecrawlKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query: searchQuery, limit: 5 }),
+    });
+
+    if (!resp.ok) return [];
+    const data = await resp.json();
+    const results = data.data || [];
+    
+    return results
+      .map((r: any) => {
+        try {
+          return new URL(r.url).hostname.replace(/^www\./, '').toLowerCase();
+        } catch { return null; }
+      })
+      .filter(Boolean)
+      .slice(0, 3);
+  } catch {
+    return [];
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
