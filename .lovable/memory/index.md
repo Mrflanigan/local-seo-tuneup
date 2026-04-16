@@ -1,3 +1,6 @@
+# Memory: index.md
+Updated: today
+
 # Project Memory
 
 ## Core
@@ -9,10 +12,10 @@ MVP Baseline locked — do NOT change scoring, Phrase Optics, PSI, competitor sc
 Never use "free" — always "complimentary." AI-first support only, no human advisors as product.
 Perplexity = invisible horsepower, never the product. Sell outcomes, not AI access.
 Rate limiting: 3 scans/IP/day, context form after 1st, auto-block repeat abusers.
-Core philosophy: Demand-first SEO — start with search demand, make clients visible to it.
+Code hygiene: present findings first, then follow the 4-step pattern (utils → types → hooks → cleanup).
+Backlinks = context only, never a product. No outreach/prospecting/disavow language anywhere.
 
 ## Memories
-- [Origin story & philosophy](mem://features/origin-story) — Demand-first SEO: demand is searching, can it find you?
 - [Brand direction](mem://design/brand-direction) — Rise to the Top dark theme, landmark imagery, gold accents
 - [Scoring categories](mem://features/scoring) — 5 categories, 100pts total, personalized findings
 - [App architecture](mem://features/architecture) — Firecrawl → scoring service → report with email gate
@@ -26,3 +29,5 @@ Core philosophy: Demand-first SEO — start with search demand, make clients vis
 - [Business model](mem://features/business-model) — 5-tier: Complimentary → Game Plan → Guided Climb → Full Rebuild → Paid Visibility
 - [Sales philosophy](mem://features/sales-philosophy) — Anti-agency trust-first, outcome-based tiers, transparent pricing
 - [Rate limiting](mem://features/rate-limiting) — 3 scans/IP/day, context form after 1st, block repeat abusers, exact copy
+- [Code hygiene pattern](mem://features/code-hygiene-pattern) — 4-step consolidation: shared utils → unified types → shared hooks → cleanup
+- [Backlink Lane](mem://features/backlink-lane) — Authority label model, BacklinkCard UI/narrative, Fix Package tie-in, paste-ready GPT prompt
