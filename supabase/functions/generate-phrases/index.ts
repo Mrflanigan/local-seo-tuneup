@@ -24,8 +24,25 @@ interface IntentBucket {
 }
 
 // ── Resolve city name to DataForSEO location_code ──
+// Strict: only accept City / DMA / State whose location_name actually contains
+// a token from the user's input. Never silently accept a Country match.
 async function resolveLocationCode(city: string, creds: string): Promise<number | null> {
   try {
+    // Strip noise like "metro area", "greater", "downtown" before matching
+    const cleaned = city
+      .toLowerCase()
+      .replace(/\b(metro area|metro|greater|downtown|area|region)\b/g, '')
+      .trim();
+    const tokens = cleaned
+      .split(/[\s,]+/)
+      .map(t => t.trim())
+      .filter(t => t.length >= 3); // ignore "wa", "of", etc.
+
+    if (tokens.length === 0) {
+      console.warn(`No usable tokens in city input "${city}"`);
+      return null;
+    }
+
     const resp = await fetch(
       'https://api.dataforseo.com/v3/keywords_data/google_ads/locations',
       {
@@ -34,7 +51,7 @@ async function resolveLocationCode(city: string, creds: string): Promise<number 
           'Content-Type': 'application/json',
           'Authorization': `Basic ${creds}`,
         },
-        body: JSON.stringify([{ country: 'US', search: city, limit: 5 }]),
+        body: JSON.stringify([{ country: 'US', search: cleaned, limit: 20 }]),
       }
     );
     if (!resp.ok) {
@@ -42,21 +59,108 @@ async function resolveLocationCode(city: string, creds: string): Promise<number 
       return null;
     }
     const data = await resp.json();
-    const results = data?.tasks?.[0]?.result || [];
-    // Prefer City or DMA-level matches
-    const cityMatch = results.find((r: any) =>
-      r.location_type === 'City' || r.location_type === 'DMA Region'
-    );
-    const bestMatch = cityMatch || results[0];
-    if (bestMatch?.location_code) {
-      console.log(`Resolved "${city}" → ${bestMatch.location_name} (${bestMatch.location_code}, ${bestMatch.location_type})`);
-      return bestMatch.location_code;
+    const results: any[] = data?.tasks?.[0]?.result || [];
+
+    // Only consider local-scoped matches whose name contains an input token
+    const localTypes = new Set(['City', 'DMA Region', 'State', 'Region']);
+    const typePriority: Record<string, number> = {
+      'City': 0,
+      'DMA Region': 1,
+      'Region': 2,
+      'State': 3,
+    };
+
+    const candidates = results.filter(r => {
+      if (!localTypes.has(r.location_type)) return false;
+      const name = (r.location_name || '').toLowerCase();
+      return tokens.some(t => name.includes(t));
+    });
+
+    if (candidates.length === 0) {
+      console.warn(`No local match for "${city}" (rejected ${results.length} non-matching results, including any Country matches)`);
+      return null;
     }
-    return null;
+
+    candidates.sort((a, b) =>
+      (typePriority[a.location_type] ?? 9) - (typePriority[b.location_type] ?? 9)
+    );
+    const best = candidates[0];
+    console.log(`Resolved "${city}" → ${best.location_name} (${best.location_code}, ${best.location_type})`);
+    return best.location_code;
   } catch (e) {
     console.warn('Location resolution error:', e);
     return null;
   }
+}
+
+// ── Validate AI seed phrases: must be array of 3+ short, clean phrases ──
+function validateSeedPhrases(phrases: unknown): string[] | null {
+  if (!Array.isArray(phrases)) return null;
+  const cleaned = phrases
+    .filter((p): p is string => typeof p === 'string')
+    .map(p => p.trim())
+    .filter(p => {
+      if (p.length < 3 || p.length > 60) return false;
+      const wordCount = p.split(/\s+/).length;
+      if (wordCount < 1 || wordCount > 6) return false;
+      // Reject punctuation soup (multiple dots, ellipses, slashes)
+      if (/\.{2,}|…|\.\s*\./.test(p)) return false;
+      if ((p.match(/[.,;:!?]/g) || []).length > 1) return false;
+      return true;
+    });
+  return cleaned.length >= 3 ? cleaned.slice(0, 10) : null;
+}
+
+// ── Call Gemini for seed phrases with one retry on bad output ──
+async function generateSeedPhrases(
+  prompt: string,
+  supabaseUrl: string,
+  serviceKey: string
+): Promise<string[]> {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const stricterPrompt = attempt === 0
+      ? prompt
+      : prompt + '\n\nSTRICT: Return ONLY a JSON array of 10 strings. Each string is 2-5 words. No ellipses, no dots, no slashes. Example: ["lawn care","moss removal","yard cleanup",...]';
+
+    try {
+      const aiResponse = await fetch(`${supabaseUrl}/functions/v1/ai-proxy`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${serviceKey}`,
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages: [{ role: 'user', content: stricterPrompt }],
+        }),
+      });
+      if (!aiResponse.ok) continue;
+      const aiData = await aiResponse.json();
+      const content = aiData.choices?.[0]?.message?.content || '';
+      const cleaned = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(cleaned);
+      } catch {
+        // Try to extract a JSON array substring
+        const arrMatch = cleaned.match(/\[[\s\S]*\]/);
+        if (arrMatch) {
+          try { parsed = JSON.parse(arrMatch[0]); } catch { parsed = null; }
+        }
+      }
+
+      const valid = validateSeedPhrases(parsed);
+      if (valid) {
+        console.log(`Seed phrases (attempt ${attempt + 1}):`, valid);
+        return valid;
+      }
+      console.warn(`Attempt ${attempt + 1} returned invalid phrases:`, parsed);
+    } catch (e) {
+      console.warn(`Attempt ${attempt + 1} threw:`, e);
+    }
+  }
+  return [];
 }
 
 // ── Cluster keywords into intent buckets using AI ──
