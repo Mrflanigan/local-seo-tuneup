@@ -15,11 +15,11 @@ interface Props {
 }
 
 const CATEGORY_META: { key: keyof SeedExpansion; label: string; blurb: string }[] = [
-  { key: "synonyms",          label: "Synonym variants",        blurb: "different words for the same service" },
-  { key: "problem_language",  label: "Problem language",        blurb: "how customers describe the pain" },
-  { key: "colloquial",        label: "Colloquial / lazy phrasing", blurb: "how people actually type when they're in a hurry" },
-  { key: "cost_comparison",   label: "Cost & comparison intent", blurb: "phrases used while shopping around" },
-  { key: "adjacent_services", label: "Adjacent services",       blurb: "related things you probably also do" },
+  { key: "synonyms",          label: "The other words for what you do", blurb: "what customers call it when they don't know your industry terms" },
+  { key: "problem_language",  label: "How they describe the pain",      blurb: "the words people use before they know who to call" },
+  { key: "colloquial",        label: "How they actually type it",       blurb: "short, casual, in-a-hurry phrasing" },
+  { key: "cost_comparison",   label: "What they search while shopping", blurb: "price, comparison, and decision-stage queries" },
+  { key: "adjacent_services", label: "Doors that lead to your door",    blurb: "related searches that bring the right customer your way" },
 ];
 
 export default function SeedExpansionReveal({ description, expansion }: Props) {
@@ -42,10 +42,7 @@ export default function SeedExpansionReveal({ description, expansion }: Props) {
         <div className="flex items-center gap-3">
           <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
           <span className="text-sm sm:text-base font-semibold text-white">
-            How we widened your net
-          </span>
-          <span className="text-xs text-white/50 hidden sm:inline">
-            — AI expanded your words into {totalCount} customer search angles
+            We turned your description into {totalCount} ways customers actually search
           </span>
         </div>
         <ChevronDown
@@ -63,8 +60,8 @@ export default function SeedExpansionReveal({ description, expansion }: Props) {
           </div>
 
           <div>
-            <p className="text-xs uppercase tracking-widest text-white/40 font-semibold mb-2">
-              We expanded that into how real customers search
+            <p className="text-xs uppercase tracking-widest text-primary/70 font-semibold mb-2">
+              Here's the bigger net we cast for you
             </p>
             <div className="space-y-3">
               {CATEGORY_META.map(({ key, label, blurb }) => {
@@ -92,10 +89,18 @@ export default function SeedExpansionReveal({ description, expansion }: Props) {
             </div>
           </div>
 
-          <p className="text-xs text-white/50 leading-relaxed pt-1 border-t border-white/10">
-            We then handed all of those to a real keyword database to see which ones people in your
-            area actually search for — and how often. The numbers above are what survived.
-          </p>
+          <div className="pt-3 border-t border-white/10 space-y-2">
+            <p className="text-sm text-white/85 leading-relaxed">
+              Most business owners describe themselves the way they'd describe themselves at a
+              networking event. Customers don't search that way. So we did the translation —
+              automatically — and then checked which of those translations have real demand in your
+              area. <span className="text-white font-semibold">The numbers above are what survived.</span>
+            </p>
+            <p className="text-xs text-white/55 leading-relaxed italic">
+              This is the kind of thinking your site should be doing for you every day. When you
+              work with us, it does.
+            </p>
+          </div>
         </div>
       )}
     </div>
