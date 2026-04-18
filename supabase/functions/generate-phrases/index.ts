@@ -119,6 +119,13 @@ export interface SeedExpansion {
   adjacent_services: string[];
 }
 
+// Plain-English customer-facing restatement of the three intake inputs
+export interface InputInterpretation {
+  what_you_do: string;       // one-sentence restatement of the service
+  who_you_serve: string;     // one-phrase restatement of the customer
+  where_you_serve: string;   // restated location, expanded if obvious
+}
+
 function flattenExpansion(exp: SeedExpansion): string[] {
   const all = [
     ...(exp.synonyms || []),
