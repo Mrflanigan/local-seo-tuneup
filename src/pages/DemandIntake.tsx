@@ -73,6 +73,7 @@ export default function DemandIntake() {
           intentBuckets: data?.intentBuckets || null,
           bucketDifficulty: data?.bucketDifficulty || null,
           totalDemand: data?.totalDemand || null,
+          seedExpansion: data?.seedExpansion || null,
         },
       });
     } catch (err) {
