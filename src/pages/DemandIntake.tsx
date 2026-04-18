@@ -238,8 +238,9 @@ function FormPhase({
             Tell us three things. Our AI will translate them into how your customers actually search,
             then a real keyword database will show you how much demand is out there.
           </p>
-          <p className="text-primary font-semibold italic">
-            Consider it handled.
+          <p className="text-lg sm:text-xl">
+            <span className="text-white/70">With us…</span>{" "}
+            <span className="text-primary font-bold italic">Consider it handled!</span>
           </p>
         </div>
       </div>
