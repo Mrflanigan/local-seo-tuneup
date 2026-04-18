@@ -60,8 +60,8 @@ export default function SeedExpansionReveal({ description, expansion }: Props) {
           </div>
 
           <div>
-            <p className="text-xs uppercase tracking-widest text-white/40 font-semibold mb-2">
-              We expanded that into how real customers search
+            <p className="text-xs uppercase tracking-widest text-primary/70 font-semibold mb-2">
+              Here's the bigger net we cast for you
             </p>
             <div className="space-y-3">
               {CATEGORY_META.map(({ key, label, blurb }) => {
@@ -89,10 +89,18 @@ export default function SeedExpansionReveal({ description, expansion }: Props) {
             </div>
           </div>
 
-          <p className="text-xs text-white/50 leading-relaxed pt-1 border-t border-white/10">
-            We then handed all of those to a real keyword database to see which ones people in your
-            area actually search for — and how often. The numbers above are what survived.
-          </p>
+          <div className="pt-3 border-t border-white/10 space-y-2">
+            <p className="text-sm text-white/85 leading-relaxed">
+              Most business owners describe themselves the way they'd describe themselves at a
+              networking event. Customers don't search that way. So we did the translation —
+              automatically — and then checked which of those translations have real demand in your
+              area. <span className="text-white font-semibold">The numbers above are what survived.</span>
+            </p>
+            <p className="text-xs text-white/55 leading-relaxed italic">
+              This is the kind of thinking your site should be doing for you every day. When you
+              work with us, it does.
+            </p>
+          </div>
         </div>
       )}
     </div>
