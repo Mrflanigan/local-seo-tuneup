@@ -347,22 +347,41 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 
-    const prompt = `You are an SEO keyword researcher. Given a business description, generate 10 seed search phrases that real customers would type into Google to find this type of business.
+    const prompt = `You are an expert SEO keyword researcher who knows how REAL customers search — not how business owners describe themselves.
 
 Business name: ${businessName || 'unknown'}
 Description: ${description.trim()}
 ${whoYouServe ? `Target customers: ${whoYouServe}` : ''}
 ${city ? `Location: ${city}` : ''}
 
-Rules:
-- Return ONLY a JSON array of strings, no explanation
-- Each phrase should be 2-5 words
-- Do NOT include the city name in the phrases
-- Focus on what customers actually search for
-- Include a mix of service-specific and general intent phrases
-- Think like a customer, not the business owner
+Your job: generate 12 seed search phrases that EXPAND OUTWARD from the description. Do NOT just rephrase what the owner wrote. Real customers rarely use the owner's language.
 
-Example output: ["lawn care service", "moss removal", "landscaping company", "yard cleanup", "lawn maintenance", "grass cutting", "lawn treatment", "weed control", "yard maintenance", "garden care"]`;
+Cover ALL FIVE of these angles (roughly 2-3 phrases each):
+
+1. SYNONYM VARIANTS — alternate words for the same service
+   (e.g. owner says "residential moving services" → "movers", "moving company", "moving help")
+
+2. PROBLEM / PAIN LANGUAGE — how customers describe the problem, not the service
+   (e.g. "moss in my grass", "lawn looks terrible", "need to move stuff")
+
+3. COLLOQUIAL / LAZY PHRASING — short, casual, how people actually type
+   (e.g. "help me move", "yard guy", "someone to mow my lawn", "guy who fixes roofs")
+
+4. COST / COMPARISON / DECISION INTENT — phrases used while shopping
+   (e.g. "cheap movers", "best lawn service", "how much do movers cost", "moving company reviews")
+
+5. ADJACENT SERVICES — related things this business probably also does or competes for
+   (e.g. for movers: "packing service", "junk removal", "storage"; for lawn care: "leaf cleanup", "tree trimming")
+
+Hard rules:
+- Return ONLY a JSON array of 12 strings, no explanation, no markdown
+- Each phrase: 2-5 words
+- Do NOT include the city name — the system localizes separately
+- Do NOT echo the owner's exact phrasing back — translate into customer language
+- No punctuation soup, no ellipses
+
+Example for "residential moving services":
+["movers", "moving company", "help me move", "cheap movers", "movers near me", "how much do movers cost", "small move help", "packing and moving", "two guys and a truck", "local moving service", "long distance movers", "moving and storage"]`;
 
 
 
@@ -432,7 +451,7 @@ Example output: ["lawn care service", "moss removal", "landscaping company", "ya
         },
         body: JSON.stringify([
           {
-            keywords: keywords.slice(0, 20),
+            keywords: keywords.slice(0, 25),
             location_code: locationCode,
             language_code: 'en',
           },
