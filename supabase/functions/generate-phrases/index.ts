@@ -614,6 +614,8 @@ Hard rules:
         bucketDifficulty,
         locationCode,
         totalDemand,
+        seedExpansion,
+        userDescription: description.trim(),
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
