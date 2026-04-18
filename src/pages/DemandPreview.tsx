@@ -131,6 +131,11 @@ export default function DemandPreview() {
                 Because we asked about you, we found the people looking for you.
               </p>
 
+              {/* AI interpretation of the three inputs */}
+              {state.interpretation && (
+                <InterpretationCard interpretation={state.interpretation} />
+              )}
+
               {/* Context copy */}
               <p className="text-base sm:text-lg text-white/60 leading-relaxed">
                 Most tools jump straight to your website. We started with your company — what you do
