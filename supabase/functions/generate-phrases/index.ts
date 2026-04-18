@@ -111,30 +111,39 @@ function validateSeedPhrases(phrases: unknown): string[] | null {
   return cleaned.length >= 3 ? cleaned.slice(0, 10) : null;
 }
 
-// ── Call Gemini for seed phrases with one retry on bad output ──
+// ── Call Lovable AI for seed phrases with one retry on bad output ──
 async function generateSeedPhrases(
   prompt: string,
-  supabaseUrl: string,
-  serviceKey: string
+  _supabaseUrl: string,
+  _serviceKey: string
 ): Promise<string[]> {
+  const lovableKey = Deno.env.get('LOVABLE_API_KEY');
+  if (!lovableKey) {
+    console.error('LOVABLE_API_KEY not set — cannot generate AI seeds');
+    return [];
+  }
+
   for (let attempt = 0; attempt < 2; attempt++) {
     const stricterPrompt = attempt === 0
       ? prompt
-      : prompt + '\n\nSTRICT: Return ONLY a JSON array of 10 strings. Each string is 2-5 words. No ellipses, no dots, no slashes. Example: ["lawn care","moss removal","yard cleanup",...]';
+      : prompt + '\n\nSTRICT: Return ONLY a JSON array of 12 strings. Each string is 2-5 words. No ellipses, no dots, no slashes.';
 
     try {
-      const aiResponse = await fetch(`${supabaseUrl}/functions/v1/ai-proxy`, {
+      const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${serviceKey}`,
+          'Authorization': `Bearer ${lovableKey}`,
         },
         body: JSON.stringify({
           model: 'google/gemini-2.5-flash',
           messages: [{ role: 'user', content: stricterPrompt }],
         }),
       });
-      if (!aiResponse.ok) continue;
+      if (!aiResponse.ok) {
+        console.warn(`Lovable AI seed call failed: ${aiResponse.status} ${await aiResponse.text()}`);
+        continue;
+      }
       const aiData = await aiResponse.json();
       const content = aiData.choices?.[0]?.message?.content || '';
       const cleaned = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
@@ -143,7 +152,6 @@ async function generateSeedPhrases(
       try {
         parsed = JSON.parse(cleaned);
       } catch {
-        // Try to extract a JSON array substring
         const arrMatch = cleaned.match(/\[[\s\S]*\]/);
         if (arrMatch) {
           try { parsed = JSON.parse(arrMatch[0]); } catch { parsed = null; }
@@ -195,12 +203,14 @@ Return format:
   }
 ]`;
 
+  const lovableKey = Deno.env.get('LOVABLE_API_KEY');
   try {
-    const aiResp = await fetch(`${supabaseUrl}/functions/v1/ai-proxy`, {
+    if (!lovableKey) throw new Error('LOVABLE_API_KEY missing');
+    const aiResp = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${serviceKey}`,
+        'Authorization': `Bearer ${lovableKey}`,
       },
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash',
