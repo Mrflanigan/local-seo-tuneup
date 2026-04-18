@@ -165,22 +165,22 @@ function validateExpansion(parsed: unknown): SeedExpansion | null {
   return total >= 5 ? exp : null;
 }
 
-// ── Call Lovable AI for seed phrases with one retry on bad output ──
+// ── Call Lovable AI for seed phrases — returns categorized expansion + flat list ──
 async function generateSeedPhrases(
   prompt: string,
   _supabaseUrl: string,
   _serviceKey: string
-): Promise<string[]> {
+): Promise<{ phrases: string[]; expansion: SeedExpansion | null }> {
   const lovableKey = Deno.env.get('LOVABLE_API_KEY');
   if (!lovableKey) {
     console.error('LOVABLE_API_KEY not set — cannot generate AI seeds');
-    return [];
+    return { phrases: [], expansion: null };
   }
 
   for (let attempt = 0; attempt < 2; attempt++) {
     const stricterPrompt = attempt === 0
       ? prompt
-      : prompt + '\n\nSTRICT: Return ONLY a JSON array of 12 strings. Each string is 2-5 words. No ellipses, no dots, no slashes.';
+      : prompt + '\n\nSTRICT: Return ONLY a JSON object with the 5 keys (synonyms, problem_language, colloquial, cost_comparison, adjacent_services). Each value is an array of 2-3 short phrases (2-5 words each). No ellipses, no dots, no slashes, no markdown.';
 
     try {
       const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -192,6 +192,7 @@ async function generateSeedPhrases(
         body: JSON.stringify({
           model: 'google/gemini-2.5-flash',
           messages: [{ role: 'user', content: stricterPrompt }],
+          response_format: { type: 'json_object' },
         }),
       });
       if (!aiResponse.ok) {
@@ -206,23 +207,34 @@ async function generateSeedPhrases(
       try {
         parsed = JSON.parse(cleaned);
       } catch {
-        const arrMatch = cleaned.match(/\[[\s\S]*\]/);
-        if (arrMatch) {
-          try { parsed = JSON.parse(arrMatch[0]); } catch { parsed = null; }
+        const objMatch = cleaned.match(/\{[\s\S]*\}/);
+        if (objMatch) {
+          try { parsed = JSON.parse(objMatch[0]); } catch { parsed = null; }
         }
       }
 
+      // Try categorized object first
+      const exp = validateExpansion(parsed);
+      if (exp) {
+        const flat = flattenExpansion(exp);
+        if (flat.length >= 3) {
+          console.log(`Seed expansion (attempt ${attempt + 1}):`, exp);
+          return { phrases: flat.slice(0, 12), expansion: exp };
+        }
+      }
+
+      // Fallback: maybe model returned a flat array
       const valid = validateSeedPhrases(parsed);
       if (valid) {
-        console.log(`Seed phrases (attempt ${attempt + 1}):`, valid);
-        return valid;
+        console.log(`Seed phrases flat (attempt ${attempt + 1}):`, valid);
+        return { phrases: valid, expansion: null };
       }
-      console.warn(`Attempt ${attempt + 1} returned invalid phrases:`, parsed);
+      console.warn(`Attempt ${attempt + 1} returned invalid output:`, parsed);
     } catch (e) {
       console.warn(`Attempt ${attempt + 1} threw:`, e);
     }
   }
-  return [];
+  return { phrases: [], expansion: null };
 }
 
 // ── Cluster keywords into intent buckets using AI ──
