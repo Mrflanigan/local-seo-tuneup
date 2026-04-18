@@ -203,12 +203,14 @@ Return format:
   }
 ]`;
 
+  const lovableKey = Deno.env.get('LOVABLE_API_KEY');
   try {
-    const aiResp = await fetch(`${supabaseUrl}/functions/v1/ai-proxy`, {
+    if (!lovableKey) throw new Error('LOVABLE_API_KEY missing');
+    const aiResp = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${serviceKey}`,
+        'Authorization': `Bearer ${lovableKey}`,
       },
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash',
