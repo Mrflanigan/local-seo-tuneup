@@ -376,23 +376,29 @@ Example output: ["lawn care service", "moss removal", "landscaping company", "ya
       }),
     });
 
-    let seedPhrases: string[] = [];
-    if (aiResponse.ok) {
-      const aiData = await aiResponse.json();
-      const content = aiData.choices?.[0]?.message?.content || '';
-      try {
-        const cleaned = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-        seedPhrases = JSON.parse(cleaned);
-      } catch {
-        seedPhrases = content.split('\n').map((l: string) => l.replace(/^[\d\-\*\.]+\s*/, '').replace(/"/g, '').trim()).filter(Boolean);
-      }
+    const aiSeeds = await generateSeedPhrases(prompt, supabaseUrl, serviceKey);
+    let seedPhrases: string[] = aiSeeds;
+
+    if (seedPhrases.length === 0) {
+      // Fallback: split the user's description into rough phrases
+      seedPhrases = description
+        .trim()
+        .split(/,|;|\band\b|\bor\b/)
+        .map((s: string) => s.trim().replace(/\.+$/, ''))
+        .filter((s: string) => s.length >= 3 && s.split(/\s+/).length <= 6)
+        .slice(0, 10);
+      console.log('Using description-fallback seed phrases:', seedPhrases);
     }
 
     if (seedPhrases.length === 0) {
-      seedPhrases = description.trim().split(/,|;|\band\b/).map((s: string) => s.trim()).filter(Boolean).slice(0, 10);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "We couldn't generate search phrases from that description. Try describing the services in 1–3 short phrases (e.g. 'lawn care, moss removal, yard cleanup').",
+        }),
+        { status: 422, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
-    seedPhrases = seedPhrases.filter((p: string) => typeof p === 'string' && p.length > 1).slice(0, 10);
-    console.log('Seed phrases from AI:', seedPhrases);
 
     // ── Step 2: Resolve location + call DataForSEO ──
     const creds = Deno.env.get('DATAFORSEO_CREDENTIALS');
