@@ -36,6 +36,7 @@ interface DemandState {
   bucketDifficulty: Record<string, BucketDifficultyInfo> | null;
   totalDemand: number | null;
   seedExpansion?: SeedExpansion | null;
+  interpretation?: InputInterpretation | null;
 }
 
 export default function DemandPreview() {
@@ -44,7 +45,7 @@ export default function DemandPreview() {
   const { scan, startScan } = useScan();
 
   const state = (location.state as DemandState) || {
-    description: "", city: "", phrases: [], volumes: null, intentBuckets: null, bucketDifficulty: null, totalDemand: null, seedExpansion: null,
+    description: "", city: "", phrases: [], volumes: null, intentBuckets: null, bucketDifficulty: null, totalDemand: null, seedExpansion: null, interpretation: null,
   };
 
   const [url, setUrl] = useState("");
