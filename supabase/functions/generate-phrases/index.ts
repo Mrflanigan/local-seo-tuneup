@@ -451,7 +451,7 @@ Example for "residential moving services":
         },
         body: JSON.stringify([
           {
-            keywords: keywords.slice(0, 20),
+            keywords: keywords.slice(0, 25),
             location_code: locationCode,
             language_code: 'en',
           },
