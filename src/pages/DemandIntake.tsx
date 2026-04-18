@@ -238,8 +238,9 @@ function FormPhase({
             Tell us three things. Our AI will translate them into how your customers actually search,
             then a real keyword database will show you how much demand is out there.
           </p>
-          <p className="text-primary font-semibold italic">
-            Consider it handled.
+          <p className="text-lg sm:text-xl">
+            <span className="text-white/70">With us…</span>{" "}
+            <span className="text-primary font-bold italic">Consider it handled!</span>
           </p>
         </div>
       </div>
@@ -323,10 +324,11 @@ function LoadingPhase({ whatYouDo, location }: { whatYouDo: string; location: st
 
   return (
     <div className="mt-auto pt-24 pb-16 space-y-8 animate-in fade-in duration-500 min-h-[28rem]">
-      <div className="flex items-center gap-3">
-        <Sparkles className="h-6 w-6 text-primary animate-pulse" />
-        <p className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
-          Consider it handled.
+      <div className="flex items-baseline gap-3 flex-wrap">
+        <Sparkles className="h-6 w-6 text-primary animate-pulse self-center" />
+        <p className="text-2xl sm:text-3xl font-semibold tracking-tight">
+          <span className="text-white/70">With us…</span>{" "}
+          <span className="text-primary italic">Consider it handled!</span>
         </p>
       </div>
 
@@ -376,10 +378,11 @@ function RevealPhase({
   return (
     <div className="mt-auto pt-12 pb-6 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="space-y-2">
-        <div className="flex items-center gap-3">
-          <Sparkles className="h-6 w-6 text-primary" />
-          <p className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
-            Consider it handled.
+        <div className="flex items-baseline gap-3 flex-wrap">
+          <Sparkles className="h-6 w-6 text-primary self-center" />
+          <p className="text-2xl sm:text-3xl font-semibold tracking-tight">
+            <span className="text-white/70">With us…</span>{" "}
+            <span className="text-primary italic">Consider it handled!</span>
           </p>
         </div>
         <p className="text-base sm:text-lg text-white/65 max-w-3xl leading-relaxed">
