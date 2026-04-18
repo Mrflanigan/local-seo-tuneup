@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useScan } from "@/contexts/ScanContext";
 import ScanNarrative from "@/components/ScanNarrative";
 import SeedExpansionReveal, { type SeedExpansion } from "@/components/SeedExpansionReveal";
+import InterpretationCard, { type InputInterpretation } from "@/components/InterpretationCard";
 import type { BusinessType } from "@/lib/scoring/types";
 import peakBg from "@/assets/getstarted-peak.jpg";
 
@@ -35,6 +36,7 @@ interface DemandState {
   bucketDifficulty: Record<string, BucketDifficultyInfo> | null;
   totalDemand: number | null;
   seedExpansion?: SeedExpansion | null;
+  interpretation?: InputInterpretation | null;
 }
 
 export default function DemandPreview() {
@@ -43,7 +45,7 @@ export default function DemandPreview() {
   const { scan, startScan } = useScan();
 
   const state = (location.state as DemandState) || {
-    description: "", city: "", phrases: [], volumes: null, intentBuckets: null, bucketDifficulty: null, totalDemand: null, seedExpansion: null,
+    description: "", city: "", phrases: [], volumes: null, intentBuckets: null, bucketDifficulty: null, totalDemand: null, seedExpansion: null, interpretation: null,
   };
 
   const [url, setUrl] = useState("");
@@ -128,6 +130,11 @@ export default function DemandPreview() {
               <p className="text-xl sm:text-2xl font-semibold text-white/90 leading-snug">
                 Because we asked about you, we found the people looking for you.
               </p>
+
+              {/* AI interpretation of the three inputs */}
+              {state.interpretation && (
+                <InterpretationCard interpretation={state.interpretation} />
+              )}
 
               {/* Context copy */}
               <p className="text-base sm:text-lg text-white/60 leading-relaxed">

@@ -119,6 +119,13 @@ export interface SeedExpansion {
   adjacent_services: string[];
 }
 
+// Plain-English customer-facing restatement of the three intake inputs
+export interface InputInterpretation {
+  what_you_do: string;       // one-sentence restatement of the service
+  who_you_serve: string;     // one-phrase restatement of the customer
+  where_you_serve: string;   // restated location, expanded if obvious
+}
+
 function flattenExpansion(exp: SeedExpansion): string[] {
   const all = [
     ...(exp.synonyms || []),
@@ -165,22 +172,40 @@ function validateExpansion(parsed: unknown): SeedExpansion | null {
   return total >= 5 ? exp : null;
 }
 
-// ── Call Lovable AI for seed phrases — returns categorized expansion + flat list ──
+// ── Call Lovable AI for seed phrases — returns categorized expansion + flat list + interpretation ──
+function validateInterpretation(parsed: unknown): InputInterpretation | null {
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null;
+  const obj = parsed as Record<string, unknown>;
+  const s = (k: string): string => {
+    const v = obj[k];
+    return typeof v === 'string' ? v.trim() : '';
+  };
+  const what = s('what_you_do');
+  const who = s('who_you_serve');
+  const where = s('where_you_serve');
+  if (!what || what.length < 3) return null;
+  return {
+    what_you_do: what.slice(0, 200),
+    who_you_serve: who.slice(0, 120),
+    where_you_serve: where.slice(0, 120),
+  };
+}
+
 async function generateSeedPhrases(
   prompt: string,
   _supabaseUrl: string,
   _serviceKey: string
-): Promise<{ phrases: string[]; expansion: SeedExpansion | null }> {
+): Promise<{ phrases: string[]; expansion: SeedExpansion | null; interpretation: InputInterpretation | null }> {
   const lovableKey = Deno.env.get('LOVABLE_API_KEY');
   if (!lovableKey) {
     console.error('LOVABLE_API_KEY not set — cannot generate AI seeds');
-    return { phrases: [], expansion: null };
+    return { phrases: [], expansion: null, interpretation: null };
   }
 
   for (let attempt = 0; attempt < 2; attempt++) {
     const stricterPrompt = attempt === 0
       ? prompt
-      : prompt + '\n\nSTRICT: Return ONLY a JSON object with the 5 keys (synonyms, problem_language, colloquial, cost_comparison, adjacent_services). Each value is an array of 2-3 short phrases (2-5 words each). No ellipses, no dots, no slashes, no markdown.';
+      : prompt + '\n\nSTRICT: Return ONLY a JSON object with keys: interpretation (object with what_you_do, who_you_serve, where_you_serve strings), and expansion (object with synonyms, problem_language, colloquial, cost_comparison, adjacent_services arrays). No markdown.';
 
     try {
       const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -203,7 +228,7 @@ async function generateSeedPhrases(
       const content = aiData.choices?.[0]?.message?.content || '';
       const cleaned = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
 
-      let parsed: unknown;
+      let parsed: any;
       try {
         parsed = JSON.parse(cleaned);
       } catch {
@@ -213,13 +238,14 @@ async function generateSeedPhrases(
         }
       }
 
-      // Try categorized object first
-      const exp = validateExpansion(parsed);
+      // New shape: { interpretation, expansion }
+      const interpretation = validateInterpretation(parsed?.interpretation);
+      const exp = validateExpansion(parsed?.expansion) || validateExpansion(parsed);
       if (exp) {
         const flat = flattenExpansion(exp);
         if (flat.length >= 3) {
-          console.log(`Seed expansion (attempt ${attempt + 1}):`, exp);
-          return { phrases: flat.slice(0, 12), expansion: exp };
+          console.log(`Seed expansion (attempt ${attempt + 1}): ${flat.length} phrases, interpretation=${!!interpretation}`);
+          return { phrases: flat.slice(0, 12), expansion: exp, interpretation };
         }
       }
 
@@ -227,14 +253,14 @@ async function generateSeedPhrases(
       const valid = validateSeedPhrases(parsed);
       if (valid) {
         console.log(`Seed phrases flat (attempt ${attempt + 1}):`, valid);
-        return { phrases: valid, expansion: null };
+        return { phrases: valid, expansion: null, interpretation };
       }
       console.warn(`Attempt ${attempt + 1} returned invalid output:`, parsed);
     } catch (e) {
       console.warn(`Attempt ${attempt + 1} threw:`, e);
     }
   }
-  return { phrases: [], expansion: null };
+  return { phrases: [], expansion: null, interpretation: null };
 }
 
 // ── Cluster keywords into intent buckets using AI ──
@@ -430,26 +456,39 @@ Description: ${description.trim()}
 ${whoYouServe ? `Target customers: ${whoYouServe}` : ''}
 ${city ? `Location: ${city}` : ''}
 
-Your job: EXPAND OUTWARD from the description into how real customers actually search. Do NOT just rephrase what the owner wrote.
+You have TWO jobs.
 
-Return a JSON object with EXACTLY these 5 keys, each an array of 2-3 short phrases (2-5 words each):
+JOB 1 — INTERPRET the three inputs and restate them the way a customer would think about them. Be plain, short, human. Do NOT add disclaimers. Do NOT use industry jargon. If an input is vague or empty, make a reasonable, generous interpretation rather than refusing.
+
+JOB 2 — EXPAND OUTWARD from the description into how real customers actually search. Do NOT just rephrase what the owner wrote.
+
+Return a single JSON object with this exact shape:
 
 {
-  "synonyms": [...],            // alternate words for the same service (owner: "residential moving services" → "movers", "moving company")
-  "problem_language": [...],    // how customers describe the pain, not the service ("need to move stuff", "moss in my grass")
-  "colloquial": [...],          // short, casual, how people actually type ("help me move", "yard guy")
-  "cost_comparison": [...],     // shopping intent ("cheap movers", "how much do movers cost", "best lawn service")
-  "adjacent_services": [...]    // related things this business probably also does ("packing service", "junk removal")
+  "interpretation": {
+    "what_you_do": "one sentence, 8-18 words, plain English, customer's perspective. e.g. 'You move people's belongings from one home to another, including packing and heavy lifting.'",
+    "who_you_serve": "one short phrase, 3-10 words. e.g. 'Homeowners and renters in the middle of a move.' If empty input, infer from the description.",
+    "where_you_serve": "the location, lightly cleaned and expanded if obvious. e.g. input 'tacoma' → 'Tacoma, WA and the surrounding South Sound area.' Keep it short."
+  },
+  "expansion": {
+    "synonyms": [...],            // alternate words for the same service
+    "problem_language": [...],    // how customers describe the pain, not the service
+    "colloquial": [...],          // short, casual, how people actually type
+    "cost_comparison": [...],     // shopping intent
+    "adjacent_services": [...]    // related things this business probably also does
+  }
 }
 
+Each expansion array: 2-3 short phrases, 2-5 words each, lowercase.
+
 Hard rules:
-- Return ONLY the JSON object, no explanation, no markdown
-- Each phrase: 2-5 words, lowercase
-- Do NOT include the city name — the system localizes separately
-- Do NOT echo the owner's exact phrasing back — translate into customer language
+- Return ONLY the JSON object, no explanation, no markdown fences
+- Do NOT include the city name in expansion phrases — the system localizes separately
+- Do NOT echo the owner's exact phrasing back in expansion — translate into customer language
+- Interpretation must be in second person ("you do X", "your customers are Y")
 - No punctuation soup, no ellipses, no slashes`;
 
-    const { phrases: aiSeeds, expansion: seedExpansion } = await generateSeedPhrases(prompt, supabaseUrl, serviceKey);
+    const { phrases: aiSeeds, expansion: seedExpansion, interpretation } = await generateSeedPhrases(prompt, supabaseUrl, serviceKey);
     let seedPhrases: string[] = aiSeeds;
 
     if (seedPhrases.length === 0) {
@@ -615,7 +654,10 @@ Hard rules:
         locationCode,
         totalDemand,
         seedExpansion,
+        interpretation,
         userDescription: description.trim(),
+        userWhoYouServe: whoYouServe || '',
+        userCity: city || '',
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
