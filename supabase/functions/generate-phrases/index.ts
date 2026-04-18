@@ -370,13 +370,23 @@ Example output: ["lawn care service", "moss removal", "landscaping company", "ya
     let seedPhrases: string[] = aiSeeds;
 
     if (seedPhrases.length === 0) {
-      // Fallback: split the user's description into rough phrases
-      seedPhrases = description
-        .trim()
-        .split(/,|;|\band\b|\bor\b/)
-        .map((s: string) => s.trim().replace(/\.+$/, ''))
-        .filter((s: string) => s.length >= 3 && s.split(/\s+/).length <= 6)
-        .slice(0, 10);
+      // Fallback: extract 2-3 word service phrases from the raw description.
+      // Strips connectors and punctuation, then slides a window of 2-3 words.
+      const cleanedDesc = description
+        .toLowerCase()
+        .replace(/[.,;:!?()]/g, ' ')
+        .replace(/\b(and|or|with|for|the|a|an|of|to|in|on|only|just)\b/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      const words = cleanedDesc.split(' ').filter(w => w.length >= 3);
+      const candidates = new Set<string>();
+      for (let i = 0; i < words.length - 1; i++) {
+        candidates.add(`${words[i]} ${words[i + 1]}`);
+        if (i < words.length - 2) {
+          candidates.add(`${words[i]} ${words[i + 1]} ${words[i + 2]}`);
+        }
+      }
+      seedPhrases = [...candidates].slice(0, 10);
       console.log('Using description-fallback seed phrases:', seedPhrases);
     }
 
