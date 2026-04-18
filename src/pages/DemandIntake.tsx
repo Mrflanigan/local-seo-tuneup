@@ -29,10 +29,21 @@ import peakBg from "@/assets/getstarted-peak.jpg";
 
 export default function DemandIntake() {
   const navigate = useNavigate();
-  const [whatYouDo, setWhatYouDo] = useState("");
-  const [whoYouServe, setWhoYouServe] = useState("");
-  const [location, setLocation] = useState("");
+  const initial = loadIntakeDraft();
+  const [whatYouDo, setWhatYouDo] = useState(initial.whatYouDo);
+  const [whoYouServe, setWhoYouServe] = useState(initial.whoYouServe);
+  const [location, setLocation] = useState(initial.location);
   const [loading, setLoading] = useState(false);
+
+  // Persist on every change (best-effort)
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        INTAKE_KEY,
+        JSON.stringify({ whatYouDo, whoYouServe, location }),
+      );
+    } catch { /* storage full */ }
+  }, [whatYouDo, whoYouServe, location]);
 
   const canSubmit = whatYouDo.trim().length >= 10 && location.trim().length >= 2;
 
