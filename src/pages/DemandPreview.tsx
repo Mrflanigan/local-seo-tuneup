@@ -5,7 +5,7 @@ import { ArrowLeft, Globe, Building2, Search, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useScan } from "@/contexts/ScanContext";
-import ScanningView from "@/components/ScanningView";
+import ScanNarrative from "@/components/ScanNarrative";
 import type { BusinessType } from "@/lib/scoring/types";
 import peakBg from "@/assets/getstarted-peak.jpg";
 
@@ -85,9 +85,7 @@ export default function DemandPreview() {
     );
   };
 
-  if (scan.loading) {
-    return <ScanningView url={scan.url} keywords={scan.keywords} rankPage={scan.rankPage} city={scan.city} businessName={scan.businessName} />;
-  }
+  const isScanning = scan.loading;
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -117,10 +115,12 @@ export default function DemandPreview() {
           </div>
         </div>
 
-        {/* Demand Snapshot content */}
-        <div className="mt-auto pt-16 mb-6 space-y-6">
+        {/* Demand Snapshot content — fixed-min-height slot to prevent layout shift on swap */}
+        <div className="mt-auto pt-16 mb-6 space-y-6 min-h-[28rem]">
 
-          {totalVolume !== null && totalVolume > 0 ? (
+          {isScanning ? (
+            <ScanNarrative url={scan.url} />
+          ) : totalVolume !== null && totalVolume > 0 ? (
             <>
               {/* Headline */}
               <p className="text-xl sm:text-2xl font-semibold text-white/90 leading-snug">
