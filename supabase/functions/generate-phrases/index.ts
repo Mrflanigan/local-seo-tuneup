@@ -172,22 +172,40 @@ function validateExpansion(parsed: unknown): SeedExpansion | null {
   return total >= 5 ? exp : null;
 }
 
-// ── Call Lovable AI for seed phrases — returns categorized expansion + flat list ──
+// ── Call Lovable AI for seed phrases — returns categorized expansion + flat list + interpretation ──
+function validateInterpretation(parsed: unknown): InputInterpretation | null {
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null;
+  const obj = parsed as Record<string, unknown>;
+  const s = (k: string): string => {
+    const v = obj[k];
+    return typeof v === 'string' ? v.trim() : '';
+  };
+  const what = s('what_you_do');
+  const who = s('who_you_serve');
+  const where = s('where_you_serve');
+  if (!what || what.length < 3) return null;
+  return {
+    what_you_do: what.slice(0, 200),
+    who_you_serve: who.slice(0, 120),
+    where_you_serve: where.slice(0, 120),
+  };
+}
+
 async function generateSeedPhrases(
   prompt: string,
   _supabaseUrl: string,
   _serviceKey: string
-): Promise<{ phrases: string[]; expansion: SeedExpansion | null }> {
+): Promise<{ phrases: string[]; expansion: SeedExpansion | null; interpretation: InputInterpretation | null }> {
   const lovableKey = Deno.env.get('LOVABLE_API_KEY');
   if (!lovableKey) {
     console.error('LOVABLE_API_KEY not set — cannot generate AI seeds');
-    return { phrases: [], expansion: null };
+    return { phrases: [], expansion: null, interpretation: null };
   }
 
   for (let attempt = 0; attempt < 2; attempt++) {
     const stricterPrompt = attempt === 0
       ? prompt
-      : prompt + '\n\nSTRICT: Return ONLY a JSON object with the 5 keys (synonyms, problem_language, colloquial, cost_comparison, adjacent_services). Each value is an array of 2-3 short phrases (2-5 words each). No ellipses, no dots, no slashes, no markdown.';
+      : prompt + '\n\nSTRICT: Return ONLY a JSON object with keys: interpretation (object with what_you_do, who_you_serve, where_you_serve strings), and expansion (object with synonyms, problem_language, colloquial, cost_comparison, adjacent_services arrays). No markdown.';
 
     try {
       const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -210,7 +228,7 @@ async function generateSeedPhrases(
       const content = aiData.choices?.[0]?.message?.content || '';
       const cleaned = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
 
-      let parsed: unknown;
+      let parsed: any;
       try {
         parsed = JSON.parse(cleaned);
       } catch {
@@ -220,13 +238,14 @@ async function generateSeedPhrases(
         }
       }
 
-      // Try categorized object first
-      const exp = validateExpansion(parsed);
+      // New shape: { interpretation, expansion }
+      const interpretation = validateInterpretation(parsed?.interpretation);
+      const exp = validateExpansion(parsed?.expansion) || validateExpansion(parsed);
       if (exp) {
         const flat = flattenExpansion(exp);
         if (flat.length >= 3) {
-          console.log(`Seed expansion (attempt ${attempt + 1}):`, exp);
-          return { phrases: flat.slice(0, 12), expansion: exp };
+          console.log(`Seed expansion (attempt ${attempt + 1}): ${flat.length} phrases, interpretation=${!!interpretation}`);
+          return { phrases: flat.slice(0, 12), expansion: exp, interpretation };
         }
       }
 
@@ -234,14 +253,14 @@ async function generateSeedPhrases(
       const valid = validateSeedPhrases(parsed);
       if (valid) {
         console.log(`Seed phrases flat (attempt ${attempt + 1}):`, valid);
-        return { phrases: valid, expansion: null };
+        return { phrases: valid, expansion: null, interpretation };
       }
       console.warn(`Attempt ${attempt + 1} returned invalid output:`, parsed);
     } catch (e) {
       console.warn(`Attempt ${attempt + 1} threw:`, e);
     }
   }
-  return { phrases: [], expansion: null };
+  return { phrases: [], expansion: null, interpretation: null };
 }
 
 // ── Cluster keywords into intent buckets using AI ──
