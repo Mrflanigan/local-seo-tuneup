@@ -42,10 +42,7 @@ export default function SeedExpansionReveal({ description, expansion }: Props) {
         <div className="flex items-center gap-3">
           <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
           <span className="text-sm sm:text-base font-semibold text-white">
-            How we widened your net
-          </span>
-          <span className="text-xs text-white/50 hidden sm:inline">
-            — AI expanded your words into {totalCount} customer search angles
+            We turned your description into {totalCount} ways customers actually search
           </span>
         </div>
         <ChevronDown
