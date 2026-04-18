@@ -324,10 +324,11 @@ function LoadingPhase({ whatYouDo, location }: { whatYouDo: string; location: st
 
   return (
     <div className="mt-auto pt-24 pb-16 space-y-8 animate-in fade-in duration-500 min-h-[28rem]">
-      <div className="flex items-center gap-3">
-        <Sparkles className="h-6 w-6 text-primary animate-pulse" />
-        <p className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
-          Consider it handled.
+      <div className="flex items-baseline gap-3 flex-wrap">
+        <Sparkles className="h-6 w-6 text-primary animate-pulse self-center" />
+        <p className="text-2xl sm:text-3xl font-semibold tracking-tight">
+          <span className="text-white/70">With us…</span>{" "}
+          <span className="text-primary italic">Consider it handled!</span>
         </p>
       </div>
 
