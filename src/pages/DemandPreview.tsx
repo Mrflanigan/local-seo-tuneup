@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useScan } from "@/contexts/ScanContext";
 import ScanNarrative from "@/components/ScanNarrative";
 import SeedExpansionReveal, { type SeedExpansion } from "@/components/SeedExpansionReveal";
+import InterpretationCard, { type InputInterpretation } from "@/components/InterpretationCard";
 import type { BusinessType } from "@/lib/scoring/types";
 import peakBg from "@/assets/getstarted-peak.jpg";
 
