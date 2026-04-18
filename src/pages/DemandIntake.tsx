@@ -1,5 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SEOHead from "@/components/SEOHead";
+
+const INTAKE_KEY = "demandIntake.v1";
+
+type IntakeDraft = { whatYouDo: string; whoYouServe: string; location: string };
+
+function loadIntakeDraft(): IntakeDraft {
+  try {
+    const raw = localStorage.getItem(INTAKE_KEY);
+    if (!raw) return { whatYouDo: "", whoYouServe: "", location: "" };
+    const p = JSON.parse(raw);
+    return {
+      whatYouDo: typeof p?.whatYouDo === "string" ? p.whatYouDo : "",
+      whoYouServe: typeof p?.whoYouServe === "string" ? p.whoYouServe : "",
+      location: typeof p?.location === "string" ? p.location : "",
+    };
+  } catch {
+    return { whatYouDo: "", whoYouServe: "", location: "" };
+  }
+}
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,10 +29,21 @@ import peakBg from "@/assets/getstarted-peak.jpg";
 
 export default function DemandIntake() {
   const navigate = useNavigate();
-  const [whatYouDo, setWhatYouDo] = useState("");
-  const [whoYouServe, setWhoYouServe] = useState("");
-  const [location, setLocation] = useState("");
+  const initial = loadIntakeDraft();
+  const [whatYouDo, setWhatYouDo] = useState(initial.whatYouDo);
+  const [whoYouServe, setWhoYouServe] = useState(initial.whoYouServe);
+  const [location, setLocation] = useState(initial.location);
   const [loading, setLoading] = useState(false);
+
+  // Persist on every change (best-effort)
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        INTAKE_KEY,
+        JSON.stringify({ whatYouDo, whoYouServe, location }),
+      );
+    } catch { /* storage full */ }
+  }, [whatYouDo, whoYouServe, location]);
 
   const canSubmit = whatYouDo.trim().length >= 10 && location.trim().length >= 2;
 
