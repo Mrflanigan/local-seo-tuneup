@@ -103,12 +103,66 @@ function validateSeedPhrases(phrases: unknown): string[] | null {
       if (p.length < 3 || p.length > 60) return false;
       const wordCount = p.split(/\s+/).length;
       if (wordCount < 1 || wordCount > 6) return false;
-      // Reject punctuation soup (multiple dots, ellipses, slashes)
       if (/\.{2,}|…|\.\s*\./.test(p)) return false;
       if ((p.match(/[.,;:!?]/g) || []).length > 1) return false;
       return true;
     });
-  return cleaned.length >= 3 ? cleaned.slice(0, 10) : null;
+  return cleaned.length >= 3 ? cleaned.slice(0, 12) : null;
+}
+
+// Categorized seed expansion — what we show the user as "how we widened your net"
+export interface SeedExpansion {
+  synonyms: string[];
+  problem_language: string[];
+  colloquial: string[];
+  cost_comparison: string[];
+  adjacent_services: string[];
+}
+
+function flattenExpansion(exp: SeedExpansion): string[] {
+  const all = [
+    ...(exp.synonyms || []),
+    ...(exp.problem_language || []),
+    ...(exp.colloquial || []),
+    ...(exp.cost_comparison || []),
+    ...(exp.adjacent_services || []),
+  ];
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const raw of all) {
+    if (typeof raw !== 'string') continue;
+    const p = raw.trim().toLowerCase();
+    if (!p || seen.has(p)) continue;
+    if (p.length < 3 || p.length > 60) continue;
+    const wc = p.split(/\s+/).length;
+    if (wc < 1 || wc > 6) continue;
+    if (/\.{2,}|…|\.\s*\./.test(p)) continue;
+    seen.add(p);
+    out.push(p);
+  }
+  return out;
+}
+
+function validateExpansion(parsed: unknown): SeedExpansion | null {
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null;
+  const obj = parsed as Record<string, unknown>;
+  const cat = (key: string): string[] => {
+    const v = obj[key];
+    if (!Array.isArray(v)) return [];
+    return v.filter((x): x is string => typeof x === 'string').map(s => s.trim()).filter(Boolean);
+  };
+  const exp: SeedExpansion = {
+    synonyms: cat('synonyms'),
+    problem_language: cat('problem_language'),
+    colloquial: cat('colloquial'),
+    cost_comparison: cat('cost_comparison'),
+    adjacent_services: cat('adjacent_services'),
+  };
+  const total =
+    exp.synonyms.length + exp.problem_language.length +
+    exp.colloquial.length + exp.cost_comparison.length +
+    exp.adjacent_services.length;
+  return total >= 5 ? exp : null;
 }
 
 // ── Call Lovable AI for seed phrases with one retry on bad output ──
