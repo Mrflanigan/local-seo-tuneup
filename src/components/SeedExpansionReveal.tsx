@@ -15,11 +15,11 @@ interface Props {
 }
 
 const CATEGORY_META: { key: keyof SeedExpansion; label: string; blurb: string }[] = [
-  { key: "synonyms",          label: "Synonym variants",        blurb: "different words for the same service" },
-  { key: "problem_language",  label: "Problem language",        blurb: "how customers describe the pain" },
-  { key: "colloquial",        label: "Colloquial / lazy phrasing", blurb: "how people actually type when they're in a hurry" },
-  { key: "cost_comparison",   label: "Cost & comparison intent", blurb: "phrases used while shopping around" },
-  { key: "adjacent_services", label: "Adjacent services",       blurb: "related things you probably also do" },
+  { key: "synonyms",          label: "The other words for what you do", blurb: "what customers call it when they don't know your industry terms" },
+  { key: "problem_language",  label: "How they describe the pain",      blurb: "the words people use before they know who to call" },
+  { key: "colloquial",        label: "How they actually type it",       blurb: "short, casual, in-a-hurry phrasing" },
+  { key: "cost_comparison",   label: "What they search while shopping", blurb: "price, comparison, and decision-stage queries" },
+  { key: "adjacent_services", label: "Doors that lead to your door",    blurb: "related searches that bring the right customer your way" },
 ];
 
 export default function SeedExpansionReveal({ description, expansion }: Props) {
