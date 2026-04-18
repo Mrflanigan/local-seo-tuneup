@@ -186,6 +186,14 @@ export default function DemandPreview() {
                 </div>
               ) : null}
 
+              {/* Show our work — AI expansion reveal */}
+              {state.seedExpansion && (
+                <SeedExpansionReveal
+                  description={state.description}
+                  expansion={state.seedExpansion}
+                />
+              )}
+
               {/* Jaw-drop number */}
               <div className="py-4 space-y-2">
                 <p className="text-sm text-white/50 uppercase tracking-widest font-semibold">
