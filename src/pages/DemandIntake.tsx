@@ -74,6 +74,7 @@ export default function DemandIntake() {
           bucketDifficulty: data?.bucketDifficulty || null,
           totalDemand: data?.totalDemand || null,
           seedExpansion: data?.seedExpansion || null,
+          interpretation: data?.interpretation || null,
         },
       });
     } catch (err) {
