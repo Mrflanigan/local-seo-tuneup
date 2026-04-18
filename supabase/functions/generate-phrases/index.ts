@@ -430,38 +430,26 @@ Description: ${description.trim()}
 ${whoYouServe ? `Target customers: ${whoYouServe}` : ''}
 ${city ? `Location: ${city}` : ''}
 
-Your job: generate 12 seed search phrases that EXPAND OUTWARD from the description. Do NOT just rephrase what the owner wrote. Real customers rarely use the owner's language.
+Your job: EXPAND OUTWARD from the description into how real customers actually search. Do NOT just rephrase what the owner wrote.
 
-Cover ALL FIVE of these angles (roughly 2-3 phrases each):
+Return a JSON object with EXACTLY these 5 keys, each an array of 2-3 short phrases (2-5 words each):
 
-1. SYNONYM VARIANTS — alternate words for the same service
-   (e.g. owner says "residential moving services" → "movers", "moving company", "moving help")
-
-2. PROBLEM / PAIN LANGUAGE — how customers describe the problem, not the service
-   (e.g. "moss in my grass", "lawn looks terrible", "need to move stuff")
-
-3. COLLOQUIAL / LAZY PHRASING — short, casual, how people actually type
-   (e.g. "help me move", "yard guy", "someone to mow my lawn", "guy who fixes roofs")
-
-4. COST / COMPARISON / DECISION INTENT — phrases used while shopping
-   (e.g. "cheap movers", "best lawn service", "how much do movers cost", "moving company reviews")
-
-5. ADJACENT SERVICES — related things this business probably also does or competes for
-   (e.g. for movers: "packing service", "junk removal", "storage"; for lawn care: "leaf cleanup", "tree trimming")
+{
+  "synonyms": [...],            // alternate words for the same service (owner: "residential moving services" → "movers", "moving company")
+  "problem_language": [...],    // how customers describe the pain, not the service ("need to move stuff", "moss in my grass")
+  "colloquial": [...],          // short, casual, how people actually type ("help me move", "yard guy")
+  "cost_comparison": [...],     // shopping intent ("cheap movers", "how much do movers cost", "best lawn service")
+  "adjacent_services": [...]    // related things this business probably also does ("packing service", "junk removal")
+}
 
 Hard rules:
-- Return ONLY a JSON array of 12 strings, no explanation, no markdown
-- Each phrase: 2-5 words
+- Return ONLY the JSON object, no explanation, no markdown
+- Each phrase: 2-5 words, lowercase
 - Do NOT include the city name — the system localizes separately
 - Do NOT echo the owner's exact phrasing back — translate into customer language
-- No punctuation soup, no ellipses
+- No punctuation soup, no ellipses, no slashes`;
 
-Example for "residential moving services":
-["movers", "moving company", "help me move", "cheap movers", "movers near me", "how much do movers cost", "small move help", "packing and moving", "two guys and a truck", "local moving service", "long distance movers", "moving and storage"]`;
-
-
-
-    const aiSeeds = await generateSeedPhrases(prompt, supabaseUrl, serviceKey);
+    const { phrases: aiSeeds, expansion: seedExpansion } = await generateSeedPhrases(prompt, supabaseUrl, serviceKey);
     let seedPhrases: string[] = aiSeeds;
 
     if (seedPhrases.length === 0) {
