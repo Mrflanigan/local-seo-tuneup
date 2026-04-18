@@ -456,26 +456,39 @@ Description: ${description.trim()}
 ${whoYouServe ? `Target customers: ${whoYouServe}` : ''}
 ${city ? `Location: ${city}` : ''}
 
-Your job: EXPAND OUTWARD from the description into how real customers actually search. Do NOT just rephrase what the owner wrote.
+You have TWO jobs.
 
-Return a JSON object with EXACTLY these 5 keys, each an array of 2-3 short phrases (2-5 words each):
+JOB 1 — INTERPRET the three inputs and restate them the way a customer would think about them. Be plain, short, human. Do NOT add disclaimers. Do NOT use industry jargon. If an input is vague or empty, make a reasonable, generous interpretation rather than refusing.
+
+JOB 2 — EXPAND OUTWARD from the description into how real customers actually search. Do NOT just rephrase what the owner wrote.
+
+Return a single JSON object with this exact shape:
 
 {
-  "synonyms": [...],            // alternate words for the same service (owner: "residential moving services" → "movers", "moving company")
-  "problem_language": [...],    // how customers describe the pain, not the service ("need to move stuff", "moss in my grass")
-  "colloquial": [...],          // short, casual, how people actually type ("help me move", "yard guy")
-  "cost_comparison": [...],     // shopping intent ("cheap movers", "how much do movers cost", "best lawn service")
-  "adjacent_services": [...]    // related things this business probably also does ("packing service", "junk removal")
+  "interpretation": {
+    "what_you_do": "one sentence, 8-18 words, plain English, customer's perspective. e.g. 'You move people's belongings from one home to another, including packing and heavy lifting.'",
+    "who_you_serve": "one short phrase, 3-10 words. e.g. 'Homeowners and renters in the middle of a move.' If empty input, infer from the description.",
+    "where_you_serve": "the location, lightly cleaned and expanded if obvious. e.g. input 'tacoma' → 'Tacoma, WA and the surrounding South Sound area.' Keep it short."
+  },
+  "expansion": {
+    "synonyms": [...],            // alternate words for the same service
+    "problem_language": [...],    // how customers describe the pain, not the service
+    "colloquial": [...],          // short, casual, how people actually type
+    "cost_comparison": [...],     // shopping intent
+    "adjacent_services": [...]    // related things this business probably also does
+  }
 }
 
+Each expansion array: 2-3 short phrases, 2-5 words each, lowercase.
+
 Hard rules:
-- Return ONLY the JSON object, no explanation, no markdown
-- Each phrase: 2-5 words, lowercase
-- Do NOT include the city name — the system localizes separately
-- Do NOT echo the owner's exact phrasing back — translate into customer language
+- Return ONLY the JSON object, no explanation, no markdown fences
+- Do NOT include the city name in expansion phrases — the system localizes separately
+- Do NOT echo the owner's exact phrasing back in expansion — translate into customer language
+- Interpretation must be in second person ("you do X", "your customers are Y")
 - No punctuation soup, no ellipses, no slashes`;
 
-    const { phrases: aiSeeds, expansion: seedExpansion } = await generateSeedPhrases(prompt, supabaseUrl, serviceKey);
+    const { phrases: aiSeeds, expansion: seedExpansion, interpretation } = await generateSeedPhrases(prompt, supabaseUrl, serviceKey);
     let seedPhrases: string[] = aiSeeds;
 
     if (seedPhrases.length === 0) {
