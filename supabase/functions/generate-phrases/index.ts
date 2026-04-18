@@ -364,17 +364,7 @@ Rules:
 
 Example output: ["lawn care service", "moss removal", "landscaping company", "yard cleanup", "lawn maintenance", "grass cutting", "lawn treatment", "weed control", "yard maintenance", "garden care"]`;
 
-    const aiResponse = await fetch(`${supabaseUrl}/functions/v1/ai-proxy`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${serviceKey}`,
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [{ role: 'user', content: prompt }],
-      }),
-    });
+
 
     const aiSeeds = await generateSeedPhrases(prompt, supabaseUrl, serviceKey);
     let seedPhrases: string[] = aiSeeds;
