@@ -654,7 +654,10 @@ Hard rules:
         locationCode,
         totalDemand,
         seedExpansion,
+        interpretation,
         userDescription: description.trim(),
+        userWhoYouServe: whoYouServe || '',
+        userCity: city || '',
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
