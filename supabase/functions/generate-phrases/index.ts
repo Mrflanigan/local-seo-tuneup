@@ -103,30 +103,84 @@ function validateSeedPhrases(phrases: unknown): string[] | null {
       if (p.length < 3 || p.length > 60) return false;
       const wordCount = p.split(/\s+/).length;
       if (wordCount < 1 || wordCount > 6) return false;
-      // Reject punctuation soup (multiple dots, ellipses, slashes)
       if (/\.{2,}|…|\.\s*\./.test(p)) return false;
       if ((p.match(/[.,;:!?]/g) || []).length > 1) return false;
       return true;
     });
-  return cleaned.length >= 3 ? cleaned.slice(0, 10) : null;
+  return cleaned.length >= 3 ? cleaned.slice(0, 12) : null;
 }
 
-// ── Call Lovable AI for seed phrases with one retry on bad output ──
+// Categorized seed expansion — what we show the user as "how we widened your net"
+export interface SeedExpansion {
+  synonyms: string[];
+  problem_language: string[];
+  colloquial: string[];
+  cost_comparison: string[];
+  adjacent_services: string[];
+}
+
+function flattenExpansion(exp: SeedExpansion): string[] {
+  const all = [
+    ...(exp.synonyms || []),
+    ...(exp.problem_language || []),
+    ...(exp.colloquial || []),
+    ...(exp.cost_comparison || []),
+    ...(exp.adjacent_services || []),
+  ];
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const raw of all) {
+    if (typeof raw !== 'string') continue;
+    const p = raw.trim().toLowerCase();
+    if (!p || seen.has(p)) continue;
+    if (p.length < 3 || p.length > 60) continue;
+    const wc = p.split(/\s+/).length;
+    if (wc < 1 || wc > 6) continue;
+    if (/\.{2,}|…|\.\s*\./.test(p)) continue;
+    seen.add(p);
+    out.push(p);
+  }
+  return out;
+}
+
+function validateExpansion(parsed: unknown): SeedExpansion | null {
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null;
+  const obj = parsed as Record<string, unknown>;
+  const cat = (key: string): string[] => {
+    const v = obj[key];
+    if (!Array.isArray(v)) return [];
+    return v.filter((x): x is string => typeof x === 'string').map(s => s.trim()).filter(Boolean);
+  };
+  const exp: SeedExpansion = {
+    synonyms: cat('synonyms'),
+    problem_language: cat('problem_language'),
+    colloquial: cat('colloquial'),
+    cost_comparison: cat('cost_comparison'),
+    adjacent_services: cat('adjacent_services'),
+  };
+  const total =
+    exp.synonyms.length + exp.problem_language.length +
+    exp.colloquial.length + exp.cost_comparison.length +
+    exp.adjacent_services.length;
+  return total >= 5 ? exp : null;
+}
+
+// ── Call Lovable AI for seed phrases — returns categorized expansion + flat list ──
 async function generateSeedPhrases(
   prompt: string,
   _supabaseUrl: string,
   _serviceKey: string
-): Promise<string[]> {
+): Promise<{ phrases: string[]; expansion: SeedExpansion | null }> {
   const lovableKey = Deno.env.get('LOVABLE_API_KEY');
   if (!lovableKey) {
     console.error('LOVABLE_API_KEY not set — cannot generate AI seeds');
-    return [];
+    return { phrases: [], expansion: null };
   }
 
   for (let attempt = 0; attempt < 2; attempt++) {
     const stricterPrompt = attempt === 0
       ? prompt
-      : prompt + '\n\nSTRICT: Return ONLY a JSON array of 12 strings. Each string is 2-5 words. No ellipses, no dots, no slashes.';
+      : prompt + '\n\nSTRICT: Return ONLY a JSON object with the 5 keys (synonyms, problem_language, colloquial, cost_comparison, adjacent_services). Each value is an array of 2-3 short phrases (2-5 words each). No ellipses, no dots, no slashes, no markdown.';
 
     try {
       const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -138,6 +192,7 @@ async function generateSeedPhrases(
         body: JSON.stringify({
           model: 'google/gemini-2.5-flash',
           messages: [{ role: 'user', content: stricterPrompt }],
+          response_format: { type: 'json_object' },
         }),
       });
       if (!aiResponse.ok) {
@@ -152,23 +207,34 @@ async function generateSeedPhrases(
       try {
         parsed = JSON.parse(cleaned);
       } catch {
-        const arrMatch = cleaned.match(/\[[\s\S]*\]/);
-        if (arrMatch) {
-          try { parsed = JSON.parse(arrMatch[0]); } catch { parsed = null; }
+        const objMatch = cleaned.match(/\{[\s\S]*\}/);
+        if (objMatch) {
+          try { parsed = JSON.parse(objMatch[0]); } catch { parsed = null; }
         }
       }
 
+      // Try categorized object first
+      const exp = validateExpansion(parsed);
+      if (exp) {
+        const flat = flattenExpansion(exp);
+        if (flat.length >= 3) {
+          console.log(`Seed expansion (attempt ${attempt + 1}):`, exp);
+          return { phrases: flat.slice(0, 12), expansion: exp };
+        }
+      }
+
+      // Fallback: maybe model returned a flat array
       const valid = validateSeedPhrases(parsed);
       if (valid) {
-        console.log(`Seed phrases (attempt ${attempt + 1}):`, valid);
-        return valid;
+        console.log(`Seed phrases flat (attempt ${attempt + 1}):`, valid);
+        return { phrases: valid, expansion: null };
       }
-      console.warn(`Attempt ${attempt + 1} returned invalid phrases:`, parsed);
+      console.warn(`Attempt ${attempt + 1} returned invalid output:`, parsed);
     } catch (e) {
       console.warn(`Attempt ${attempt + 1} threw:`, e);
     }
   }
-  return [];
+  return { phrases: [], expansion: null };
 }
 
 // ── Cluster keywords into intent buckets using AI ──
@@ -364,38 +430,26 @@ Description: ${description.trim()}
 ${whoYouServe ? `Target customers: ${whoYouServe}` : ''}
 ${city ? `Location: ${city}` : ''}
 
-Your job: generate 12 seed search phrases that EXPAND OUTWARD from the description. Do NOT just rephrase what the owner wrote. Real customers rarely use the owner's language.
+Your job: EXPAND OUTWARD from the description into how real customers actually search. Do NOT just rephrase what the owner wrote.
 
-Cover ALL FIVE of these angles (roughly 2-3 phrases each):
+Return a JSON object with EXACTLY these 5 keys, each an array of 2-3 short phrases (2-5 words each):
 
-1. SYNONYM VARIANTS — alternate words for the same service
-   (e.g. owner says "residential moving services" → "movers", "moving company", "moving help")
-
-2. PROBLEM / PAIN LANGUAGE — how customers describe the problem, not the service
-   (e.g. "moss in my grass", "lawn looks terrible", "need to move stuff")
-
-3. COLLOQUIAL / LAZY PHRASING — short, casual, how people actually type
-   (e.g. "help me move", "yard guy", "someone to mow my lawn", "guy who fixes roofs")
-
-4. COST / COMPARISON / DECISION INTENT — phrases used while shopping
-   (e.g. "cheap movers", "best lawn service", "how much do movers cost", "moving company reviews")
-
-5. ADJACENT SERVICES — related things this business probably also does or competes for
-   (e.g. for movers: "packing service", "junk removal", "storage"; for lawn care: "leaf cleanup", "tree trimming")
+{
+  "synonyms": [...],            // alternate words for the same service (owner: "residential moving services" → "movers", "moving company")
+  "problem_language": [...],    // how customers describe the pain, not the service ("need to move stuff", "moss in my grass")
+  "colloquial": [...],          // short, casual, how people actually type ("help me move", "yard guy")
+  "cost_comparison": [...],     // shopping intent ("cheap movers", "how much do movers cost", "best lawn service")
+  "adjacent_services": [...]    // related things this business probably also does ("packing service", "junk removal")
+}
 
 Hard rules:
-- Return ONLY a JSON array of 12 strings, no explanation, no markdown
-- Each phrase: 2-5 words
+- Return ONLY the JSON object, no explanation, no markdown
+- Each phrase: 2-5 words, lowercase
 - Do NOT include the city name — the system localizes separately
 - Do NOT echo the owner's exact phrasing back — translate into customer language
-- No punctuation soup, no ellipses
+- No punctuation soup, no ellipses, no slashes`;
 
-Example for "residential moving services":
-["movers", "moving company", "help me move", "cheap movers", "movers near me", "how much do movers cost", "small move help", "packing and moving", "two guys and a truck", "local moving service", "long distance movers", "moving and storage"]`;
-
-
-
-    const aiSeeds = await generateSeedPhrases(prompt, supabaseUrl, serviceKey);
+    const { phrases: aiSeeds, expansion: seedExpansion } = await generateSeedPhrases(prompt, supabaseUrl, serviceKey);
     let seedPhrases: string[] = aiSeeds;
 
     if (seedPhrases.length === 0) {
@@ -560,6 +614,8 @@ Example for "residential moving services":
         bucketDifficulty,
         locationCode,
         totalDemand,
+        seedExpansion,
+        userDescription: description.trim(),
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
