@@ -702,7 +702,7 @@ Hard rules:
     if (seedPhrases.length === 0) {
       // Fallback: extract 2-3 word service phrases from the raw description.
       // Strips connectors and punctuation, then slides a window of 2-3 words.
-      const cleanedDesc = description
+      const cleanedDesc = primary
         .toLowerCase()
         .replace(/[.,;:!?()]/g, ' ')
         .replace(/\b(and|or|with|for|the|a|an|of|to|in|on|only|just)\b/g, ' ')
