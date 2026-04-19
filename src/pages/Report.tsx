@@ -57,21 +57,24 @@ export default function Report() {
     return null;
   }, [state]);
 
+  const resolvedResult = restored?.result;
+  const resolvedDemandPreviewState = restored?.demandPreviewState;
+
   useEffect(() => {
-    if (!demandPreviewState) return;
+    if (!resolvedDemandPreviewState) return;
     try {
-      sessionStorage.setItem("demandPreview.state.v1", JSON.stringify(demandPreviewState));
+      sessionStorage.setItem("demandPreview.state.v1", JSON.stringify(resolvedDemandPreviewState));
     } catch {
       // ignore storage failures
     }
-  }, [demandPreviewState]);
+  }, [resolvedDemandPreviewState]);
 
   const phraseOpticsData = useMemo(() => {
-    if (!result.phraseOptics) return null;
+    if (!resolvedResult?.phraseOptics) return null;
 
     const volumeMap = new Map<string, number>();
-    const buckets = demandPreviewState?.intentBuckets ?? [];
-    const volumes = demandPreviewState?.volumes ?? [];
+    const buckets = resolvedDemandPreviewState?.intentBuckets ?? [];
+    const volumes = resolvedDemandPreviewState?.volumes ?? [];
 
     for (const bucket of buckets) {
       for (const keyword of bucket.keywords) {
@@ -85,16 +88,16 @@ export default function Report() {
       }
     }
 
-    if (volumeMap.size === 0) return result.phraseOptics;
+    if (volumeMap.size === 0) return resolvedResult.phraseOptics;
 
     return {
-      ...result.phraseOptics,
-      phraseResults: (result.phraseOptics.phraseResults ?? []).map((phrase) => ({
+      ...resolvedResult.phraseOptics,
+      phraseResults: (resolvedResult.phraseOptics.phraseResults ?? []).map((phrase) => ({
         ...phrase,
         searchVolume: phrase.searchVolume ?? volumeMap.get(phrase.phrase.toLowerCase()) ?? null,
       })),
     };
-  }, [demandPreviewState, result.phraseOptics]);
+  }, [resolvedDemandPreviewState, resolvedResult?.phraseOptics]);
 
   if (!restored) return <Navigate to="/" replace />;
 
