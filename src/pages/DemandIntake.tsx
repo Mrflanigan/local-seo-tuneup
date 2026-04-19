@@ -224,8 +224,12 @@ function FormPhase({
   return (
     <>
       <div className="mt-auto pt-32 mb-6 space-y-6 animate-in fade-in duration-500">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs sm:text-sm font-semibold tracking-wider uppercase">
+          <Sparkles className="h-3.5 w-3.5" />
+          SEO Reimagined · Osmosis™
+        </div>
         <p className="text-2xl sm:text-3xl font-semibold text-white tracking-tight leading-snug">
-          We're not just an SEO Audit — We Do Two Things.
+          We're not just another run-of-the-mill AI audit.
           <br />
           <span className="text-primary">First, we find the people already looking for you.</span>
         </p>
@@ -324,12 +328,18 @@ function LoadingPhase({ whatYouDo, location }: { whatYouDo: string; location: st
 
   return (
     <div className="mt-auto pt-24 pb-16 space-y-8 animate-in fade-in duration-500 min-h-[28rem]">
-      <div className="flex items-baseline gap-3 flex-wrap">
-        <Sparkles className="h-6 w-6 text-primary animate-pulse self-center" />
-        <p className="text-2xl sm:text-3xl font-semibold tracking-tight">
-          <span className="text-white/70">With us…</span>{" "}
-          <span className="text-primary italic">Consider it handled!</span>
-        </p>
+      <div className="space-y-3">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs sm:text-sm font-semibold tracking-wider uppercase">
+          <Sparkles className="h-3.5 w-3.5" />
+          SEO Reimagined · Osmosis™
+        </div>
+        <div className="flex items-baseline gap-3 flex-wrap">
+          <Sparkles className="h-6 w-6 text-primary animate-pulse self-center" />
+          <p className="text-2xl sm:text-3xl font-semibold tracking-tight">
+            <span className="text-white/70">With us…</span>{" "}
+            <span className="text-primary italic">Consider it handled!</span>
+          </p>
+        </div>
       </div>
 
       <p className="text-base sm:text-lg text-white/60 max-w-2xl leading-relaxed">
@@ -377,7 +387,11 @@ function RevealPhase({
 }) {
   return (
     <div className="mt-auto pt-12 pb-6 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="space-y-2">
+      <div className="space-y-3">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs sm:text-sm font-semibold tracking-wider uppercase">
+          <Sparkles className="h-3.5 w-3.5" />
+          SEO Reimagined · Osmosis™
+        </div>
         <div className="flex items-baseline gap-3 flex-wrap">
           <Sparkles className="h-6 w-6 text-primary self-center" />
           <p className="text-2xl sm:text-3xl font-semibold tracking-tight">
