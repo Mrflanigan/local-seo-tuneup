@@ -90,11 +90,26 @@ export default function Report() {
 
     if (volumeMap.size === 0) return resolvedResult.phraseOptics;
 
+    const lookupVolume = (phrase: string): number | null => {
+      const p = phrase.toLowerCase().trim();
+      // 1. Exact
+      if (volumeMap.has(p)) return volumeMap.get(p)!;
+      // 2. Bucket key contained in phrase, or phrase contains bucket key — pick the longest match (most specific)
+      let best: { len: number; vol: number } | null = null;
+      for (const [key, vol] of volumeMap.entries()) {
+        if (p.includes(key) || key.includes(p)) {
+          const len = Math.min(key.length, p.length);
+          if (!best || len > best.len) best = { len, vol };
+        }
+      }
+      return best?.vol ?? null;
+    };
+
     return {
       ...resolvedResult.phraseOptics,
       phraseResults: (resolvedResult.phraseOptics.phraseResults ?? []).map((phrase) => ({
         ...phrase,
-        searchVolume: phrase.searchVolume ?? volumeMap.get(phrase.phrase.toLowerCase()) ?? null,
+        searchVolume: phrase.searchVolume ?? lookupVolume(phrase.phrase),
       })),
     };
   }, [resolvedDemandPreviewState, resolvedResult?.phraseOptics]);
