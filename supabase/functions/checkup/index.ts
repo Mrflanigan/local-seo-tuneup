@@ -346,6 +346,45 @@ Deno.serve(async (req) => {
           phrases.map((phrase: string) => searchPhrase(phrase.trim(), targetDomain, apiKey, city))
         );
 
+        // Fetch monthly search volumes from DataForSEO (best-effort)
+        try {
+          const dfsCreds = Deno.env.get("DATAFORSEO_CREDENTIALS");
+          if (dfsCreds) {
+            const auth = btoa(dfsCreds.includes(":") ? dfsCreds : dfsCreds);
+            const dfsRes = await fetch(
+              "https://api.dataforseo.com/v3/keywords_data/google_ads/search_volume/live",
+              {
+                method: "POST",
+                headers: { Authorization: `Basic ${auth}`, "Content-Type": "application/json" },
+                body: JSON.stringify([{
+                  keywords: phrases.map(p => p.trim()),
+                  location_code: 2840,
+                  language_code: "en",
+                }]),
+              }
+            );
+            if (dfsRes.ok) {
+              const dfsData = await dfsRes.json();
+              const items = dfsData?.tasks?.[0]?.result ?? [];
+              const volMap = new Map<string, number>();
+              for (const it of items) {
+                if (it?.keyword && typeof it.search_volume === "number") {
+                  volMap.set(String(it.keyword).toLowerCase(), it.search_volume);
+                }
+              }
+              for (const r of rankings) {
+                const v = volMap.get(r.phrase.toLowerCase());
+                if (typeof v === "number") (r as any).searchVolume = v;
+              }
+              console.log(`[checkup] Volumes fetched for ${volMap.size}/${phrases.length} phrases`);
+            } else {
+              console.warn(`[checkup] DataForSEO volume fetch failed: ${dfsRes.status}`);
+            }
+          }
+        } catch (volErr) {
+          console.warn("[checkup] Volume lookup failed:", volErr);
+        }
+
         // Extract on-page signals from scraped data for alignment checks
         const html = scraped.html || "";
         const h1Match = html.match(/<h1[^>]*>(.*?)<\/h1>/is);

@@ -9,6 +9,7 @@ export interface PhraseResult {
   pageOnePotential: "FAST_TRACK" | "POSSIBLE" | "LONG_SHOT";
   competitionLevel: "LOCAL" | "MIXED" | "BIG_BRANDS";
   notes?: string;
+  searchVolume?: number | null;
 }
 
 export interface PhraseOpticsSummary {
@@ -99,6 +100,7 @@ export interface PhraseRanking {
   totalResults: number;
   topResult?: { title: string; url: string };
   serpResults?: SearchResult[];
+  searchVolume?: number | null;
 }
 
 export function buildPhraseOpticsSummary(args: {
@@ -140,6 +142,7 @@ export function buildPhraseOpticsSummary(args: {
       opticsScore,
       pageOnePotential,
       competitionLevel,
+      searchVolume: r.searchVolume ?? null,
     };
     result.notes = generateNotes(result);
     return result;
