@@ -57,11 +57,6 @@ export default function Report() {
     return null;
   }, [state]);
 
-  if (!restored) return <Navigate to="/" replace />;
-
-  const { result, url, city, searchPhrases, demandPreviewState } = restored;
-  const name = result.siteContext.businessName;
-
   useEffect(() => {
     if (!demandPreviewState) return;
     try {
@@ -100,6 +95,11 @@ export default function Report() {
       })),
     };
   }, [demandPreviewState, result.phraseOptics]);
+
+  if (!restored) return <Navigate to="/" replace />;
+
+  const { result, url, city, searchPhrases, demandPreviewState } = restored;
+  const name = result.siteContext.businessName;
 
   const handleSnapshotSave = async (label: "before" | "after") => {
     setSavingSnapshot(true);
