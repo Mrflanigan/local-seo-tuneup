@@ -343,10 +343,10 @@ function FormPhase({
           </label>
           <Input
             type="text"
-            placeholder="e.g. Residential moving — moving households between homes"
+            placeholder="Residential moving"
             value={primary}
             onChange={(e) => setPrimary(e.target.value)}
-            className="h-12 text-base bg-white/10 border-primary/40 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
+            className="h-12 text-base bg-white/10 border-primary/40 text-white placeholder:text-white/25 placeholder:italic focus:border-primary rounded-xl"
             disabled={loading}
             autoCapitalize="sentences"
           />
@@ -360,10 +360,10 @@ function FormPhase({
           </label>
           <Input
             type="text"
-            placeholder="e.g. Packing & unpacking services"
+            placeholder="Packing & unpacking"
             value={secondary}
             onChange={(e) => setSecondary(e.target.value)}
-            className="h-11 text-base bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
+            className="h-11 text-base bg-white/5 border-white/15 text-white placeholder:text-white/25 placeholder:italic focus:border-primary rounded-xl"
             disabled={loading}
           />
         </div>
@@ -376,10 +376,10 @@ function FormPhase({
           </label>
           <Input
             type="text"
-            placeholder="e.g. Debris cleanup, junk removal, storage"
+            placeholder="Junk removal, storage"
             value={other}
             onChange={(e) => setOther(e.target.value)}
-            className="h-11 text-base bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
+            className="h-11 text-base bg-white/5 border-white/15 text-white placeholder:text-white/25 placeholder:italic focus:border-primary rounded-xl"
             disabled={loading}
           />
         </div>
@@ -392,10 +392,10 @@ function FormPhase({
           </label>
           <Input
             type="text"
-            placeholder="e.g. Long-distance moves, commercial freight"
+            placeholder="Long-distance, commercial"
             value={dontDo}
             onChange={(e) => setDontDo(e.target.value)}
-            className="h-11 text-base bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
+            className="h-11 text-base bg-white/5 border-white/15 text-white placeholder:text-white/25 placeholder:italic focus:border-primary rounded-xl"
             disabled={loading}
           />
         </div>
@@ -408,10 +408,10 @@ function FormPhase({
           </label>
           <Input
             type="text"
-            placeholder="e.g. Homeowners, small businesses, property managers"
+            placeholder="Homeowners, businesses"
             value={whoYouServe}
             onChange={(e) => setWhoYouServe(e.target.value)}
-            className="h-11 text-base bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
+            className="h-11 text-base bg-white/5 border-white/15 text-white placeholder:text-white/25 placeholder:italic focus:border-primary rounded-xl"
             disabled={loading}
           />
         </div>
@@ -428,7 +428,7 @@ function FormPhase({
               placeholder="City, state, or area"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="pl-10 h-14 text-base bg-white/10 border-primary/40 text-white placeholder:text-white/50 focus:border-primary focus:bg-white/15 rounded-xl"
+              className="pl-10 h-14 text-base bg-white/10 border-primary/40 text-white placeholder:text-white/25 placeholder:italic focus:border-primary focus:bg-white/15 rounded-xl"
               disabled={loading}
             />
           </div>
