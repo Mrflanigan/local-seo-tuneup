@@ -324,8 +324,8 @@ function FormPhase({
             We… <span className="text-white font-medium">start by forgetting you have a website.</span>
           </p>
           <p>
-            Tell us what you do — clearly separated, so our AI doesn't get confused like Google does.
-            Then we'll translate it into how your customers actually search.
+            Tell us what you do — clearly separated, the way Google should see it but never does.
+            Our AI will translate it into how your customers actually search.
           </p>
           <p className="text-lg sm:text-xl">
             <span className="text-white/70">With us…</span>{" "}
