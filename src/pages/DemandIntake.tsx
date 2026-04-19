@@ -232,12 +232,7 @@ export default function DemandIntake() {
           <Button
             type="button"
             variant="ghost"
-            onClick={() => {
-              if (hasAnyInput) {
-                if (!confirm("Go back to home? Your saved demand snapshot will stay — you can pick up where you left off.")) return;
-              }
-              navigate("/");
-            }}
+            onClick={() => navigate("/")}
             className="h-auto px-0 text-base font-semibold text-white/80 hover:bg-transparent hover:text-primary"
           >
             <ArrowLeft className="mr-2 h-5 w-5" />
@@ -343,7 +338,7 @@ function FormPhase({
           </label>
           <Input
             type="text"
-            placeholder="Residential moving"
+            placeholder=""
             value={primary}
             onChange={(e) => setPrimary(e.target.value)}
             className="h-12 text-base bg-white/10 border-primary/40 text-white placeholder:text-white/25 placeholder:italic focus:border-primary rounded-xl"
@@ -360,7 +355,7 @@ function FormPhase({
           </label>
           <Input
             type="text"
-            placeholder="Packing & unpacking"
+            placeholder=""
             value={secondary}
             onChange={(e) => setSecondary(e.target.value)}
             className="h-11 text-base bg-white/5 border-white/15 text-white placeholder:text-white/25 placeholder:italic focus:border-primary rounded-xl"
@@ -376,7 +371,7 @@ function FormPhase({
           </label>
           <Input
             type="text"
-            placeholder="Junk removal, storage"
+            placeholder=""
             value={other}
             onChange={(e) => setOther(e.target.value)}
             className="h-11 text-base bg-white/5 border-white/15 text-white placeholder:text-white/25 placeholder:italic focus:border-primary rounded-xl"
@@ -392,7 +387,7 @@ function FormPhase({
           </label>
           <Input
             type="text"
-            placeholder="Long-distance, commercial"
+            placeholder=""
             value={dontDo}
             onChange={(e) => setDontDo(e.target.value)}
             className="h-11 text-base bg-white/5 border-white/15 text-white placeholder:text-white/25 placeholder:italic focus:border-primary rounded-xl"
@@ -408,7 +403,7 @@ function FormPhase({
           </label>
           <Input
             type="text"
-            placeholder="Homeowners, businesses"
+            placeholder=""
             value={whoYouServe}
             onChange={(e) => setWhoYouServe(e.target.value)}
             className="h-11 text-base bg-white/5 border-white/15 text-white placeholder:text-white/25 placeholder:italic focus:border-primary rounded-xl"
