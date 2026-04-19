@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { cleanUrl } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Globe, Building2, Search, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,8 @@ import SeedExpansionReveal, { type SeedExpansion } from "@/components/SeedExpans
 import InterpretationCard, { type InputInterpretation } from "@/components/InterpretationCard";
 import type { BusinessType } from "@/lib/scoring/types";
 import peakBg from "@/assets/getstarted-peak.jpg";
+
+const PREVIEW_STATE_KEY = "demandPreview.state.v1";
 
 interface IntentBucket {
   id: string;
@@ -39,14 +41,34 @@ interface DemandState {
   interpretation?: InputInterpretation | null;
 }
 
+function loadPreviewState(): DemandState | null {
+  try {
+    const raw = sessionStorage.getItem(PREVIEW_STATE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as DemandState;
+  } catch {
+    return null;
+  }
+}
+
 export default function DemandPreview() {
   const navigate = useNavigate();
   const location = useLocation();
   const { scan, startScan } = useScan();
 
-  const state = (location.state as DemandState) || {
+  // Use router state if present (fresh navigation); else restore from sessionStorage (refresh)
+  const incoming = location.state as DemandState | null;
+  const restored = incoming ?? loadPreviewState();
+  const state: DemandState = restored || {
     description: "", city: "", phrases: [], volumes: null, intentBuckets: null, bucketDifficulty: null, totalDemand: null, seedExpansion: null, interpretation: null,
   };
+
+  // Persist incoming state so refresh restores it
+  useEffect(() => {
+    if (incoming) {
+      try { sessionStorage.setItem(PREVIEW_STATE_KEY, JSON.stringify(incoming)); } catch { /* ignore */ }
+    }
+  }, [incoming]);
 
   const [url, setUrl] = useState("");
   const [businessName, setBusinessName] = useState("");
