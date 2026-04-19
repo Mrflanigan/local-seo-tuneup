@@ -224,8 +224,12 @@ function FormPhase({
   return (
     <>
       <div className="mt-auto pt-32 mb-6 space-y-6 animate-in fade-in duration-500">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs sm:text-sm font-semibold tracking-wider uppercase">
+          <Sparkles className="h-3.5 w-3.5" />
+          SEO Reimagined · Osmosis™
+        </div>
         <p className="text-2xl sm:text-3xl font-semibold text-white tracking-tight leading-snug">
-          We're not just an SEO Audit — We Do Two Things.
+          We're not just another run-of-the-mill AI audit.
           <br />
           <span className="text-primary">First, we find the people already looking for you.</span>
         </p>
