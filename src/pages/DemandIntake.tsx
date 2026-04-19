@@ -225,7 +225,7 @@ function FormPhase({
     <>
       <div className="mt-auto pt-32 mb-6 space-y-6 animate-in fade-in duration-500">
         <p className="text-2xl sm:text-3xl font-semibold text-white tracking-tight leading-snug">
-          We're not just another run-of-the-mill AI audit. We are{" "}
+          We're not just another run-of-the-mill AI audit. We are…{" "}
           <span className="text-primary italic">SEO Reimagined · Osmosis™</span>
           <br />
           <span className="text-primary">First, we find the people already looking for you.</span>
