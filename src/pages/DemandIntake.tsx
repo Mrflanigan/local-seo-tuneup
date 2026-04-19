@@ -171,7 +171,12 @@ export default function DemandIntake() {
           <Button
             type="button"
             variant="ghost"
-            onClick={() => navigate("/")}
+            onClick={() => {
+              if (result || whatYouDo || whoYouServe || location) {
+                if (!confirm("Go back to home? Your saved demand snapshot will stay — you can pick up where you left off.")) return;
+              }
+              navigate("/");
+            }}
             className="h-auto px-0 text-base font-semibold text-white/80 hover:bg-transparent hover:text-primary"
           >
             <ArrowLeft className="mr-2 h-5 w-5" />
