@@ -639,86 +639,68 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 
-    const prompt = `You are an expert SEO keyword researcher who knows how REAL customers search — not how business owners describe themselves.
+    // AI's ONLY job: restate the owner's layman description in clean, plain customer English.
+    // AI does NOT invent keywords, suggest synonyms, or expand the search. Keyword extraction
+    // is deterministic and happens AFTER this step, from the owner's literal words.
+    const prompt = `You are restating a business owner's plain-English description so a customer could understand it. You are NOT doing keyword research. You are NOT suggesting synonyms. You are NOT expanding the description. You are cleaning up wording only.
 
 Business name: ${businessName || 'unknown'}
-PRIMARY service (the headline — what they do for MOST customers): ${primary}
-${secondary ? `SECONDARY service (a real offering, but not the headline): ${secondary}` : ''}
-${other ? `OTHER services (extras, only mention as adjacent): ${other}` : ''}
-${exclusions ? `THINGS THIS BUSINESS DOES NOT DO (NEVER include these in interpretation, expansion, or phrases): ${exclusions}` : ''}
+PRIMARY service (the headline): ${primary}
+${secondary ? `SECONDARY service: ${secondary}` : ''}
+${other ? `OTHER services: ${other}` : ''}
+${exclusions ? `THINGS THIS BUSINESS DOES NOT DO (never include): ${exclusions}` : ''}
 ${whoYouServe ? `Target customers: ${whoYouServe}` : ''}
 ${city ? `Location: ${city}` : ''}
 
-You have TWO jobs.
-
-JOB 1 — INTERPRET the inputs and restate them the way a customer would think about them. Be plain, short, human, respectful. The interpretation MUST lead with the PRIMARY service. Secondary may be appended as "plus…" or "with optional…". OTHER may be hinted at the end if it fits naturally — never as the headline. NEVER include anything from the "things this business does not do" list.
-
-JOB 2 — EXPAND OUTWARD from the PRIMARY service into how real customers actually search. Secondary can contribute a few phrases. Other and exclusions must NOT appear in expansion phrases.
+Your ONLY job: produce a clean, respectful, plain-English restatement of these inputs. Lead with the PRIMARY service. Do not introduce new services, new locations, or new search terms. Stay strictly inside the words the owner gave you.
 
 Return a single JSON object with this exact shape:
 
 {
   "interpretation": {
-    "what_you_do": "one sentence, 12-25 words, plain English, respectful and professional. MUST start with and emphasize the PRIMARY service. If secondary exists, append as 'plus' or 'with optional'. Never lead with secondary or other. Frame the customer's belongings/property as VALUED. ABSOLUTELY FORBIDDEN words: 'grunt', 'menial', 'sweat', 'manual labor', 'junk' (unless primary IS junk removal), 'unwanted items', 'unwanted stuff', 'haul away' (unless primary IS hauling), 'clutter', 'hoarder', 'pack rat', 'crap', 'mess', 'getting rid of'.",
-    "who_you_serve": "one short phrase, 3-12 words, respectful. If empty input, infer from primary service.",
-    "where_you_serve": "the location, lightly cleaned and expanded if obvious. Keep it short."
-  },
-  "expansion": {
-    "synonyms": [...],
-    "problem_language": [...],
-    "colloquial": [...],
-    "cost_comparison": [...],
-    "adjacent_services": [...]
+    "what_you_do": "one sentence, 12-25 words, plain English. MUST lead with the PRIMARY service exactly as the owner described it. If secondary exists, append as 'plus' or 'with optional'. Never lead with secondary or other. Frame the customer's belongings/property as VALUED. FORBIDDEN words: 'grunt', 'menial', 'sweat', 'manual labor', 'junk' (unless primary IS junk removal), 'unwanted items', 'haul away' (unless primary IS hauling), 'clutter', 'hoarder', 'pack rat', 'crap', 'mess', 'getting rid of'.",
+    "who_you_serve": "one short phrase, 3-12 words, respectful. If empty input, infer narrowly from primary service.",
+    "where_you_serve": "the location, lightly cleaned. Do not expand to nearby cities."
   }
 }
 
-Each expansion array: 2-3 short phrases, 2-5 words each, lowercase.
-
 Hard rules:
 - Return ONLY the JSON object, no explanation, no markdown fences
-- Do NOT include the city name in expansion phrases — the system localizes separately
-- Do NOT echo the owner's exact phrasing back in expansion — translate into customer language
-- Interpretation must be in second person ("you do X", "your customers are Y")
-- No punctuation soup, no ellipses, no slashes
-- NEVER include any service or term from the "does not do" list anywhere in the response`;
+- Second person ("you do X", "your customers are Y")
+- Do NOT add an "expansion" field. Do NOT list keywords, synonyms, or search phrases
+- Do NOT include any service or term from the "does not do" list
+- Do NOT invent services the owner did not name`;
 
+    // AI restates the layman description only. We do NOT use any AI-generated keywords.
     const aiSeedResult = await generateSeedPhrases(prompt, supabaseUrl, serviceKey);
-    const primaryService = detectPrimaryService(combinedDescription, whoYouServe);
-    const {
-      phrases: guardedSeeds,
-      expansion: seedExpansion,
-      interpretation,
-    } = applyPrimaryServiceGuardrail({
-      primaryService,
-      description: combinedDescription,
-      whoYouServe,
-      city,
-      phrases: aiSeedResult.phrases,
-      expansion: aiSeedResult.expansion,
-      interpretation: aiSeedResult.interpretation,
-    });
-    let seedPhrases: string[] = guardedSeeds;
+    const interpretation = aiSeedResult.interpretation;
+    const seedExpansion: SeedExpansion | null = null; // No AI expansion in the keyword path.
 
-    if (seedPhrases.length === 0) {
-      // Fallback: extract 2-3 word service phrases from the raw description.
-      // Strips connectors and punctuation, then slides a window of 2-3 words.
-      const cleanedDesc = primary
-        .toLowerCase()
-        .replace(/[.,;:!?()]/g, ' ')
-        .replace(/\b(and|or|with|for|the|a|an|of|to|in|on|only|just)\b/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-      const words = cleanedDesc.split(' ').filter(w => w.length >= 3);
-      const candidates = new Set<string>();
-      for (let i = 0; i < words.length - 1; i++) {
-        candidates.add(`${words[i]} ${words[i + 1]}`);
-        if (i < words.length - 2) {
-          candidates.add(`${words[i]} ${words[i + 1]} ${words[i + 2]}`);
-        }
+    // ── Deterministic keyword extraction from the OWNER'S literal words ──
+    // Source = cleaned interpretation (still the owner's meaning, just plain English)
+    // + the raw primary/secondary text. We extract 2-3 word n-grams. No AI invention.
+    const sourceText = [
+      interpretation?.what_you_do || '',
+      primary,
+      secondary,
+    ].filter(Boolean).join(' ');
+
+    const cleanedSource = sourceText
+      .toLowerCase()
+      .replace(/[.,;:!?()'"]/g, ' ')
+      .replace(/\b(and|or|with|for|the|a|an|of|to|in|on|only|just|plus|optional|your|you|we|our|is|are|do|does|that|this|their|them)\b/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const words = cleanedSource.split(' ').filter(w => w.length >= 3);
+    const candidates = new Set<string>();
+    for (let i = 0; i < words.length - 1; i++) {
+      candidates.add(`${words[i]} ${words[i + 1]}`);
+      if (i < words.length - 2) {
+        candidates.add(`${words[i]} ${words[i + 1]} ${words[i + 2]}`);
       }
-      seedPhrases = [...candidates].slice(0, 10);
-      console.log('Using description-fallback seed phrases:', seedPhrases);
     }
+    const seedPhrases: string[] = [...candidates].slice(0, 12);
+    console.log(`Deterministic seed phrases (${seedPhrases.length}) from owner's literal words:`, seedPhrases);
 
     if (seedPhrases.length === 0) {
       return new Response(
