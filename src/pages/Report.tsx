@@ -16,6 +16,7 @@ import MountainLanePicker from "@/components/MountainLanePicker";
 import PhraseOpticsRing from "@/components/PhraseOpticsRing";
 import AIReadinessCard from "@/components/AIReadinessCard";
 import FixTheseFiveFirst from "@/components/FixTheseFiveFirst";
+import WhatToDoNextCard from "@/components/WhatToDoNextCard";
 import BrandVisibilityCard from "@/components/BrandVisibilityCard";
 import BacklinkCard from "@/components/BacklinkCard";
 import PageSpeedInsights from "@/components/PageSpeedInsights";
@@ -283,6 +284,9 @@ export default function Report() {
 
         {/* Fix These 5 First — priority stack */}
         <FixTheseFiveFirst result={result} />
+
+        {/* A note on what to do next — disarm the builder, recruit the future */}
+        <WhatToDoNextCard />
 
         {/* Brand Visibility — discovery checks */}
         {result.brandVisibility && (
