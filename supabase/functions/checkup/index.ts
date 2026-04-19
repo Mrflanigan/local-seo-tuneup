@@ -350,12 +350,11 @@ Deno.serve(async (req) => {
         try {
           const dfsCreds = Deno.env.get("DATAFORSEO_CREDENTIALS");
           if (dfsCreds) {
-            const auth = btoa(dfsCreds.includes(":") ? dfsCreds : dfsCreds);
             const dfsRes = await fetch(
               "https://api.dataforseo.com/v3/keywords_data/google_ads/search_volume/live",
               {
                 method: "POST",
-                headers: { Authorization: `Basic ${auth}`, "Content-Type": "application/json" },
+                headers: { Authorization: `Basic ${dfsCreds}`, "Content-Type": "application/json" },
                 body: JSON.stringify([{
                   keywords: phrases.map(p => p.trim()),
                   location_code: 2840,
