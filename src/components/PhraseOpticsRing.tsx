@@ -13,7 +13,33 @@ interface PhraseOpticsRingProps {
 export default function PhraseOpticsRing({ data }: PhraseOpticsRingProps) {
   // Support both legacy and new format
   const score = data.overallOpticsScore ?? data.opticsScore ?? 0;
-  const phraseResults: PhraseResult[] = data.phraseResults ?? [];
+  const rawPhraseResults: PhraseResult[] = data.phraseResults ?? [];
+
+  // Merge in search volumes from the demand-preview snapshot stored in sessionStorage
+  const volumeMap = (() => {
+    const map = new Map<string, number>();
+    try {
+      const raw = sessionStorage.getItem("demandPreview.state.v1");
+      if (!raw) return map;
+      const parsed = JSON.parse(raw);
+      const buckets = parsed?.intentBuckets as Array<{ keywords: { keyword: string; search_volume: number }[] }> | undefined;
+      if (buckets) {
+        for (const b of buckets) for (const k of b.keywords) {
+          map.set(k.keyword.toLowerCase(), k.search_volume);
+        }
+      }
+      const volumes = parsed?.volumes as Array<{ keyword: string; monthlySearches: number }> | undefined;
+      if (volumes) for (const v of volumes) {
+        if (!map.has(v.keyword.toLowerCase())) map.set(v.keyword.toLowerCase(), v.monthlySearches);
+      }
+    } catch { /* ignore */ }
+    return map;
+  })();
+
+  const phraseResults: PhraseResult[] = rawPhraseResults.map(r => ({
+    ...r,
+    searchVolume: r.searchVolume ?? volumeMap.get(r.phrase.toLowerCase()) ?? null,
+  }));
   const hasNewFormat = phraseResults.length > 0;
 
   // Legacy rankings fallback
