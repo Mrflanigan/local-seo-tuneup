@@ -66,19 +66,33 @@ export default function PhraseOpticsRing({ data }: PhraseOpticsRingProps) {
         <div className="mt-5 w-full space-y-2.5">
           {phraseResults.map((r, i) => (
             <div key={i} className="rounded-lg border border-border bg-card px-4 py-3">
-              <div className="flex items-center justify-between mb-1.5">
-                <p className="text-sm font-medium text-foreground truncate">"{r.phrase}"</p>
-                <div className="ml-3 shrink-0 text-right">
+              {typeof r.searchVolume === "number" && r.searchVolume > 0 ? (
+                <p className="text-sm sm:text-base text-foreground leading-snug">
+                  <span className="font-bold text-primary">{r.searchVolume.toLocaleString()}</span>
+                  <span className="text-muted-foreground"> people searched </span>
+                  <span className="font-semibold">"{r.phrase}"</span>
+                  <span className="text-muted-foreground"> — you were </span>
                   {r.currentPosition ? (
-                    <p className="text-lg font-bold" style={{ color }}>#{r.currentPosition}</p>
+                    <span className="font-bold" style={{ color }}>#{r.currentPosition}</span>
                   ) : (
-                    <p className="text-sm font-semibold text-destructive">Not found</p>
+                    <span className="font-bold text-destructive uppercase tracking-wide">Not found</span>
                   )}
+                </p>
+              ) : (
+                <div className="flex items-center justify-between mb-1.5">
+                  <p className="text-sm font-medium text-foreground truncate">"{r.phrase}"</p>
+                  <div className="ml-3 shrink-0 text-right">
+                    {r.currentPosition ? (
+                      <p className="text-lg font-bold" style={{ color }}>#{r.currentPosition}</p>
+                    ) : (
+                      <p className="text-sm font-semibold text-destructive">Not found</p>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Potential pill */}
-              <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+              <div className="flex flex-wrap items-center gap-1.5 mt-2">
                 <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold ${potentialColor(r.pageOnePotential)}`}>
                   {getPotentialLabel(r.pageOnePotential)}
                 </span>
