@@ -17,7 +17,7 @@ import Privacy from "./pages/Privacy.tsx";
 import DemandIntake from "./pages/DemandIntake.tsx";
 import DemandPreview from "./pages/DemandPreview.tsx";
 import NotFound from "./pages/NotFound.tsx";
-import { ScanProvider } from "./contexts/ScanContext.tsx";
+import { ScanProvider } from "@/contexts/ScanContext";
 const queryClient = new QueryClient({});
 
 const App = () => (
