@@ -28,6 +28,7 @@ export interface LastScanData {
   businessName?: string;
   description?: string;
   keywordVolumes?: unknown;
+  demandPreviewState?: unknown;
   ts?: number;
 }
 
