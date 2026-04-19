@@ -127,20 +127,22 @@ export default function DemandIntake() {
 
   const handleContinue = () => {
     if (!result) return;
-    navigate("/demand-preview", {
-      state: {
-        description: whatYouDo.trim(),
-        whoYouServe: whoYouServe.trim() || "",
-        city: location.trim(),
-        phrases: result.phrases,
-        volumes: result.volumes,
-        intentBuckets: result.intentBuckets,
-        bucketDifficulty: result.bucketDifficulty,
-        totalDemand: result.totalDemand,
-        seedExpansion: result.seedExpansion,
-        interpretation: result.interpretation,
-      },
-    });
+    const previewState = {
+      description: whatYouDo.trim(),
+      whoYouServe: whoYouServe.trim() || "",
+      city: location.trim(),
+      phrases: result.phrases,
+      volumes: result.volumes,
+      intentBuckets: result.intentBuckets,
+      bucketDifficulty: result.bucketDifficulty,
+      totalDemand: result.totalDemand,
+      seedExpansion: result.seedExpansion,
+      interpretation: result.interpretation,
+    };
+    // Safety-net: write to sessionStorage BEFORE navigating so refresh on /demand-preview
+    // restores the full snapshot — not just phrases/volumes but also city + description.
+    try { sessionStorage.setItem("demandPreview.state.v1", JSON.stringify(previewState)); } catch { /* ignore */ }
+    navigate("/demand-preview", { state: previewState });
   };
 
   const handleRefine = () => {
