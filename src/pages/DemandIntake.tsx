@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import SEOHead from "@/components/SEOHead";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, MapPin, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -89,8 +89,10 @@ interface ApiResult {
 
 export default function DemandIntake() {
   const navigate = useNavigate();
+  const routerLocation = useLocation();
   const initial = loadIntakeDraft();
   const initialResult = loadIntakeResult();
+  const forceForm = (routerLocation.state as { forceForm?: boolean } | null)?.forceForm === true;
 
   const [primary, setPrimary] = useState(initial.primary);
   const [secondary, setSecondary] = useState(initial.secondary);
@@ -99,7 +101,7 @@ export default function DemandIntake() {
   const [whoYouServe, setWhoYouServe] = useState(initial.whoYouServe);
   const [location, setLocation] = useState(initial.location);
 
-  const [phase, setPhase] = useState<Phase>(initialResult ? "reveal" : "form");
+  const [phase, setPhase] = useState<Phase>(forceForm ? "form" : initialResult ? "reveal" : "form");
   const [result, setResult] = useState<ApiResult | null>(initialResult);
 
   // Clean up legacy keys once
