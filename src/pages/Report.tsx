@@ -236,8 +236,7 @@ export default function Report() {
               : "Here's what's helping and what's quietly holding you back"}
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto leading-relaxed text-sm sm:text-base">
-            We checked your site the same way Google does. Here's the honest
-            breakdown — what you're doing right, and what to fix first to get more calls.
+            Your site likely looks great to your customers. Google, though, is extremely particular — it only checks specific spots for specific signals. Here's what's already checked off, and what to put exactly where Google looks so it counts.
           </p>
           {result.businessType === "online" && result.overallScore > 100 && (
             <div className="mt-3 mx-auto max-w-md rounded-lg border border-accent/30 bg-accent/5 p-3">

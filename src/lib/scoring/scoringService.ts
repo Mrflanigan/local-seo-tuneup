@@ -127,7 +127,7 @@ function scoreLocalPresence(
     hasPhone ? "Phone number is visible on the page." : "No phone number found on the page.",
     hasPhone
       ? `Your phone number (${ctx.phone}) is prominently displayed, making it easy for local customers to call.`
-      : "We couldn't find a phone number on your page — adding one helps local customers reach you instantly.",
+      : "Google scans your page for a visible phone number and didn't pick one up — once it's there, that box gets checked and local customers can call instantly.",
     hasPhone ? [{ heuristic: "Phone number detected", snippet: ctx.phone! }] : undefined
   ));
 
@@ -137,7 +137,7 @@ function scoreLocalPresence(
     hasName ? "Business name found on the page." : "No clear business name detected.",
     hasName
       ? `Your business name "${ctx.businessName}" is clearly visible on the page.`
-      : "We couldn't identify a clear business name — make sure it's in your H1 or title tag.",
+      : "Google looks for a clear business name in your H1 or title tag and couldn't lock onto one — your site likely shows it, but not in the spot Google checks.",
     hasName ? [{ heuristic: "Business name found", snippet: ctx.businessName! }] : undefined
   ));
 
@@ -301,7 +301,7 @@ function scoreOnPageSEO(
       ? `Your primary service keyword "${ctx.services[0]}" appears in ${kwHits} key areas (title, H1, opening paragraph) — good keyword placement.`
       : ctx.services.length > 0
         ? `Try placing "${ctx.services[0]}" in your title, H1, and opening paragraph for stronger relevance signals.`
-        : "We couldn't identify strong service keywords — make sure your main service appears in the title, H1, and first paragraph."
+        : "Google looks for a clear primary service keyword in the title, H1, and opening paragraph — those exact spots didn't surface one. Putting your main service in those places checks the box."
   ));
 
   // 5. URL slug (2 pts)
@@ -354,7 +354,7 @@ function scoreOnPageSEO(
       : entityScore === 1 ? "Business name appears in title or H1, but not both."
       : "Business name missing from both title and H1.",
     !bizName
-      ? "We couldn't detect your business name, so we couldn't check if it appears in your title tag and H1. Make sure your business name is clearly visible."
+      ? "Google needs your business name in the title tag and H1 to confirm who the page belongs to — those exact spots came up empty on this scan."
       : entityScore >= 2
         ? `Your business name "${bizName}" appears in both your title tag and H1 heading — this tells Google exactly who you are on every search.`
         : entityScore === 1
@@ -666,7 +666,7 @@ function scoreExtras(
     !hasSpam ? "No spammy content or links detected." : "Potentially spammy content or links found.",
     !hasSpam
       ? "Your page is clean — no suspicious outbound links or spammy content patterns detected."
-      : `We found ${spamEvidence.length} potential issue(s): ${spamEvidence.map(e => e.heuristic.toLowerCase()).join(", ")}. Review the evidence below for specifics.`,
+      : `Google's spam filters flag ${spamEvidence.length} pattern(s) on this page: ${spamEvidence.map(e => e.heuristic.toLowerCase()).join(", ")}. Review the evidence below for specifics.`,
     spamEvidence.length > 0 ? spamEvidence : undefined
   ));
 
@@ -710,7 +710,7 @@ function generatePersonalizedSummary(
   }
 
   if (topIssue) {
-    summary += `The biggest opportunity we found: ${topIssue.personalized}`;
+    summary += `The biggest opportunity to give Google what it's looking for: ${topIssue.personalized}`;
   }
 
   return summary;

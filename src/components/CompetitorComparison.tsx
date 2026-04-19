@@ -141,8 +141,7 @@ export default function CompetitorComparison({ result, url, city, searchPhrases 
     return (
       <div className="rounded-xl border border-border bg-card p-5 sm:p-6 text-center">
         <p className="text-sm text-muted-foreground">
-          We couldn't find direct competitors for that search. Try scanning with
-          a more specific service or city.
+          Google didn't surface direct competitors for that exact search. Try a more specific service or city to give it cleaner signal.
         </p>
       </div>
     );
