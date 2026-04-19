@@ -90,26 +90,13 @@ export default function Report() {
 
     if (volumeMap.size === 0) return resolvedResult.phraseOptics;
 
-    const lookupVolume = (phrase: string): number | null => {
-      const p = phrase.toLowerCase().trim();
-      // 1. Exact
-      if (volumeMap.has(p)) return volumeMap.get(p)!;
-      // 2. Bucket key contained in phrase, or phrase contains bucket key — pick the longest match (most specific)
-      let best: { len: number; vol: number } | null = null;
-      for (const [key, vol] of volumeMap.entries()) {
-        if (p.includes(key) || key.includes(p)) {
-          const len = Math.min(key.length, p.length);
-          if (!best || len > best.len) best = { len, vol };
-        }
-      }
-      return best?.vol ?? null;
-    };
-
+    // STRICT: only use a volume when the phrase matches an exact DataForSEO lookup.
+    // Never borrow a broader bucket's volume for a long-tail phrase — that would be misleading.
     return {
       ...resolvedResult.phraseOptics,
       phraseResults: (resolvedResult.phraseOptics.phraseResults ?? []).map((phrase) => ({
         ...phrase,
-        searchVolume: phrase.searchVolume ?? lookupVolume(phrase.phrase),
+        searchVolume: phrase.searchVolume ?? volumeMap.get(phrase.phrase.toLowerCase().trim()) ?? null,
       })),
     };
   }, [resolvedDemandPreviewState, resolvedResult?.phraseOptics]);
