@@ -119,10 +119,10 @@ function scoreLocalPresence(data: FirecrawlScrapeResult, ctx: SiteContext, input
   const lowerMd = markdown.toLowerCase();
 
   const hasPhone = !!ctx.phone;
-  findings.push(f("phone", hasPhone, hasPhone ? 5 : 0, 5, hasPhone ? "Phone number is visible on the page." : "No phone number found on the page.", hasPhone ? `Your phone number (${ctx.phone}) is prominently displayed, making it easy for local customers to call.` : "We couldn't find a phone number on your page — adding one helps local customers reach you instantly."));
+  findings.push(f("phone", hasPhone, hasPhone ? 5 : 0, 5, hasPhone ? "Phone number is visible on the page." : "No phone number found on the page.", hasPhone ? `Your phone number (${ctx.phone}) is prominently displayed, making it easy for local customers to call.` : "Google scans your page for a visible phone number and didn't pick one up — once it's there, that box gets checked and local customers can call instantly."));
 
   const hasName = !!ctx.businessName;
-  findings.push(f("biz-name", hasName, hasName ? 3 : 0, 3, hasName ? "Business name found on the page." : "No clear business name detected.", hasName ? `Your business name "${ctx.businessName}" is clearly visible on the page.` : "We couldn't identify a clear business name — make sure it's in your H1 or title tag."));
+  findings.push(f("biz-name", hasName, hasName ? 3 : 0, 3, hasName ? "Business name found on the page." : "No clear business name detected.", hasName ? `Your business name "${ctx.businessName}" is clearly visible on the page.` : "Google looks for a clear business name in your H1 or title tag and couldn't lock onto one — your site likely shows it, but not in the spot Google checks."));
 
   const addrPat = /\d{1,5}\s\w+\s(?:st|street|ave|avenue|blvd|boulevard|rd|road|dr|drive|ln|lane|ct|court|way|pl|place)\b/i;
   const hasAddress = addrPat.test(html);
@@ -188,7 +188,7 @@ function scoreOnPageSEO(data: FirecrawlScrapeResult, ctx: SiteContext, input: Sc
   let kwHits = 0;
   if (ctx.services.length > 0) { const ts = ctx.services[0]; if (title?.toLowerCase().includes(ts)) kwHits++; if (h1?.toLowerCase().includes(ts)) kwHits++; if (firstParagraph.includes(ts)) kwHits++; }
   const kwScore = Math.min(kwHits, 3);
-  findings.push(f("keyword-usage", kwScore >= 2, kwScore, 3, kwScore >= 2 ? "Service keywords appear in key page areas." : "Service keywords could be used more strategically.", kwScore >= 2 ? `Your primary service keyword "${ctx.services[0]}" appears in ${kwHits} key areas (title, H1, opening paragraph) — good keyword placement.` : ctx.services.length > 0 ? `Try placing "${ctx.services[0]}" in your title, H1, and opening paragraph for stronger relevance signals.` : "We couldn't identify strong service keywords — make sure your main service appears in the title, H1, and first paragraph."));
+  findings.push(f("keyword-usage", kwScore >= 2, kwScore, 3, kwScore >= 2 ? "Service keywords appear in key page areas." : "Service keywords could be used more strategically.", kwScore >= 2 ? `Your primary service keyword "${ctx.services[0]}" appears in ${kwHits} key areas (title, H1, opening paragraph) — good keyword placement.` : ctx.services.length > 0 ? `Try placing "${ctx.services[0]}" in your title, H1, and opening paragraph for stronger relevance signals.` : "Google looks for a clear primary service keyword in the title, H1, and opening paragraph — those exact spots didn't surface one. Putting your main service in those places checks the box."));
 
   const slug = input.url.replace(/https?:\/\/[^/]+/, "").replace(/\/$/, "");
   const hasReadableSlug = slug.length > 1 && /^[\w/-]+$/.test(slug);
@@ -214,7 +214,7 @@ function scoreOnPageSEO(data: FirecrawlScrapeResult, ctx: SiteContext, input: Sc
   const entityScore = !bizName ? 0 : (nameInTitle ? 1 : 0) + (nameInH1 ? 1 : 0);
   findings.push(f("entity-consistency", entityScore >= 2, entityScore, 2,
     !bizName ? "Could not verify entity consistency." : entityScore >= 2 ? "Business name appears in both title and H1." : entityScore === 1 ? "Business name appears in title or H1, but not both." : "Business name missing from both title and H1.",
-    !bizName ? "We couldn't detect your business name, so we couldn't check entity consistency." : entityScore >= 2 ? `Your business name "${bizName}" appears in both your title tag and H1 heading — this tells Google exactly who you are.` : entityScore === 1 ? `Your business name "${bizName}" appears in your ${nameInTitle ? "title tag" : "H1"} but not your ${nameInTitle ? "H1" : "title tag"}. Adding it to both reinforces your identity to Google.` : `Your business name "${bizName}" doesn't appear in your title tag or H1 heading. Adding your name to both is a quick, high-impact fix.`));
+    !bizName ? "Google needs your business name in the title tag and H1 to confirm who the page belongs to — those exact spots came up empty on this scan." : entityScore >= 2 ? `Your business name "${bizName}" appears in both your title tag and H1 heading — this tells Google exactly who you are.` : entityScore === 1 ? `Your business name "${bizName}" appears in your ${nameInTitle ? "title tag" : "H1"} but not your ${nameInTitle ? "H1" : "title tag"}. Adding it to both reinforces your identity to Google.` : `Your business name "${bizName}" doesn't appear in your title tag or H1 heading. Adding your name to both is a quick, high-impact fix.`));
 
   const score = findings.reduce((s, fi) => s + fi.points, 0);
   return { id: "on-page-seo", label: "On-Page SEO", icon: "Search", score, maxScore: 27, findings };
@@ -337,7 +337,7 @@ function scoreExtras(data: FirecrawlScrapeResult, _ctx: SiteContext): CategoryRe
   const spamPatterns = /casino|poker|essay\s*writing|payday\s*loan|viagra|cialis|crypto\s*trading|forex\s*signal/i;
   const spamLinks = (html.match(/<a[^>]*href\s*=\s*["'][^"']*["'][^>]*>[^<]*<\/a>/gi) || []).filter(link => spamPatterns.test(link));
   const hasSpam = spamLinks.length > 0 || spamPatterns.test(lowerMd);
-  findings.push(f("no-spam", !hasSpam, hasSpam ? 0 : 3, 3, !hasSpam ? "No spammy content or links detected." : "Potentially spammy content or links found.", !hasSpam ? "Your page is clean — no suspicious outbound links or spammy content detected." : `We found ${spamLinks.length} suspicious link(s) or content that could trigger spam filters.`));
+  findings.push(f("no-spam", !hasSpam, hasSpam ? 0 : 3, 3, !hasSpam ? "No spammy content or links detected." : "Potentially spammy content or links found.", !hasSpam ? "Your page is clean — no suspicious outbound links or spammy content detected." : `Google's spam filters flag ${spamLinks.length} link(s) or content patterns on this page that could trip them up.`));
 
   const hasTestimonials = /testimonials?|what\s+(our\s+)?(?:clients?|customers?)\s+say|reviews?\s+from/i.test(lowerMd);
   const socialPatterns = /facebook\.com|instagram\.com|twitter\.com|x\.com|linkedin\.com|youtube\.com|yelp\.com|nextdoor\.com/i;
@@ -357,7 +357,7 @@ function generatePersonalizedSummary(ctx: SiteContext, categories: CategoryResul
   const topIssue = categories.flatMap(c => c.findings.filter(fi => !fi.passed)).sort((a, b) => b.maxPoints - a.maxPoints)[0];
   let summary = `${name} scored ${overallScore}/100 on our Google Compatibility Checkup. `;
   if (strengths.length > 0) summary += `Here's what you're doing well: ${strengths[0]} `;
-  if (topIssue) summary += `The biggest opportunity we found: ${topIssue.personalized}`;
+  if (topIssue) summary += `The biggest opportunity to give Google what it's looking for: ${topIssue.personalized}`;
   return summary;
 }
 
