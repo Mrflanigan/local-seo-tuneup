@@ -137,8 +137,25 @@ export default function DemandPreview() {
             <ArrowLeft className="mr-2 h-5 w-5" />
             Back
           </Button>
-          <div className="text-base font-semibold tracking-[0.2em] text-white/40">
-            DEMAND SNAPSHOT
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => {
+                if (!confirm("Clear your saved snapshot and start a fresh intake?")) return;
+                try {
+                  sessionStorage.removeItem(PREVIEW_STATE_KEY);
+                  localStorage.removeItem("demandIntake.result.v1");
+                  localStorage.removeItem("demandIntake.v1");
+                } catch { /* ignore */ }
+                navigate("/demand-intake");
+              }}
+              className="text-xs font-semibold tracking-wider uppercase text-white/40 hover:text-white/80 transition-colors"
+            >
+              Start over
+            </button>
+            <div className="text-base font-semibold tracking-[0.2em] text-white/40">
+              DEMAND SNAPSHOT
+            </div>
           </div>
         </div>
 
