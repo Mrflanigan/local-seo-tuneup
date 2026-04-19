@@ -603,14 +603,37 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { description, city, businessName, whoYouServe } = await req.json();
+    const body = await req.json();
+    const {
+      description,
+      city,
+      businessName,
+      whoYouServe,
+      primaryService: primaryInput,
+      secondaryService,
+      otherServices,
+      whatYouDontDo,
+    } = body || {};
 
-    if (!description || typeof description !== 'string' || description.trim().length < 5) {
+    // Backwards compat: if old `description` arrives, use it as primary.
+    const primary = (typeof primaryInput === 'string' && primaryInput.trim())
+      || (typeof description === 'string' ? description.trim() : '');
+    const secondary = typeof secondaryService === 'string' ? secondaryService.trim() : '';
+    const other = typeof otherServices === 'string' ? otherServices.trim() : '';
+    const exclusions = typeof whatYouDontDo === 'string' ? whatYouDontDo.trim() : '';
+
+    if (!primary || primary.length < 5) {
       return new Response(
-        JSON.stringify({ success: false, error: 'Please describe what the business does (at least a few words).' }),
+        JSON.stringify({ success: false, error: 'Please describe your primary service (at least a few words).' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    const combinedDescription = [
+      `Primary: ${primary}`,
+      secondary && `Secondary: ${secondary}`,
+      other && `Other: ${other}`,
+    ].filter(Boolean).join(' | ');
 
     // ── Step 1: AI generates seed phrases ──
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
@@ -619,30 +642,33 @@ Deno.serve(async (req) => {
     const prompt = `You are an expert SEO keyword researcher who knows how REAL customers search — not how business owners describe themselves.
 
 Business name: ${businessName || 'unknown'}
-Description: ${description.trim()}
+PRIMARY service (the headline — what they do for MOST customers): ${primary}
+${secondary ? `SECONDARY service (a real offering, but not the headline): ${secondary}` : ''}
+${other ? `OTHER services (extras, only mention as adjacent): ${other}` : ''}
+${exclusions ? `THINGS THIS BUSINESS DOES NOT DO (NEVER include these in interpretation, expansion, or phrases): ${exclusions}` : ''}
 ${whoYouServe ? `Target customers: ${whoYouServe}` : ''}
 ${city ? `Location: ${city}` : ''}
 
 You have TWO jobs.
 
-JOB 1 — INTERPRET the three inputs and restate them the way a customer would think about them. Be plain, short, human. Do NOT add disclaimers. Do NOT use industry jargon. If an input is vague or empty, make a reasonable, generous interpretation rather than refusing.
+JOB 1 — INTERPRET the inputs and restate them the way a customer would think about them. Be plain, short, human, respectful. The interpretation MUST lead with the PRIMARY service. Secondary may be appended as "plus…" or "with optional…". OTHER may be hinted at the end if it fits naturally — never as the headline. NEVER include anything from the "things this business does not do" list.
 
-JOB 2 — EXPAND OUTWARD from the description into how real customers actually search. Do NOT just rephrase what the owner wrote.
+JOB 2 — EXPAND OUTWARD from the PRIMARY service into how real customers actually search. Secondary can contribute a few phrases. Other and exclusions must NOT appear in expansion phrases.
 
 Return a single JSON object with this exact shape:
 
 {
   "interpretation": {
-    "what_you_do": "one sentence, 12-25 words, plain English, respectful and professional. Read the description CAREFULLY and identify the PRIMARY service (the main thing they do for most customers) versus SECONDARY services (extras mentioned in passing, like debris cleanup, junk removal, or storage). The sentence MUST lead with the primary service and frame it as the headline. Secondary services may be mentioned at the end as 'plus' or 'with optional…' — never as the headline. If the business is a MOVING COMPANY, the headline must be about moving people's belongings/households from one home to another (their belongings are VALUED, not 'unwanted'). Strong, hands-on language is welcome ('muscle', 'crew', 'careful loading', 'safe transport'). ABSOLUTELY FORBIDDEN: 'grunt', 'menial', 'sweat', 'manual labor', 'junk', 'unwanted items', 'unwanted stuff', 'haul away', 'clutter', 'hoarder', 'pack rat', 'crap', 'mess', 'getting rid of'. When referring to the customer's belongings, use 'belongings', 'furniture', 'household goods', 'possessions' — never 'items' alone, and never with negative qualifiers. Example: 'You move households and their belongings safely from one home to the next, with optional packing, debris cleanup, and setup at the new place.'",
-    "who_you_serve": "one short phrase, 3-12 words, respectful. Customers are never described as messy, cluttered, or problem-having — they are 'homeowners planning a move', 'families relocating', 'businesses upgrading', etc. If empty input, infer from the description.",
-    "where_you_serve": "the location, lightly cleaned and expanded if obvious. e.g. input 'tacoma' → 'Tacoma, WA and the surrounding South Sound area.' Keep it short."
+    "what_you_do": "one sentence, 12-25 words, plain English, respectful and professional. MUST start with and emphasize the PRIMARY service. If secondary exists, append as 'plus' or 'with optional'. Never lead with secondary or other. Frame the customer's belongings/property as VALUED. ABSOLUTELY FORBIDDEN words: 'grunt', 'menial', 'sweat', 'manual labor', 'junk' (unless primary IS junk removal), 'unwanted items', 'unwanted stuff', 'haul away' (unless primary IS hauling), 'clutter', 'hoarder', 'pack rat', 'crap', 'mess', 'getting rid of'.",
+    "who_you_serve": "one short phrase, 3-12 words, respectful. If empty input, infer from primary service.",
+    "where_you_serve": "the location, lightly cleaned and expanded if obvious. Keep it short."
   },
   "expansion": {
-    "synonyms": [...],            // alternate words for the same service
-    "problem_language": [...],    // how customers describe the pain, not the service
-    "colloquial": [...],          // short, casual, how people actually type
-    "cost_comparison": [...],     // shopping intent
-    "adjacent_services": [...]    // related things this business probably also does
+    "synonyms": [...],
+    "problem_language": [...],
+    "colloquial": [...],
+    "cost_comparison": [...],
+    "adjacent_services": [...]
   }
 }
 
@@ -653,17 +679,18 @@ Hard rules:
 - Do NOT include the city name in expansion phrases — the system localizes separately
 - Do NOT echo the owner's exact phrasing back in expansion — translate into customer language
 - Interpretation must be in second person ("you do X", "your customers are Y")
-- No punctuation soup, no ellipses, no slashes`;
+- No punctuation soup, no ellipses, no slashes
+- NEVER include any service or term from the "does not do" list anywhere in the response`;
 
     const aiSeedResult = await generateSeedPhrases(prompt, supabaseUrl, serviceKey);
-    const primaryService = detectPrimaryService(description, whoYouServe);
+    const primaryService = detectPrimaryService(combinedDescription, whoYouServe);
     const {
       phrases: guardedSeeds,
       expansion: seedExpansion,
       interpretation,
     } = applyPrimaryServiceGuardrail({
       primaryService,
-      description,
+      description: combinedDescription,
       whoYouServe,
       city,
       phrases: aiSeedResult.phrases,
