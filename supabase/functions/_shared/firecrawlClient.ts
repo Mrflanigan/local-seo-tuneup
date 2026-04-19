@@ -36,7 +36,14 @@ export async function scrapeWithFirecrawl(url: string): Promise<ScrapeResult> {
     }),
   });
 
-  const data = await response.json();
+  const rawText = await response.text();
+  let data: any;
+  try {
+    data = JSON.parse(rawText);
+  } catch {
+    console.error(`Firecrawl returned non-JSON (status ${response.status}):`, rawText.slice(0, 500));
+    throw new Error(`Firecrawl returned non-JSON response (status ${response.status}): ${rawText.slice(0, 200)}`);
+  }
 
   if (!response.ok) {
     console.error("Firecrawl API error:", data);
