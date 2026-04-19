@@ -228,7 +228,7 @@ function FormPhase({
           We're not just another run-of-the-mill AI audit. We are…{" "}
           <span className="text-primary italic">SEO Reimagined · Osmosis™</span>
           <br />
-          <span className="text-primary">First, we find the people already looking for you.</span>
+          <span className="text-primary"><span className="text-white">Big Difference.</span> First, we find the people already looking for you.</span>
         </p>
 
         <div className="space-y-3 text-base sm:text-lg text-white/70 leading-relaxed">
