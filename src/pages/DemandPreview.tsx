@@ -131,7 +131,7 @@ export default function DemandPreview() {
           <Button
             type="button"
             variant="ghost"
-            onClick={() => navigate("/demand-intake")}
+            onClick={() => navigate("/demand-intake", { state: { forceForm: true } })}
             className="h-auto px-0 text-base font-semibold text-white/80 hover:bg-transparent hover:text-primary"
           >
             <ArrowLeft className="mr-2 h-5 w-5" />
