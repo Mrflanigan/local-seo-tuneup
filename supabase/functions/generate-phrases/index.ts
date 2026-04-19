@@ -24,22 +24,85 @@ interface IntentBucket {
 }
 
 // ── Resolve city name to DataForSEO location_code ──
-// Strict: only accept City / DMA / State whose location_name actually contains
-// a token from the user's input. Never silently accept a Country match.
+// Strict: clean away vague area language, then score only local matches that
+// actually resemble what the user typed. Never silently accept a Country match.
+function normalizeLocationFragment(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/&/g, ' and ')
+    .replace(/[^[\p{L}\p{N}\s,/-]]/gu, ' ')
+    .replace(/\b(and|plus)\s+(the\s+)?(surrounding|nearby|neighboring)\s+areas?\b/g, ' ')
+    .replace(/\b(and|plus)\s+(the\s+)?(surrounding|nearby|neighboring)\b/g, ' ')
+    .replace(/\b(service|serving|coverage)\s+areas?\b/g, ' ')
+    .replace(/\b(metro\s+area|metro|greater|downtown|region|county|counties|area|areas)\b/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getLocationLookupParts(input: string): { searchQuery: string; tokens: string[] } {
+  const normalized = normalizeLocationFragment(input);
+  const stopWords = new Set([
+    'and', 'the', 'for', 'of', 'in', 'near', 'nearby', 'surrounding', 'neighboring',
+    'service', 'serving', 'coverage', 'area', 'areas', 'metro', 'greater', 'downtown',
+    'region', 'county', 'counties',
+  ]);
+
+  const tokens = normalized
+    .split(/[\s,/-]+/)
+    .map((token) => token.trim())
+    .filter((token) => token.length >= 2 && !stopWords.has(token));
+
+  const commaParts = normalized.split(',').map((part) => part.trim()).filter(Boolean);
+  const primaryPart = commaParts[0] || tokens.slice(0, 3).join(' ');
+  const searchQuery = primaryPart
+    .split(/\b(?:and|or)\b/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .sort((a, b) => b.length - a.length)[0] || primaryPart;
+
+  return {
+    searchQuery: searchQuery || tokens.slice(0, 3).join(' '),
+    tokens,
+  };
+}
+
+function scoreLocationCandidate(candidate: Record<string, unknown>, tokens: string[], searchQuery: string): number {
+  const name = normalizeLocationFragment(String(candidate.location_name || ''));
+  if (!name) return -1;
+
+  const searchTerms = searchQuery.split(/\s+/).filter(Boolean);
+  const tokenMatches = tokens.filter((token) => name.includes(token)).length;
+  const queryMatches = searchTerms.filter((token) => name.includes(token)).length;
+
+  if (tokenMatches === 0 && queryMatches === 0) {
+    return -1;
+  }
+
+  const typePriority: Record<string, number> = {
+    'City': 0,
+    'DMA Region': 1,
+    'Region': 2,
+    'State': 3,
+  };
+
+  let score = tokenMatches * 10 + queryMatches * 15 - (typePriority[String(candidate.location_type || '')] ?? 9) * 4;
+
+  if (name === searchQuery) score += 100;
+  if (name.startsWith(searchQuery)) score += 40;
+  if (searchTerms.length > 1 && searchTerms.every((term) => name.includes(term))) score += 25;
+
+  const country = String(candidate.country_iso_code || candidate.country_code || '').toUpperCase();
+  if (country && country !== 'US') score -= 1000;
+
+  return score;
+}
+
 async function resolveLocationCode(city: string, creds: string): Promise<number | null> {
   try {
-    // Strip noise like "metro area", "greater", "downtown" before matching
-    const cleaned = city
-      .toLowerCase()
-      .replace(/\b(metro area|metro|greater|downtown|area|region)\b/g, '')
-      .trim();
-    const tokens = cleaned
-      .split(/[\s,]+/)
-      .map(t => t.trim())
-      .filter(t => t.length >= 3); // ignore "wa", "of", etc.
+    const { searchQuery, tokens } = getLocationLookupParts(city);
 
-    if (tokens.length === 0) {
-      console.warn(`No usable tokens in city input "${city}"`);
+    if (!searchQuery || tokens.length === 0) {
+      console.warn(`No usable location tokens in city input "${city}"`);
       return null;
     }
 
@@ -51,42 +114,36 @@ async function resolveLocationCode(city: string, creds: string): Promise<number 
           'Content-Type': 'application/json',
           'Authorization': `Basic ${creds}`,
         },
-        body: JSON.stringify([{ country: 'US', search: cleaned, limit: 20 }]),
+        body: JSON.stringify([{ country: 'US', search: searchQuery, limit: 25 }]),
       }
     );
     if (!resp.ok) {
       console.warn('Location lookup failed:', resp.status);
       return null;
     }
+
     const data = await resp.json();
-    const results: any[] = data?.tasks?.[0]?.result || [];
-
-    // Only consider local-scoped matches whose name contains an input token
+    const results: Record<string, unknown>[] = data?.tasks?.[0]?.result || [];
     const localTypes = new Set(['City', 'DMA Region', 'State', 'Region']);
-    const typePriority: Record<string, number> = {
-      'City': 0,
-      'DMA Region': 1,
-      'Region': 2,
-      'State': 3,
-    };
 
-    const candidates = results.filter(r => {
-      if (!localTypes.has(r.location_type)) return false;
-      const name = (r.location_name || '').toLowerCase();
-      return tokens.some(t => name.includes(t));
-    });
+    const candidates = results
+      .filter((result) => localTypes.has(String(result.location_type || '')))
+      .map((result) => ({
+        candidate: result,
+        score: scoreLocationCandidate(result, tokens, searchQuery),
+      }))
+      .filter((item) => item.score >= 0)
+      .sort((a, b) => b.score - a.score);
 
     if (candidates.length === 0) {
-      console.warn(`No local match for "${city}" (rejected ${results.length} non-matching results, including any Country matches)`);
+      console.warn(`No local match for "${city}" using query "${searchQuery}"`);
       return null;
     }
 
-    candidates.sort((a, b) =>
-      (typePriority[a.location_type] ?? 9) - (typePriority[b.location_type] ?? 9)
-    );
-    const best = candidates[0];
-    console.log(`Resolved "${city}" → ${best.location_name} (${best.location_code}, ${best.location_type})`);
-    return best.location_code;
+    const best = candidates[0].candidate;
+    const locationCode = Number(best.location_code);
+    console.log(`Resolved "${city}" using "${searchQuery}" → ${best.location_name} (${best.location_code}, ${best.location_type})`);
+    return Number.isFinite(locationCode) ? locationCode : null;
   } catch (e) {
     console.warn('Location resolution error:', e);
     return null;
