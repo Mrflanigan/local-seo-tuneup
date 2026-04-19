@@ -30,7 +30,7 @@ function normalizeLocationFragment(value: string): string {
   return value
     .toLowerCase()
     .replace(/&/g, ' and ')
-    .replace(/[^[\p{L}\p{N}\s,/-]]/gu, ' ')
+    .replace(/[^\p{L}\p{N}\s,\/-]/gu, ' ')
     .replace(/\b(and|plus)\s+(the\s+)?(surrounding|nearby|neighboring)\s+areas?\b/g, ' ')
     .replace(/\b(and|plus)\s+(the\s+)?(surrounding|nearby|neighboring)\b/g, ' ')
     .replace(/\b(service|serving|coverage)\s+areas?\b/g, ' ')
