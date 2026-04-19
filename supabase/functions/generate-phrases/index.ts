@@ -523,8 +523,8 @@ Return a single JSON object with this exact shape:
 
 {
   "interpretation": {
-    "what_you_do": "one sentence, 8-18 words, plain English, customer's perspective. e.g. 'You move people's belongings from one home to another, including packing and heavy lifting.'",
-    "who_you_serve": "one short phrase, 3-10 words. e.g. 'Homeowners and renters in the middle of a move.' If empty input, infer from the description.",
+    "what_you_do": "one sentence, 10-20 words, plain English, respectful and professional. Describe the SERVICE the customer receives — what gets done for them and what outcome they get — NOT the physical labor or effort. Example for a moving company: 'You move households and their belongings safely to a new home, handling packing, loading, transport, and setup.' NEVER use words like 'grunt', 'grunt work', 'heavy lifting', 'hauling', 'sweat', 'manual labor', or any phrasing that frames the client's work as menial. Speak about the client's business the way they would proudly describe it to a customer.",
+    "who_you_serve": "one short phrase, 3-12 words, respectful. e.g. 'Homeowners and renters planning a local or long-distance move.' If empty input, infer from the description.",
     "where_you_serve": "the location, lightly cleaned and expanded if obvious. e.g. input 'tacoma' → 'Tacoma, WA and the surrounding South Sound area.' Keep it short."
   },
   "expansion": {
