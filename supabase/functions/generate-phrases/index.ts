@@ -671,43 +671,36 @@ Hard rules:
 - Do NOT include any service or term from the "does not do" list
 - Do NOT invent services the owner did not name`;
 
+    // AI restates the layman description only. We do NOT use any AI-generated keywords.
     const aiSeedResult = await generateSeedPhrases(prompt, supabaseUrl, serviceKey);
-    const primaryService = detectPrimaryService(combinedDescription, whoYouServe);
-    const {
-      phrases: guardedSeeds,
-      expansion: seedExpansion,
-      interpretation,
-    } = applyPrimaryServiceGuardrail({
-      primaryService,
-      description: combinedDescription,
-      whoYouServe,
-      city,
-      phrases: aiSeedResult.phrases,
-      expansion: aiSeedResult.expansion,
-      interpretation: aiSeedResult.interpretation,
-    });
-    let seedPhrases: string[] = guardedSeeds;
+    const interpretation = aiSeedResult.interpretation;
+    const seedExpansion: SeedExpansion | null = null; // No AI expansion in the keyword path.
 
-    if (seedPhrases.length === 0) {
-      // Fallback: extract 2-3 word service phrases from the raw description.
-      // Strips connectors and punctuation, then slides a window of 2-3 words.
-      const cleanedDesc = primary
-        .toLowerCase()
-        .replace(/[.,;:!?()]/g, ' ')
-        .replace(/\b(and|or|with|for|the|a|an|of|to|in|on|only|just)\b/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-      const words = cleanedDesc.split(' ').filter(w => w.length >= 3);
-      const candidates = new Set<string>();
-      for (let i = 0; i < words.length - 1; i++) {
-        candidates.add(`${words[i]} ${words[i + 1]}`);
-        if (i < words.length - 2) {
-          candidates.add(`${words[i]} ${words[i + 1]} ${words[i + 2]}`);
-        }
+    // ── Deterministic keyword extraction from the OWNER'S literal words ──
+    // Source = cleaned interpretation (still the owner's meaning, just plain English)
+    // + the raw primary/secondary text. We extract 2-3 word n-grams. No AI invention.
+    const sourceText = [
+      interpretation?.what_you_do || '',
+      primary,
+      secondary,
+    ].filter(Boolean).join(' ');
+
+    const cleanedSource = sourceText
+      .toLowerCase()
+      .replace(/[.,;:!?()'"]/g, ' ')
+      .replace(/\b(and|or|with|for|the|a|an|of|to|in|on|only|just|plus|optional|your|you|we|our|is|are|do|does|that|this|their|them)\b/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const words = cleanedSource.split(' ').filter(w => w.length >= 3);
+    const candidates = new Set<string>();
+    for (let i = 0; i < words.length - 1; i++) {
+      candidates.add(`${words[i]} ${words[i + 1]}`);
+      if (i < words.length - 2) {
+        candidates.add(`${words[i]} ${words[i + 1]} ${words[i + 2]}`);
       }
-      seedPhrases = [...candidates].slice(0, 10);
-      console.log('Using description-fallback seed phrases:', seedPhrases);
     }
+    const seedPhrases: string[] = [...candidates].slice(0, 12);
+    console.log(`Deterministic seed phrases (${seedPhrases.length}) from owner's literal words:`, seedPhrases);
 
     if (seedPhrases.length === 0) {
       return new Response(
