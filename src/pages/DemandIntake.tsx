@@ -10,23 +10,58 @@ import InterpretationCard, { type InputInterpretation } from "@/components/Inter
 import SeedExpansionReveal, { type SeedExpansion } from "@/components/SeedExpansionReveal";
 import peakBg from "@/assets/getstarted-peak.jpg";
 
-const INTAKE_KEY = "demandIntake.v1";
-const INTAKE_RESULT_KEY = "demandIntake.result.v1";
+const INTAKE_KEY = "demandIntake.v2";
+const INTAKE_RESULT_KEY = "demandIntake.result.v2";
+// Legacy keys to clean up so old data doesn't bleed in
+const LEGACY_INTAKE_KEY = "demandIntake.v1";
+const LEGACY_INTAKE_RESULT_KEY = "demandIntake.result.v1";
 
-type IntakeDraft = { whatYouDo: string; whoYouServe: string; location: string };
+type IntakeDraft = {
+  primary: string;
+  secondary: string;
+  other: string;
+  dontDo: string;
+  whoYouServe: string;
+  location: string;
+};
+
+const EMPTY_DRAFT: IntakeDraft = {
+  primary: "",
+  secondary: "",
+  other: "",
+  dontDo: "",
+  whoYouServe: "",
+  location: "",
+};
 
 function loadIntakeDraft(): IntakeDraft {
   try {
     const raw = localStorage.getItem(INTAKE_KEY);
-    if (!raw) return { whatYouDo: "", whoYouServe: "", location: "" };
-    const p = JSON.parse(raw);
-    return {
-      whatYouDo: typeof p?.whatYouDo === "string" ? p.whatYouDo : "",
-      whoYouServe: typeof p?.whoYouServe === "string" ? p.whoYouServe : "",
-      location: typeof p?.location === "string" ? p.location : "",
-    };
+    if (raw) {
+      const p = JSON.parse(raw);
+      return {
+        primary: typeof p?.primary === "string" ? p.primary : "",
+        secondary: typeof p?.secondary === "string" ? p.secondary : "",
+        other: typeof p?.other === "string" ? p.other : "",
+        dontDo: typeof p?.dontDo === "string" ? p.dontDo : "",
+        whoYouServe: typeof p?.whoYouServe === "string" ? p.whoYouServe : "",
+        location: typeof p?.location === "string" ? p.location : "",
+      };
+    }
+    // One-time migration from v1
+    const legacy = localStorage.getItem(LEGACY_INTAKE_KEY);
+    if (legacy) {
+      const p = JSON.parse(legacy);
+      return {
+        ...EMPTY_DRAFT,
+        primary: typeof p?.whatYouDo === "string" ? p.whatYouDo : "",
+        whoYouServe: typeof p?.whoYouServe === "string" ? p.whoYouServe : "",
+        location: typeof p?.location === "string" ? p.location : "",
+      };
+    }
+    return EMPTY_DRAFT;
   } catch {
-    return { whatYouDo: "", whoYouServe: "", location: "" };
+    return EMPTY_DRAFT;
   }
 }
 
@@ -56,22 +91,34 @@ export default function DemandIntake() {
   const navigate = useNavigate();
   const initial = loadIntakeDraft();
   const initialResult = loadIntakeResult();
-  const [whatYouDo, setWhatYouDo] = useState(initial.whatYouDo);
+
+  const [primary, setPrimary] = useState(initial.primary);
+  const [secondary, setSecondary] = useState(initial.secondary);
+  const [other, setOther] = useState(initial.other);
+  const [dontDo, setDontDo] = useState(initial.dontDo);
   const [whoYouServe, setWhoYouServe] = useState(initial.whoYouServe);
   const [location, setLocation] = useState(initial.location);
 
   const [phase, setPhase] = useState<Phase>(initialResult ? "reveal" : "form");
   const [result, setResult] = useState<ApiResult | null>(initialResult);
 
+  // Clean up legacy keys once
+  useEffect(() => {
+    try {
+      localStorage.removeItem(LEGACY_INTAKE_KEY);
+      localStorage.removeItem(LEGACY_INTAKE_RESULT_KEY);
+    } catch { /* ignore */ }
+  }, []);
+
   // Persist draft
   useEffect(() => {
     try {
       localStorage.setItem(
         INTAKE_KEY,
-        JSON.stringify({ whatYouDo, whoYouServe, location }),
+        JSON.stringify({ primary, secondary, other, dontDo, whoYouServe, location }),
       );
     } catch { /* ignore */ }
-  }, [whatYouDo, whoYouServe, location]);
+  }, [primary, secondary, other, dontDo, whoYouServe, location]);
 
   // Persist result so refresh keeps the reveal phase
   useEffect(() => {
@@ -83,7 +130,7 @@ export default function DemandIntake() {
 
   const canSubmit =
     phase === "form" &&
-    whatYouDo.trim().length >= 10 &&
+    primary.trim().length >= 5 &&
     location.trim().length >= 2;
 
   const handleSubmit = async (e?: React.FormEvent) => {
@@ -94,7 +141,10 @@ export default function DemandIntake() {
     try {
       const { data, error } = await supabase.functions.invoke("generate-phrases", {
         body: {
-          description: whatYouDo.trim(),
+          primaryService: primary.trim(),
+          secondaryService: secondary.trim() || undefined,
+          otherServices: other.trim() || undefined,
+          whatYouDontDo: dontDo.trim() || undefined,
           whoYouServe: whoYouServe.trim() || undefined,
           city: location.trim(),
         },
@@ -127,8 +177,18 @@ export default function DemandIntake() {
 
   const handleContinue = () => {
     if (!result) return;
+    const combinedDescription = [
+      `Primary: ${primary.trim()}`,
+      secondary.trim() && `Secondary: ${secondary.trim()}`,
+      other.trim() && `Other: ${other.trim()}`,
+    ].filter(Boolean).join(" | ");
+
     const previewState = {
-      description: whatYouDo.trim(),
+      description: combinedDescription,
+      primary: primary.trim(),
+      secondary: secondary.trim(),
+      other: other.trim(),
+      dontDo: dontDo.trim(),
       whoYouServe: whoYouServe.trim() || "",
       city: location.trim(),
       phrases: result.phrases,
@@ -139,8 +199,6 @@ export default function DemandIntake() {
       seedExpansion: result.seedExpansion,
       interpretation: result.interpretation,
     };
-    // Safety-net: write to sessionStorage BEFORE navigating so refresh on /demand-preview
-    // restores the full snapshot — not just phrases/volumes but also city + description.
     try { sessionStorage.setItem("demandPreview.state.v1", JSON.stringify(previewState)); } catch { /* ignore */ }
     navigate("/demand-preview", { state: previewState });
   };
@@ -150,6 +208,8 @@ export default function DemandIntake() {
     setResult(null);
     try { localStorage.removeItem(INTAKE_RESULT_KEY); } catch { /* ignore */ }
   };
+
+  const hasAnyInput = primary || secondary || other || dontDo || whoYouServe || location || result;
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -168,13 +228,12 @@ export default function DemandIntake() {
       <div className="absolute inset-0 bg-black/55" />
 
       <div className="relative z-10 flex min-h-screen w-full flex-col px-8 sm:px-16 py-6">
-        {/* Top bar */}
         <div className="mb-8 flex items-start justify-between gap-4">
           <Button
             type="button"
             variant="ghost"
             onClick={() => {
-              if (result || whatYouDo || whoYouServe || location) {
+              if (hasAnyInput) {
                 if (!confirm("Go back to home? Your saved demand snapshot will stay — you can pick up where you left off.")) return;
               }
               navigate("/");
@@ -189,41 +248,32 @@ export default function DemandIntake() {
           </div>
         </div>
 
-        {/* ───────── FORM PHASE ───────── */}
         {phase === "form" && (
           <FormPhase
-            whatYouDo={whatYouDo}
-            whoYouServe={whoYouServe}
-            location={location}
-            setWhatYouDo={setWhatYouDo}
-            setWhoYouServe={setWhoYouServe}
-            setLocation={setLocation}
+            primary={primary} secondary={secondary} other={other} dontDo={dontDo}
+            whoYouServe={whoYouServe} location={location}
+            setPrimary={setPrimary} setSecondary={setSecondary} setOther={setOther}
+            setDontDo={setDontDo} setWhoYouServe={setWhoYouServe} setLocation={setLocation}
             canSubmit={canSubmit}
             onSubmit={handleSubmit}
             loading={false}
           />
         )}
 
-        {/* ───────── LOADING PHASE ───────── */}
         {phase === "loading" && (
-          <LoadingPhase
-            whatYouDo={whatYouDo}
-            location={location}
-          />
+          <LoadingPhase primary={primary} location={location} />
         )}
 
-        {/* ───────── REVEAL PHASE ───────── */}
         {phase === "reveal" && result && (
           <RevealPhase
             interpretation={result.interpretation}
             expansion={result.seedExpansion}
-            description={whatYouDo.trim()}
+            description={primary.trim()}
             onContinue={handleContinue}
             onRefine={handleRefine}
           />
         )}
 
-        {/* Footer */}
         <div className="pb-4 text-right">
           <p className="text-[11px] tracking-widest text-white/40 uppercase">
             Burj Khalifa · Dubai · 2,717 ft · Tallest structure ever built
@@ -237,12 +287,16 @@ export default function DemandIntake() {
 /* ─────────────────────────── Phase: Form ─────────────────────────── */
 
 function FormPhase({
-  whatYouDo, whoYouServe, location,
-  setWhatYouDo, setWhoYouServe, setLocation,
+  primary, secondary, other, dontDo, whoYouServe, location,
+  setPrimary, setSecondary, setOther, setDontDo, setWhoYouServe, setLocation,
   canSubmit, onSubmit, loading,
 }: {
-  whatYouDo: string; whoYouServe: string; location: string;
-  setWhatYouDo: (v: string) => void;
+  primary: string; secondary: string; other: string; dontDo: string;
+  whoYouServe: string; location: string;
+  setPrimary: (v: string) => void;
+  setSecondary: (v: string) => void;
+  setOther: (v: string) => void;
+  setDontDo: (v: string) => void;
   setWhoYouServe: (v: string) => void;
   setLocation: (v: string) => void;
   canSubmit: boolean;
@@ -251,7 +305,7 @@ function FormPhase({
 }) {
   return (
     <>
-      <div className="mt-auto pt-32 mb-6 space-y-6 animate-in fade-in duration-500">
+      <div className="mt-auto pt-20 mb-6 space-y-6 animate-in fade-in duration-500">
         <p className="text-2xl sm:text-3xl font-semibold text-white tracking-tight leading-snug">
           We're not just another run-of-the-mill AI audit. We are{" "}
           <span className="text-white">SEO Reimagined —</span>{" "}
@@ -270,8 +324,8 @@ function FormPhase({
             We… <span className="text-white font-medium">start by forgetting you have a website.</span>
           </p>
           <p>
-            Tell us three things. Our AI will translate them into how your customers actually search,
-            then a real keyword database will show you how much demand is out there.
+            Tell us what you do — clearly separated, so our AI doesn't get confused like Google does.
+            Then we'll translate it into how your customers actually search.
           </p>
           <p className="text-lg sm:text-xl">
             <span className="text-white/70">With us…</span>{" "}
@@ -281,24 +335,74 @@ function FormPhase({
       </div>
 
       <form onSubmit={onSubmit} className="w-full space-y-4 mb-6">
+        {/* Primary — required */}
         <div>
           <label className="text-lg sm:text-xl font-semibold text-white block tracking-tight mb-2">
-            What do you do best?
+            Primary service <span className="text-primary">*</span>
+            <span className="text-white/50 font-normal text-sm ml-2">(the #1 thing you do for most customers)</span>
           </label>
-          <Textarea
-            placeholder="e.g. We fix roof leaks and handle full roof replacements for homeowners."
-            value={whatYouDo}
-            onChange={(e) => setWhatYouDo(e.target.value)}
-            className="min-h-[100px] text-base sm:text-lg resize-none bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
+          <Input
+            type="text"
+            placeholder="e.g. Residential moving — moving households between homes"
+            value={primary}
+            onChange={(e) => setPrimary(e.target.value)}
+            className="h-12 text-base bg-white/10 border-primary/40 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
             disabled={loading}
-            spellCheck
-            autoCorrect="on"
             autoCapitalize="sentences"
           />
         </div>
 
+        {/* Secondary — optional */}
         <div>
-          <label className="text-base font-semibold text-white/80 block mb-2 tracking-tight">
+          <label className="text-base font-semibold text-white/85 block mb-2 tracking-tight">
+            Secondary service{" "}
+            <span className="text-white/40 font-normal text-sm">(optional — a real second offering)</span>
+          </label>
+          <Input
+            type="text"
+            placeholder="e.g. Packing & unpacking services"
+            value={secondary}
+            onChange={(e) => setSecondary(e.target.value)}
+            className="h-11 text-base bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
+            disabled={loading}
+          />
+        </div>
+
+        {/* Other — optional */}
+        <div>
+          <label className="text-base font-semibold text-white/85 block mb-2 tracking-tight">
+            Other services{" "}
+            <span className="text-white/40 font-normal text-sm">(optional — extras you also offer)</span>
+          </label>
+          <Input
+            type="text"
+            placeholder="e.g. Debris cleanup, junk removal, storage"
+            value={other}
+            onChange={(e) => setOther(e.target.value)}
+            className="h-11 text-base bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
+            disabled={loading}
+          />
+        </div>
+
+        {/* What you DON'T do — optional */}
+        <div>
+          <label className="text-base font-semibold text-white/85 block mb-2 tracking-tight">
+            What you don't do{" "}
+            <span className="text-white/40 font-normal text-sm">(optional — keeps us from suggesting wrong searches)</span>
+          </label>
+          <Input
+            type="text"
+            placeholder="e.g. Long-distance moves, commercial freight"
+            value={dontDo}
+            onChange={(e) => setDontDo(e.target.value)}
+            className="h-11 text-base bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
+            disabled={loading}
+          />
+        </div>
+
+        {/* Who you serve */}
+        <div>
+          <label className="text-base font-semibold text-white/85 block mb-2 tracking-tight">
             Who do you do it for?{" "}
             <span className="text-white/40 font-normal text-sm">(optional — we'll fill it in if you skip)</span>
           </label>
@@ -307,14 +411,15 @@ function FormPhase({
             placeholder="e.g. Homeowners, small businesses, property managers"
             value={whoYouServe}
             onChange={(e) => setWhoYouServe(e.target.value)}
-            className="h-12 text-base bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
+            className="h-11 text-base bg-white/5 border-white/15 text-white placeholder:text-white/50 focus:border-primary rounded-xl"
             disabled={loading}
           />
         </div>
 
+        {/* Location */}
         <div>
           <label className="text-base font-semibold text-primary block mb-2 tracking-tight">
-            Where do you serve people?
+            Where do you serve people? <span className="text-primary">*</span>
           </label>
           <div className="relative">
             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/70" />
@@ -344,7 +449,7 @@ function FormPhase({
 
 /* ─────────────────────────── Phase: Loading ─────────────────────────── */
 
-function LoadingPhase({ whatYouDo, location }: { whatYouDo: string; location: string }) {
+function LoadingPhase({ primary, location }: { primary: string; location: string }) {
   const steps = [
     "Reading what you told us…",
     "Translating into customer language…",
@@ -374,8 +479,8 @@ function LoadingPhase({ whatYouDo, location }: { whatYouDo: string; location: st
       </div>
 
       <p className="text-base sm:text-lg text-white/60 max-w-2xl leading-relaxed">
-        We're translating your description, your customer, and "{location}" into the way real people
-        search — then checking how many of them are out there right now.
+        We're translating "{primary}" in "{location}" into the way real people search —
+        then checking how many of them are out there right now.
       </p>
 
       <ul className="space-y-2 max-w-2xl">
@@ -431,7 +536,7 @@ function RevealPhase({
           </p>
         </div>
         <p className="text-base sm:text-lg text-white/65 max-w-3xl leading-relaxed">
-          You told us three things. Our AI translated them into how your customers actually think
+          You told us what you do. Our AI translated it into how your customers actually think
           and search. Here's what we did with what you gave us.
         </p>
       </div>
