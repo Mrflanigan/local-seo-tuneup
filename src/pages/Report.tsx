@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { loadLastScan } from "@/lib/utils";
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import type { ScoringResult } from "@/lib/scoring/types";
@@ -43,6 +43,10 @@ export default function Report() {
     city?: string;
     businessType?: string;
     searchPhrases?: string[];
+    demandPreviewState?: {
+      volumes?: { keyword: string; monthlySearches: number }[] | null;
+      intentBuckets?: Array<{ keywords: { keyword: string; search_volume: number }[] }> | null;
+    };
   } | null;
 
   // Fall back to localStorage if navigated here without state (e.g. page reload)
@@ -53,9 +57,51 @@ export default function Report() {
     return null;
   }, [state]);
 
+  const resolvedResult = restored?.result;
+  const resolvedDemandPreviewState = restored?.demandPreviewState;
+
+  useEffect(() => {
+    if (!resolvedDemandPreviewState) return;
+    try {
+      sessionStorage.setItem("demandPreview.state.v1", JSON.stringify(resolvedDemandPreviewState));
+    } catch {
+      // ignore storage failures
+    }
+  }, [resolvedDemandPreviewState]);
+
+  const phraseOpticsData = useMemo(() => {
+    if (!resolvedResult?.phraseOptics) return null;
+
+    const volumeMap = new Map<string, number>();
+    const buckets = resolvedDemandPreviewState?.intentBuckets ?? [];
+    const volumes = resolvedDemandPreviewState?.volumes ?? [];
+
+    for (const bucket of buckets) {
+      for (const keyword of bucket.keywords) {
+        volumeMap.set(keyword.keyword.toLowerCase(), keyword.search_volume);
+      }
+    }
+
+    for (const volume of volumes) {
+      if (!volumeMap.has(volume.keyword.toLowerCase())) {
+        volumeMap.set(volume.keyword.toLowerCase(), volume.monthlySearches);
+      }
+    }
+
+    if (volumeMap.size === 0) return resolvedResult.phraseOptics;
+
+    return {
+      ...resolvedResult.phraseOptics,
+      phraseResults: (resolvedResult.phraseOptics.phraseResults ?? []).map((phrase) => ({
+        ...phrase,
+        searchVolume: phrase.searchVolume ?? volumeMap.get(phrase.phrase.toLowerCase()) ?? null,
+      })),
+    };
+  }, [resolvedDemandPreviewState, resolvedResult?.phraseOptics]);
+
   if (!restored) return <Navigate to="/" replace />;
 
-  const { result, url, city, searchPhrases } = restored;
+  const { result, url, city, searchPhrases, demandPreviewState } = restored;
   const name = result.siteContext.businessName;
 
   const handleSnapshotSave = async (label: "before" | "after") => {
@@ -147,7 +193,7 @@ export default function Report() {
           )}
         </div>
         {/* Hero: Phrase Optics first, then Site Health */}
-        {result.phraseOptics && (
+        {phraseOpticsData && (
           <div className="mb-8 text-center">
             <h2 className="text-lg sm:text-xl font-bold text-foreground mb-1">
               Can customers actually find you on Google?
@@ -160,12 +206,12 @@ export default function Report() {
               <button onClick={() => navigate("/methodology")} className="text-primary/60 hover:text-primary hover:underline">Learn more</button>
             </p>
             <div className="flex justify-center">
-              <PhraseOpticsRing data={result.phraseOptics} />
+              <PhraseOpticsRing data={phraseOpticsData} />
             </div>
 
             {/* Win Phrase Plan */}
             {(() => {
-              const winPhrases = selectWinPhrases(result.phraseOptics?.phraseResults ?? []);
+              const winPhrases = selectWinPhrases(phraseOpticsData?.phraseResults ?? []);
               if (!winPhrases.primary) return null;
               const steps = buildPathToPageOnePlan({
                 phrase: winPhrases.primary,

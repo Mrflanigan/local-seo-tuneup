@@ -58,6 +58,15 @@ export function ScanProvider({ children }: { children: ReactNode }) {
       setScan({ loading: true, url, keywords: null, rankPage: null, city, businessName });
 
       try {
+        const demandPreviewState = (() => {
+          try {
+            const raw = sessionStorage.getItem("demandPreview.state.v1");
+            return raw ? JSON.parse(raw) : null;
+          } catch {
+            return null;
+          }
+        })();
+
         // Increment scan count
         try {
           await supabase.functions.invoke("check-scan-limit", { body: { action: "increment" } });
@@ -92,13 +101,13 @@ export function ScanProvider({ children }: { children: ReactNode }) {
           setScan((s) => ({ ...s, rankPage: bestRank.page }));
         }
 
-        saveLastScan({ result, url, city, businessType, searchPhrases, businessName, description, keywordVolumes });
+        saveLastScan({ result, url, city, businessType, searchPhrases, businessName, description, keywordVolumes, demandPreviewState });
 
         await new Promise((r) => setTimeout(r, 3000));
 
         setScan({ loading: false, url: "", keywords: null, rankPage: null });
         navigateRef.current?.("/report", {
-          state: { result, url, city, businessType, searchPhrases, businessName, keywordVolumes },
+          state: { result, url, city, businessType, searchPhrases, businessName, keywordVolumes, demandPreviewState },
         });
       } catch (err) {
         toast.error("Something went wrong scanning that site. Please try again.");
