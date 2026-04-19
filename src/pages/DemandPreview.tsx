@@ -56,19 +56,20 @@ export default function DemandPreview() {
   const location = useLocation();
   const { scan, startScan } = useScan();
 
-  // Use router state if present (fresh navigation); else restore from sessionStorage (refresh)
-  const incoming = location.state as DemandState | null;
-  const restored = incoming ?? loadPreviewState();
-  const state: DemandState = restored || {
-    description: "", city: "", phrases: [], volumes: null, intentBuckets: null, bucketDifficulty: null, totalDemand: null, seedExpansion: null, interpretation: null,
-  };
-
-  // Persist incoming state so refresh restores it
-  useEffect(() => {
-    if (incoming) {
-      try { sessionStorage.setItem(PREVIEW_STATE_KEY, JSON.stringify(incoming)); } catch { /* ignore */ }
+  // Lazy initializer — runs once on mount.
+  // 1) Prefer router state (fresh navigation), 2) fall back to sessionStorage (refresh / direct hit).
+  const [state] = useState<DemandState>(() => {
+    const fromLocation = location.state as DemandState | null;
+    if (fromLocation?.phrases) {
+      try { sessionStorage.setItem(PREVIEW_STATE_KEY, JSON.stringify(fromLocation)); } catch { /* ignore */ }
+      return fromLocation;
     }
-  }, [incoming]);
+    return loadPreviewState() ?? {
+      description: "", city: "", phrases: [], volumes: null,
+      intentBuckets: null, bucketDifficulty: null, totalDemand: null,
+      seedExpansion: null, interpretation: null,
+    };
+  });
 
   const [url, setUrl] = useState("");
   const [businessName, setBusinessName] = useState("");
