@@ -248,6 +248,116 @@ function validateInterpretation(parsed: unknown): InputInterpretation | null {
   };
 }
 
+type PrimaryService = 'moving' | 'unknown';
+
+const MOVING_NEGATIVE_LANGUAGE = /\b(grunt(?:\s+work)?|menial|sweat|manual labor|junk|unwanted(?:\s+(?:items?|stuff))?|haul away|clutter|hoarder|pack rat|crap|mess|get(?:ting)? rid of|trash|garbage|debris(?:\s+cleanup)?|removal)\b/i;
+const MOVING_CLEANUP_SIGNALS = /\b(debris|cleanup|clean up|junk|trash|garbage|removal|dispose|disposal|haul away|dumpster)\b/i;
+const MOVING_DEFAULT_EXPANSION: SeedExpansion = {
+  synonyms: ['moving company', 'local movers', 'residential movers'],
+  problem_language: ['help me move', 'move my belongings', 'moving help'],
+  colloquial: ['movers near me', 'moving company', 'local movers'],
+  cost_comparison: ['moving quote', 'movers cost', 'moving company prices'],
+  adjacent_services: ['packing help', 'unpacking help', 'furniture moving'],
+};
+
+function detectPrimaryService(description: string, whoYouServe?: string): PrimaryService {
+  const text = `${description} ${whoYouServe || ''}`.toLowerCase();
+  const movingSignals = [
+    /move/, /moves/, /moving/, /mover/, /movers/, /relocat(?:e|es|ed|ing|ion)\b/,
+    /packing/, /unpacking/, /load(?:ing)?/, /unload(?:ing)?/, /household(?:s)?/,
+    /belongings/, /furniture/
+  ];
+  const cleanupSignals = [
+    /debris/, /clean ?up/, /junk/, /trash/, /garbage/, /removal/, /dispose/, /disposal/, /haul away/, /dumpster/
+  ];
+
+  const movingScore = movingSignals.reduce((score, pattern) => score + (pattern.test(text) ? 1 : 0), 0);
+  const cleanupScore = cleanupSignals.reduce((score, pattern) => score + (pattern.test(text) ? 1 : 0), 0);
+
+  if (movingScore >= 2 && movingScore >= cleanupScore + 1) return 'moving';
+  return 'unknown';
+}
+
+function uniquePhrases(values: string[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const value of values) {
+    const cleaned = value.trim().toLowerCase();
+    if (!cleaned || seen.has(cleaned)) continue;
+    seen.add(cleaned);
+    out.push(cleaned);
+  }
+  return out;
+}
+
+function mergePhraseLists(primary: string[], secondary: string[]): string[] {
+  return uniquePhrases([...primary, ...secondary]);
+}
+
+function sanitizeMovingPhrases(phrases: string[]): string[] {
+  return uniquePhrases(phrases.filter((phrase) => !MOVING_NEGATIVE_LANGUAGE.test(phrase)));
+}
+
+function sanitizeMovingExpansion(expansion: SeedExpansion | null): SeedExpansion {
+  const cleaned: SeedExpansion = {
+    synonyms: sanitizeMovingPhrases(expansion?.synonyms || []),
+    problem_language: sanitizeMovingPhrases(expansion?.problem_language || []),
+    colloquial: sanitizeMovingPhrases(expansion?.colloquial || []),
+    cost_comparison: sanitizeMovingPhrases(expansion?.cost_comparison || []),
+    adjacent_services: sanitizeMovingPhrases((expansion?.adjacent_services || []).filter((phrase) => !MOVING_CLEANUP_SIGNALS.test(phrase))),
+  };
+
+  return {
+    synonyms: mergePhraseLists(MOVING_DEFAULT_EXPANSION.synonyms, cleaned.synonyms).slice(0, 3),
+    problem_language: mergePhraseLists(MOVING_DEFAULT_EXPANSION.problem_language, cleaned.problem_language).slice(0, 3),
+    colloquial: mergePhraseLists(MOVING_DEFAULT_EXPANSION.colloquial, cleaned.colloquial).slice(0, 3),
+    cost_comparison: mergePhraseLists(MOVING_DEFAULT_EXPANSION.cost_comparison, cleaned.cost_comparison).slice(0, 3),
+    adjacent_services: mergePhraseLists(MOVING_DEFAULT_EXPANSION.adjacent_services, cleaned.adjacent_services).slice(0, 3),
+  };
+}
+
+function applyPrimaryServiceGuardrail({
+  primaryService,
+  description,
+  city,
+  phrases,
+  expansion,
+  interpretation,
+}: {
+  primaryService: PrimaryService;
+  description: string;
+  whoYouServe?: string;
+  city?: string;
+  phrases: string[];
+  expansion: SeedExpansion | null;
+  interpretation: InputInterpretation | null;
+}): { phrases: string[]; expansion: SeedExpansion | null; interpretation: InputInterpretation | null } {
+  if (primaryService !== 'moving') {
+    return { phrases, expansion, interpretation };
+  }
+
+  const fallbackInterpretation: InputInterpretation = {
+    what_you_do: 'You help people move their belongings from one home or office to another, with packing, loading, transport, and optional cleanup.',
+    who_you_serve: interpretation?.who_you_serve && !MOVING_NEGATIVE_LANGUAGE.test(interpretation.who_you_serve)
+      ? interpretation.who_you_serve
+      : 'Homeowners, renters, families, and businesses planning a move',
+    where_you_serve: interpretation?.where_you_serve || city || '',
+  };
+
+  const guardedPhrases = mergePhraseLists(
+    ['moving company', 'local movers', 'residential movers', 'moving services', 'packing and moving'],
+    sanitizeMovingPhrases(phrases),
+  ).slice(0, 12);
+
+  console.log('Applied moving service guardrail');
+
+  return {
+    phrases: guardedPhrases,
+    expansion: sanitizeMovingExpansion(expansion),
+    interpretation: fallbackInterpretation,
+  };
+}
+
 async function generateSeedPhrases(
   prompt: string,
   _supabaseUrl: string,
@@ -545,8 +655,22 @@ Hard rules:
 - Interpretation must be in second person ("you do X", "your customers are Y")
 - No punctuation soup, no ellipses, no slashes`;
 
-    const { phrases: aiSeeds, expansion: seedExpansion, interpretation } = await generateSeedPhrases(prompt, supabaseUrl, serviceKey);
-    let seedPhrases: string[] = aiSeeds;
+    const aiSeedResult = await generateSeedPhrases(prompt, supabaseUrl, serviceKey);
+    const primaryService = detectPrimaryService(description, whoYouServe);
+    const {
+      phrases: guardedSeeds,
+      expansion: seedExpansion,
+      interpretation,
+    } = applyPrimaryServiceGuardrail({
+      primaryService,
+      description,
+      whoYouServe,
+      city,
+      phrases: aiSeedResult.phrases,
+      expansion: aiSeedResult.expansion,
+      interpretation: aiSeedResult.interpretation,
+    });
+    let seedPhrases: string[] = guardedSeeds;
 
     if (seedPhrases.length === 0) {
       // Fallback: extract 2-3 word service phrases from the raw description.
