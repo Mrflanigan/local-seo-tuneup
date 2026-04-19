@@ -250,8 +250,8 @@ function validateInterpretation(parsed: unknown): InputInterpretation | null {
 
 type PrimaryService = 'moving' | 'unknown';
 
-const MOVING_NEGATIVE_LANGUAGE = /(grunt(?:\s+work)?|menial|sweat|manual labor|junk|unwanted(?:\s+(?:items?|stuff))?|haul away|clutter|hoarder|pack rat|crap|mess|get(?:ting)? rid of|trash|garbage|debris(?:\s+cleanup)?|removal)/i;
-const MOVING_CLEANUP_SIGNALS = /(debris|cleanup|clean up|junk|trash|garbage|removal|dispose|disposal|haul away|dumpster)/i;
+const MOVING_NEGATIVE_LANGUAGE = /\b(grunt(?:\s+work)?|menial|sweat|manual labor|junk|unwanted(?:\s+(?:items?|stuff))?|haul away|clutter|hoarder|pack rat|crap|mess|get(?:ting)? rid of|trash|garbage|debris(?:\s+cleanup)?|removal)\b/i;
+const MOVING_CLEANUP_SIGNALS = /\b(debris|cleanup|clean up|junk|trash|garbage|removal|dispose|disposal|haul away|dumpster)\b/i;
 const MOVING_DEFAULT_EXPANSION: SeedExpansion = {
   synonyms: ['moving company', 'local movers', 'residential movers'],
   problem_language: ['help me move', 'move my belongings', 'moving help'],
@@ -263,7 +263,7 @@ const MOVING_DEFAULT_EXPANSION: SeedExpansion = {
 function detectPrimaryService(description: string, whoYouServe?: string): PrimaryService {
   const text = `${description} ${whoYouServe || ''}`.toLowerCase();
   const movingSignals = [
-    /move/, /moves/, /moving/, /mover/, /movers/, /relocat(?:e|es|ed|ing|ion)/,
+    /move/, /moves/, /moving/, /mover/, /movers/, /relocat(?:e|es|ed|ing|ion)\b/,
     /packing/, /unpacking/, /load(?:ing)?/, /unload(?:ing)?/, /household(?:s)?/,
     /belongings/, /furniture/
   ];
