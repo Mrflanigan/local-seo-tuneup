@@ -301,7 +301,7 @@ function scoreOnPageSEO(
       ? `Your primary service keyword "${ctx.services[0]}" appears in ${kwHits} key areas (title, H1, opening paragraph) — good keyword placement.`
       : ctx.services.length > 0
         ? `Try placing "${ctx.services[0]}" in your title, H1, and opening paragraph for stronger relevance signals.`
-        : "We couldn't identify strong service keywords — make sure your main service appears in the title, H1, and first paragraph."
+        : "Google looks for a clear primary service keyword in the title, H1, and opening paragraph — those exact spots didn't surface one. Putting your main service in those places checks the box."
   ));
 
   // 5. URL slug (2 pts)
