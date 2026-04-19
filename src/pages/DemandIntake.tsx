@@ -11,6 +11,7 @@ import SeedExpansionReveal, { type SeedExpansion } from "@/components/SeedExpans
 import peakBg from "@/assets/getstarted-peak.jpg";
 
 const INTAKE_KEY = "demandIntake.v1";
+const INTAKE_RESULT_KEY = "demandIntake.result.v1";
 
 type IntakeDraft = { whatYouDo: string; whoYouServe: string; location: string };
 
@@ -31,6 +32,16 @@ function loadIntakeDraft(): IntakeDraft {
 
 type Phase = "form" | "loading" | "reveal";
 
+function loadIntakeResult(): ApiResult | null {
+  try {
+    const raw = localStorage.getItem(INTAKE_RESULT_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as ApiResult;
+  } catch {
+    return null;
+  }
+}
+
 interface ApiResult {
   phrases: string[];
   volumes: any;
@@ -44,12 +55,13 @@ interface ApiResult {
 export default function DemandIntake() {
   const navigate = useNavigate();
   const initial = loadIntakeDraft();
+  const initialResult = loadIntakeResult();
   const [whatYouDo, setWhatYouDo] = useState(initial.whatYouDo);
   const [whoYouServe, setWhoYouServe] = useState(initial.whoYouServe);
   const [location, setLocation] = useState(initial.location);
 
-  const [phase, setPhase] = useState<Phase>("form");
-  const [result, setResult] = useState<ApiResult | null>(null);
+  const [phase, setPhase] = useState<Phase>(initialResult ? "reveal" : "form");
+  const [result, setResult] = useState<ApiResult | null>(initialResult);
 
   // Persist draft
   useEffect(() => {
@@ -60,6 +72,14 @@ export default function DemandIntake() {
       );
     } catch { /* ignore */ }
   }, [whatYouDo, whoYouServe, location]);
+
+  // Persist result so refresh keeps the reveal phase
+  useEffect(() => {
+    try {
+      if (result) localStorage.setItem(INTAKE_RESULT_KEY, JSON.stringify(result));
+      else localStorage.removeItem(INTAKE_RESULT_KEY);
+    } catch { /* ignore */ }
+  }, [result]);
 
   const canSubmit =
     phase === "form" &&
@@ -126,6 +146,7 @@ export default function DemandIntake() {
   const handleRefine = () => {
     setPhase("form");
     setResult(null);
+    try { localStorage.removeItem(INTAKE_RESULT_KEY); } catch { /* ignore */ }
   };
 
   return (
