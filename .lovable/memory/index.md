@@ -31,3 +31,4 @@ Backlinks = context only, never a product. No outreach/prospecting/disavow langu
 - [Rate limiting](mem://features/rate-limiting) — 3 scans/IP/day, context form after 1st, block repeat abusers, exact copy
 - [Code hygiene pattern](mem://features/code-hygiene-pattern) — 4-step consolidation: shared utils → unified types → shared hooks → cleanup
 - [Backlink Lane](mem://features/backlink-lane) — Authority label model, BacklinkCard UI/narrative, Fix Package tie-in, paste-ready GPT prompt
+- [Phased keyword discovery (PENDING)](mem://features/keyword-discovery-phased-architecture) — 4-phase flow: free discovery (Autocomplete + Perplexity) → owner approval gate → DataForSEO pricing → display. NOT IMPLEMENTED. Owner revisits tomorrow. No creep.
